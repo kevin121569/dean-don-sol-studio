@@ -41,7 +41,7 @@ for (const b of books) {
   const html = `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(b.title)} — ${author}</title>
 <meta name="description" content="${esc(b.blurb)}"><link rel="canonical" href="${url}"><meta name="theme-color" content="#12101a">
-<link rel="icon" type="image/svg+xml" href="../favicon.svg"><link rel="stylesheet" href="../base.css?v=14"><link rel="stylesheet" href="../components.css?v=14">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"><link rel="stylesheet" href="../base.css?v=15"><link rel="stylesheet" href="../components.css?v=14">
 <meta property="og:type" content="book"><meta property="og:site_name" content="The Idea Lab Studio"><meta property="og:title" content="${esc(b.title)} — ${author}"><meta property="og:description" content="${esc(b.blurb)}"><meta property="og:url" content="${url}"><meta property="og:image" content="${image}"><meta property="og:image:alt" content="${esc(b.title)} book cover">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(b.title)} — ${author}"><meta name="twitter:description" content="${esc(b.blurb)}"><meta name="twitter:image" content="${image}">
 <script type="application/ld+json">${json(schema)}</script></head><body>
