@@ -1,0 +1,9 @@
+/* V11 cover wall: web preview art only. Source production covers remain untouched. */
+.cover.cover-image{padding:0;border-left:0;background:#0d0b12;overflow:hidden;position:relative;justify-content:initial;box-shadow:0 22px 45px #0008}
+.cover.cover-image:before{display:none}
+.cover.cover-image img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.cover-label{position:absolute;left:9px;bottom:9px;z-index:2;padding:5px 8px;border:1px solid #ffffff35;border-radius:999px;background:#0d0b12e8;color:#f7eddb;font-size:.6rem;font-weight:950;letter-spacing:.11em;box-shadow:0 3px 15px #0008}
+.book-title{margin:0;font-size:1.34rem;line-height:1.08;color:var(--text)}
+.book-copy{align-content:start}
+.book-actions{margin-top:auto}
+@media(max-width:620px){.cover.cover-image{max-height:520px}.cover-label{font-size:.58rem}}
