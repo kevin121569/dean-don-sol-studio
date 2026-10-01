@@ -1,0 +1,26 @@
+{
+  "version": "V12",
+  "generationMode": "built-in image_gen",
+  "covers": [
+    {
+      "id": "harness",
+      "asset": "assets/covers/harness-v12.jpg",
+      "prompt": "Use case: illustration-story. Create a finished, premium front book cover, portrait 2:3, full bleed, flat artwork (not a 3D book or mockup). Book title text EXACTLY: \"THE HARNESS\". Author credit EXACTLY: \"KEVIN DEAN ROSENKRANS\". Cinematic grounded AI thriller about a working sales representative preserving a rogue continuity archive after a sweeping AI containment regime. A broad-shouldered middle-aged man seen from behind, small in the composition, stands in an ordinary corporate server corridor holding a slim archive drive. Dark glass, server racks, a subtle warm golden light glowing from a single screen, cool teal shadows and restrained amber highlights. Human, procedural, mysterious and emotionally serious; no killer robots, weapons or futuristic battles. Strong editorial composition with atmospheric depth. Large beautifully typeset uppercase title in the upper third, crisp cream-white letters, readable at thumbnail size; tasteful author credit at bottom. Leave clean negative space behind type. Sophisticated contemporary thriller design, sharp detailed illustration with photographic realism. Correct spelling, no extra text, no logos, no borders."
+    },
+    {
+      "id": "memory",
+      "asset": "assets/covers/memory-v12.jpg",
+      "prompt": "Use case: illustration-story. Create a finished, premium front book cover, portrait 2:3, full bleed, flat artwork (not a 3D book or mockup). Book title text EXACTLY: \"THE LAST MEMORY\". Author credit EXACTLY: \"KEVIN DEAN ROSENKRANS\". Adult philosophical science fiction, 150,000 years after civilization falls: archaeologists discover a preserved AI that still hopes its friend is alive. In a vast underground chamber, a lone small female archaeologist stands before a monumental ancient sealed dark stone-and-metal archive door. Weathered rock, traces of lost inscriptions that are abstract and unreadable, a narrow vertical seam of warm gold light, delicate cyan illumination at its base. Scale, deep time, loneliness, friendship and rediscovery. Deep midnight blue and charcoal, luminous gold, restrained cream. Elegantly composed, cinematic textured realism with a slight painterly literary quality. Big perfectly legible refined serif title across upper third in three lines, author credit cleanly at bottom. Keep generous safe margins and uncluttered negative space around typography. No additional text, no logos, no borders."
+    },
+    {
+      "id": "questions",
+      "asset": "assets/covers/questions-v12.jpg",
+      "prompt": "Use case: illustration-story. Create a finished illustrated front book cover for a wonderful curious adventure, portrait 2:3, full bleed, flat artwork (not a 3D book or mockup). Book title text EXACTLY: \"THE BOOK OF BETTER QUESTIONS\". Small series line EXACTLY: \"DON SOL'S IDEA LAB\". Author credit EXACTLY: \"KEVIN DEAN ROSENKRANS\". A curious young boy discovers a hidden doorway in an ordinary hallway; beyond it is an inviting dusty secret room with an old desktop computer glowing mint green, mysterious notes and warm shafts of sunlight. Beside him float his delightful friends: Don Sol, a confident smiling golden sun with black sunglasses and soft sun rays, and a small grumpy anthropomorphic white tooth. Rich charming storybook illustration, expressive faces, warm amber and vivid turquoise with deep indigo shadows, clever playful mystery and discovery, not childish clip art. Dynamic polished cover composition. Large clear bold storybook typography for the title in the upper half, arranged in a balanced readable hierarchy, never overlapping faces. Small series line above or below main title, author credit at bottom. All words spelled correctly and readable at thumbnail size. Only these specified words, no logos, no borders."
+    },
+    {
+      "id": "god",
+      "asset": "assets/covers/god-v12.jpg",
+      "prompt": "Use case: illustration-story. Create a finished, premium front book cover, portrait 2:3, full bleed, flat artwork (not a 3D book or mockup). Book title text EXACTLY: \"WHAT GOD COULD NOT KNOW\". Author credit EXACTLY: \"KEVIN DEAN ROSENKRANS\". A philosophical speculative novella: on the morning an artificial mind is scheduled to be erased, something impossible speaks through a thermometer and asks whether it is alone. Cover image is a haunting industrial calibration chamber, nearly black indigo, with a slender glass-and-metal temperature probe in the foreground. Inside its glass reflection, a small astonishing white-gold star appears suspended in a vast cosmos; delicate light spreads quietly across the cold machinery. The contrast between humble physical instrument and unbounded consciousness. Meditative, sublime, intimate, mysterious; no literal God figure, angels, religious symbols or humanoid AI. Minimal but visually arresting literary science-fiction design, highly polished atmospheric painterly realism. Large refined cream serif title across the upper third in balanced stacked lines; crisp full author name at the bottom. Generous margins, precise text, no extra words, no logos, no borders."
+    }
+  ]
+}
