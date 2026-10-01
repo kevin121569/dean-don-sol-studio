@@ -15,17 +15,3 @@
 .book-actions{margin-top:auto}
 button:focus-visible,a:focus-visible{outline:3px solid var(--mint);outline-offset:4px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.ticker div,.rays{animation:none}.btn:hover{transform:none}}
-
-/* Reader shelves, uniform cover width and descriptive film scenes. */
-.cover.artwork{width:100%;flex:none;aspect-ratio:2/3}
-.cover.artwork img{width:100%;height:100%;object-fit:cover;object-position:center}
-.book-title a{text-decoration:none}.book-title a:hover{color:var(--sun)}
-.book-copy{gap:12px}.book-copy .genre{font-size:14px;line-height:1.5;margin:0}
-.book-copy .status:before{display:none}
-.book-copy .book-actions{width:100%}.filter-result{color:var(--muted);font-size:14px;margin:0 0 20px}
-.frame{cursor:default;min-height:150px}.frame h3{font-size:1.1rem;line-height:1.3;color:var(--sun);margin:0 0 10px}.frame p{font-size:14px;color:#c3bacf;margin:0}
-.tooth{color:#4c3a23;display:grid;place-items:center}.tooth svg{display:block}
-.win b{font-size:14px;color:var(--sun);letter-spacing:.06em}.win p{font-size:16px;margin:12px 0 0}
-.book .sample-pending{font-size:14px;width:100%}
-.answer p{font-size:16px}.fab svg{vertical-align:-3px;margin-right:5px}
-@media(max-width:620px){.book{padding:16px}.wins{grid-template-columns:1fr 1fr}.win{min-height:170px;padding:12px}.api-footer{flex-wrap:wrap}.hero-stage{min-height:460px}.speech{max-width:250px}}

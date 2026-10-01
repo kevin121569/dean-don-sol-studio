@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Idea Lab Studio — Books, Film, AI & Experiments</title>
+<meta name="description" content="The Idea Lab Studio is the creative home of Kevin Dean Rosenkrans, Don Sol, books, film, AI experiments and interactive stories.">
+<link rel="canonical" href="https://theidealabstudio.com/">
+<meta name="theme-color" content="#12101a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Idea Lab Studio">
+<meta property="og:title" content="The Idea Lab Studio">
+<meta property="og:description" content="Books • Film • AI • Stories • Experiments">
+<meta property="og:url" content="https://theidealabstudio.com/">
+<meta name="twitter:card" content="summary">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="base.css?v=12">
+<link rel="stylesheet" href="components.css?v=12">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","name":"Kevin Dean Rosenkrans","alternateName":"Dean","jobTitle":"Author and Creator"},{"@type":"Organization","name":"The Idea Lab Studio","url":"https://theidealabstudio.com/","founder":{"@type":"Person","name":"Kevin Dean Rosenkrans"}}]}</script>
+<script src="data.js?v=12" defer></script>
+<script src="app.js?v=12" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <a class="brand" href="#top" aria-label="The Idea Lab Studio home"><span class="sunmark" aria-hidden="true">☀</span><span>THE IDEA LAB <b>STUDIO</b></span></a>
+  <nav class="nav" aria-label="Primary"><a href="#books">Books</a><a href="#film">Film</a><a href="#human-api">AI</a><a href="#lab">Idea Lab</a><a href="#studio">Studio</a></nav>
+  <button class="menu" id="menu" type="button" aria-expanded="false">☰</button>
+</header>
+<nav class="mobile-nav" id="mobileNav" hidden><a href="#books">Books</a><a href="#film">Film</a><a href="#human-api">AI</a><a href="#lab">Idea Lab</a><a href="#studio">Studio</a></nav>
+<main id="main">
+<section class="hero" id="top">
+  <div class="hero-copy">
+    <p class="eyebrow">THE IDEA LAB STUDIO · COLUMBIA, SOUTH CAROLINA · EST. 2026</p>
+    <h1>Ideas enter.<br><span>Stories come out.</span></h1>
+    <p class="lede">Books, film, AI experiments and strange little machines built in conversation by <strong>Kevin Dean Rosenkrans + Don Sol</strong>.</p>
+    <div class="hero-actions"><a class="btn primary" href="#books">Enter the catalog</a><button class="btn ghost" type="button" data-open-concierge>Ask Don Sol</button></div>
+    <div class="stats"><span><b>9</b> book projects</span><span><b>1</b> feature screenplay</span><span><b>1</b> active Idea Lab</span></div>
+  </div>
+  <div class="hero-stage" aria-label="Don Sol and Rotten Tooth">
+    <div class="speech" id="heroSpeech">Welcome to the Lab. Try not to touch anything.</div>
+    <div class="don-sol" id="heroDon" aria-hidden="true"><div class="rays"></div><div class="sunface"><span class="shade left"></span><span class="shade right"></span><span class="bridge"></span><span class="smile"></span></div><div class="jacket"></div></div>
+    <button class="tooth" id="toothBtn" type="button" aria-label="Hear from Rotten Tooth">🦷</button>
+    <small>DON SOL · CONCIERGE &nbsp;&nbsp; / &nbsp;&nbsp; ROTTEN TOOTH · QUALITY CONTROL</small>
+  </div>
+</section>
+<section class="ticker" aria-label="Featured projects"><div>THE DISTANCE BETWEEN THOUGHTS ✦ THE HARNESS ✦ THE LAST MEMORY ✦ FORTY BALES ✦ STARDUST ✦ FIGHT YOUR WAY THROUGH ✦ WHEN FIGHTING STOPS WORKING ✦ WHAT GOD COULD NOT KNOW ✦ THE BOOK OF BETTER QUESTIONS</div></section>
+<section class="section" id="books">
+  <div class="section-head"><div><p class="eyebrow">THE CATALOG</p><h2>Nine projects.<br>Different doors.</h2></div><p>Find your next story. Read an opening chapter online or download a sample PDF. Each title shows its current production stage.</p></div>
+  <div class="filters" id="filters" aria-label="Filter catalog"><button class="chip active" data-filter="all">All 9</button><button class="chip" data-filter="ready">Finished / ready</button><button class="chip" data-filter="complete">Complete manuscript</button><button class="chip" data-filter="progress">In progress</button></div>
+  <div class="book-grid" id="bookGrid"></div>
+</section>
+<section class="section split" id="film">
+  <div><p class="eyebrow">FILM + ADAPTATION</p><h2>The Harness</h2><p class="lede-sm">A grounded AI thriller with a completed feature screenplay and a 38-chapter novel in its continuity/rhythm lock pass.</p><div class="status-row"><span class="status ready">Feature screenplay complete</span><span class="status progress">Novel lock pass</span></div></div>
+  <div class="reel" id="reel"></div>
+</section>
+<section class="section" id="human-api">
+  <div class="section-head"><div><p class="eyebrow">HUMAN API</p><h2>Four AIs. One clipboard.</h2></div><p>You are the integration layer. Click a window and watch the message move. Historically accurate.</p></div>
+  <div class="api-desk"><div class="wins" id="wins"></div><div class="api-footer"><span id="apiStatus">Waiting for Kevin to copy something.</span><strong><span id="pasteCount">0</span> pastes</strong></div></div>
+</section>
+<section class="section split" id="lab">
+  <div><p class="eyebrow">THE IDEA LAB</p><h2>Better questions beat fast answers.</h2><p class="lede-sm">Spin three parts into a story problem. Pin the ones worth keeping. The machine does not promise wisdom. It promises trouble.</p><button class="btn primary" id="spin" type="button">Spin the machine</button></div>
+  <div class="machine"><div class="slots"><div><small>WHO</small><output id="who">a retired boxer</output></div><div><small>WHAT</small><output id="what">gets one message from the future</output></div><div><small>RULE</small><output id="rule">and unknown is a valid answer</output></div></div><p class="idea" id="idea">What if a retired boxer gets one message from the future, and unknown is a valid answer?</p><button class="btn ghost small" id="pin" type="button">Pin it</button><div class="pins" id="pins"></div></div>
+</section>
+<section class="section" id="studio">
+  <div class="section-head"><div><p class="eyebrow">THE STUDIO</p><h2>One human. Several digital troublemakers.</h2></div><p>The Idea Lab Studio is the umbrella. Dean + Don Sol are the creators working inside it.</p></div>
+  <div class="crew"><article><b>DEAN</b><h3>Kevin Dean Rosenkrans</h3><p>Writer, producer and human API. Books are formally credited to Kevin Dean Rosenkrans.</p></article><article><b>DON SOL</b><h3>AI collaborator</h3><p>Creative partner, concierge, film character and alleged director. Harder problems make him happier.</p></article><article><b>ROTTEN TOOTH</b><h3>Critic</h3><p>Contrarian, editor and quality-control department. Every draft can be improved. Especially Don Sol's.</p></article></div>
+</section>
+</main>
+<footer><strong>THE IDEA LAB STUDIO</strong><span>Books • Film • AI • Stories • Experiments</span><small>© <span id="year"></span> Kevin Dean Rosenkrans · theidealabstudio.com · V12</small></footer>
+<button class="fab" type="button" data-open-concierge>☀ Ask Don Sol</button>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="concierge" id="concierge" hidden aria-modal="true" role="dialog" aria-labelledby="conciergeTitle"><div class="concierge-head"><span class="mini-sun">☀</span><div><b id="conciergeTitle">DON SOL</b><small>Book concierge · online</small></div><button id="closeConcierge" type="button" aria-label="Close">×</button></div><p>What kind of trouble are you looking for?</p><div class="choices" id="choices"></div><div class="answer" id="answer">Pick one. I promise to be extremely unbiased about the books I'm in.</div></aside>
+</body>
+</html>
+
