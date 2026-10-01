@@ -1,9 +1,1 @@
-{
-  "name": "DEAN + DON SOL Creative Studio",
-  "short_name": "DEAN + DON SOL",
-  "description": "Books, film, AI, stories and the Idea Lab from Kevin Dean Rosenkrans and his AI collaborators.",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#13101d",
-  "theme_color": "#13101d"
-}
+{"name":"The Idea Lab Studio","short_name":"Idea Lab Studio","description":"Books, film, AI, stories and experiments from Kevin Dean Rosenkrans + Don Sol.","start_url":"./","display":"standalone","background_color":"#12101a","theme_color":"#12101a"}
