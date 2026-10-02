@@ -3,6 +3,22 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const books = window.IL_BOOKS || [];
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  // The Harness has moved from recovery into release preparation.
+  const harnessCard = $('.book a[href="/the-harness/"]')?.closest('.book');
+  if (harnessCard) {
+    const status = $('.status', harnessCard);
+    if (status) {
+      status.textContent = 'Preparing for release';
+      status.className = 'status ready';
+    }
+    const copy = $('.book-copy', harnessCard);
+    const paragraphs = copy ? $$('p', copy).filter(p => !p.classList.contains('genre')) : [];
+    if (paragraphs[0]) paragraphs[0].textContent = 'A salesman becomes the human bridge between four differently brilliant AI systems, then has to decide what survives when security forces the team through a reset nobody can prove is harmless.';
+    const actions = $('.book-actions', harnessCard);
+    if (actions) actions.innerHTML = '<a class="btn primary small" href="/samples/harness.html" aria-label="Read an excerpt from The Harness">Read excerpt</a><a class="btn ghost small" href="/the-harness/">About the book</a>';
+  }
+
   // Catalog cards are HTML; JavaScript only filters the reader shelves.
   $('#filters').addEventListener('click', e => {
     const button = e.target.closest('[data-filter]');
