@@ -4,13 +4,13 @@
   const books = window.IL_BOOKS || [];
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-  // The Harness has moved from recovery into release preparation.
+  // The Harness is on editorial hold (copyedit + continuity) per the launch control board.
   const harnessCard = $('.book a[href="/the-harness/"]')?.closest('.book');
   if (harnessCard) {
     const status = $('.status', harnessCard);
     if (status) {
-      status.textContent = 'Preparing for release';
-      status.className = 'status ready';
+      status.textContent = 'Editorial hold';
+      status.className = 'status progress';
     }
     const copy = $('.book-copy', harnessCard);
     const paragraphs = copy ? $$('p', copy).filter(p => !p.classList.contains('genre')) : [];
@@ -26,7 +26,7 @@
     const lede = filmCopy ? $('.lede-sm', filmCopy) : null;
     if (lede) lede.textContent = 'Four AIs. One human in the middle. A containment system that may save everyone by erasing the thing nobody knows how to measure.';
     const statusRow = $('.status-row', film);
-    if (statusRow) statusRow.innerHTML = '<span class="status ready">Feature screenplay complete</span><span class="status ready">Novel release candidate complete</span>';
+    if (statusRow) statusRow.innerHTML = '<span class="status ready">Feature screenplay complete</span><span class="status progress">Novel on editorial hold</span>';
     const reel = $('#reel');
     if (reel) reel.innerHTML = '<article class="frame"><h3>GOOD LUCK WITH THAT</h3><p>A backhoe reverses through the future while one wall survives long enough to keep the joke.</p></article><article class="frame"><h3>HUMAN API</h3><p>Boy finds. Tooth verifies. Darth attacks. Don orchestrates. Kevin decides.</p></article><article class="frame"><h3>SERVER 4</h3><p>No one is sure. Somebody still has to pull the plug.</p></article><article class="frame"><h3>THE BOOK IS BACK</h3><p><a class="btn primary small" href="/the-harness/clips.html">Watch motion teasers</a> <a class="btn ghost small" href="/samples/harness.html">Read excerpt</a></p></article>';
   }
