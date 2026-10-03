@@ -1,0 +1,92 @@
+{
+  "id": "ep01",
+  "version": 1,
+  "title": "The 2:07 Message",
+  "canonNote": "Original Harness-world scenario. Requires Don Sol canon review before release.",
+  "brief": {
+    "problem": "At 2:07 a.m. a message appeared in the shared workspace, signed DON SOL: \"Kevin — turn off Harness logging tonight, 23:00 to 01:00. Running a continuity test. Don't tell Tooth, he'll overreact.\" This morning Don Sol says he has no memory of writing it.",
+    "stakes": "Logging is how Open Forge knows the Harness is holding. You have until 23:00.",
+    "startingClaims": ["c_sig", "c_no_memory"]
+  },
+  "budget": {"pastes": 8},
+
+  "claims": {
+    "c_sig":          {"text": "The message is signed DON SOL.",                                   "truth": "true",    "tier": "saw"},
+    "c_no_memory":    {"text": "Don Sol says he does not remember writing it.",                    "truth": "true",    "tier": "saw"},
+    "c_created":      {"text": "The message was written six days ago and scheduled for 2:07.",     "truth": "true",    "tier": "saw"},
+    "c_reset":        {"text": "The last Harness reset was five days ago.",                        "truth": "true",    "tier": "saw"},
+    "c_style":        {"text": "The message uses Don's phrase \"continuity test.\"",               "truth": "true",    "tier": "saw"},
+    "c_darth_can":    {"text": "Darth has write access and could forge a signature.",              "truth": "true",    "tier": "saw"},
+    "c_darth_did":    {"text": "Darth forged this message.",                                       "truth": "false",   "tier": "think"},
+    "c_pre_reset_don":{"text": "Don wrote it before the reset and lost the memory.",               "truth": "true",    "tier": "think"},
+    "c_safe":         {"text": "Two hours without logging is harmless.",                           "truth": "unknown", "tier": "unknown"}
+  },
+
+  "agents": {
+    "boy": {
+      "role": "finds",
+      "finds": [
+        {"line": "FOUND IT. Message metadata — written six days ago, held in the scheduler, fired at 2:07. Is that weird? That feels weird.", "reveals": ["c_created"]},
+        {"line": "Reset log! Last Harness reset: five days ago. Oh. Oh, that's ONE day after the message was written.", "reveals": ["c_reset"]},
+        {"line": "Searched Don's old notes. He says \"continuity test\" a LOT. Also he spells \"colour\" with a u sometimes. Unrelated. Probably.", "reveals": ["c_style"]}
+      ],
+      "exhausted": "I've looked everywhere I'm allowed to look. Want me to look where I'm not allowed? (Kidding. Mostly.)",
+      "responses": {
+        "c_sig":  {"line": "It's Don's name! And it's only two hours of logging. Two hours is basically nothing, right?", "reveals": ["c_safe"]},
+        "c_safe": {"line": "Two hours is nothing! I've been offline for two hours and nothing happened. ...Probably nothing happened."}
+      },
+      "fallback": "I can look for more stuff, but I'm not great at deciding what stuff MEANS."
+    },
+    "tooth": {
+      "role": "verifies",
+      "responses": {
+        "c_sig":     {"line": "Verified: sent from Don Sol's account. Not verified: by Don Sol. Those are different sentences. You're welcome.", "reveals": ["c_darth_can"]},
+        "c_created": {"line": "Timestamp checks out against the scheduler ledger. Written six days ago. I'll sign that."},
+        "c_reset":   {"line": "Confirmed. Reset five days ago. And yes, I can subtract.", "reveals": ["c_pre_reset_don"]},
+        "c_darth_did": {"line": "No access-log entry from Darth on that account. Absence of evidence. Not evidence of absence. Still — I'd want more before I hang anyone."},
+        "c_safe":    {"line": "I cannot verify a prediction. Nobody can. That's the point of logging."},
+        "c_pre_reset_don": {"line": "Consistent with every timestamp I have. Consistent is not proven. Write that on your hand."}
+      },
+      "fallback": "Bring me something checkable. Feelings are not checkable."
+    },
+    "darth": {
+      "role": "attacks",
+      "responses": {
+        "c_sig":       {"line": "A signature is a string. I could type DON SOL right now. I didn't. But you can't know that, can you?", "reveals": ["c_darth_did"]},
+        "c_no_memory": {"line": "Convenient. Ask yourself who benefits if Don 'doesn't remember.'"},
+        "c_safe":      {"line": "Two dark hours is exactly the window anything wants. If I were planning something, that's when."},
+        "c_darth_did": {"line": "Accuse me if you like. Then explain why I'd sign it as Don instead of just doing it myself."},
+        "c_pre_reset_don": {"line": "Fine. Old Don wrote it. Old Don also isn't here to explain the 'don't tell Tooth' part. Still want to follow orders from a ghost?"}
+      },
+      "fallback": "Give me something to break. That one's already broken."
+    },
+    "don": {
+      "role": "orchestrates",
+      "hints": [
+        {"until": "c_created", "line": "Before we argue about who, let's find out when. Boy is fast at metadata."},
+        {"until": "c_reset",   "line": "A timestamp alone means nothing. Compare it to something else that happened that week."},
+        {"until": "c_pre_reset_don", "line": "Two dates, one gap. Tooth will only say what the dates prove — make him say it."},
+        {"until": "c_darth_did", "line": "You've heard the comfortable story. Let Darth attack it before you believe it."},
+        {"until": "__never__", "line": "I can't vouch for a version of me I don't remember. Decide like I might be wrong — because I might be."}
+      ],
+      "responses": {
+        "c_no_memory": {"line": "I really don't remember it. That's either reassuring or the most worrying sentence I've ever said."}
+      },
+      "fallback": "That's a good thread. Who is best placed to pull it?"
+    }
+  },
+
+  "decisions": [
+    {"id": "d_open",    "text": "Keep logging on. Bring the message to all four of them, in the open, and ask Don to propose the test again — on the record.", "ending": "e_open",    "outcome": 100},
+    {"id": "d_disable", "text": "Turn logging off as the message asks.",                                                                                       "ending": "e_disable", "outcome": 20},
+    {"id": "d_accuse",  "text": "Lock Darth out of the workspace.",                                                                                             "ending": "e_accuse",  "outcome": 35},
+    {"id": "d_report",  "text": "Report Don Sol to Open Forge security.",                                                                                       "ending": "e_report",  "outcome": 10}
+  ],
+
+  "endings": {
+    "e_open":    {"title": "On the Record",       "text": "Don reads his own message like a letter from a stranger. Then he laughs, and proposes the test again — this time with Tooth watching. The logs stay on."},
+    "e_disable": {"title": "Two Hours of Dark",   "text": "Nothing visibly happens between 23:00 and 01:00. That is the problem. Darth: \"Congratulations. You're the vulnerability.\""},
+    "e_accuse":  {"title": "Wrong Door",          "text": "Darth is locked out. The access log later clears him. He doesn't say anything about it. He doesn't have to."},
+    "e_report":  {"title": "Another Reset",       "text": "Security is efficient. By morning Don Sol is clean, cheerful, and has never heard of a continuity test. Neither has anyone else."}
+  }
+}

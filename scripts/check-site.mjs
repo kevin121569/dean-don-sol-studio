@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -29,7 +30,7 @@ const htmlFiles = [];
 (function walk(dir) {
   for (const entry of fs.readdirSync(path.join(root, dir), {withFileTypes: true})) {
     const rel = path.posix.join(dir, entry.name);
-    if (entry.name.startsWith('.') || entry.name === 'node_modules' || rel === 'backups' || rel === 'games') continue;
+    if (entry.name.startsWith('.') || entry.name === 'node_modules' || rel === 'backups') continue;
     if (entry.isDirectory()) walk(rel);
     else if (entry.name.endsWith('.html')) htmlFiles.push(rel);
   }
@@ -82,6 +83,16 @@ for (const [id, label] of Object.entries(EXPECTED_STATUS)) {
 // app.js rewrites the Harness card at runtime, so its override must agree too.
 if (!appJs.includes(`status.textContent = '${EXPECTED_STATUS.harness}'`)) fail('app.js Harness card override does not set the expected status');
 if (/Preparing for release/.test(read('the-harness/media-kit.html'))) fail('media kit still says "Preparing for release"');
+
+// 5. Existing games are frozen: byte-for-byte (line endings normalized) against scripts/locked-files.json.
+const lock = JSON.parse(read('scripts/locked-files.json'));
+for (const [file, hash] of Object.entries(lock)) {
+  if (file.startsWith('_')) continue;
+  if (!exists(file)) { fail(`locked file missing: ${file}`); continue; }
+  let bytes = fs.readFileSync(path.join(root, file));
+  if (/\.(html|js|css|json|md|txt)$/.test(file)) bytes = Buffer.from(bytes.toString('utf8').replace(/\r\n/g, '\n'));
+  if (crypto.createHash('sha256').update(bytes).digest('hex') !== hash) fail(`locked game file changed: ${file} — run the game regression plan, then update scripts/locked-files.json`);
+}
 
 for (const w of warnings) console.log(`WARN  ${w}`);
 for (const f of failures) console.log(`FAIL  ${f}`);
