@@ -18,6 +18,8 @@ const EXPECTED_STATUS = {
   harness: 'Editorial hold',
   memory: 'Source-file hold',
   questions: 'In progress',
+  fight: 'Ready for draft upload',
+  stardust: 'Release hold',
 };
 const FORBIDDEN_FOR_HELD = /ready to publish|preparing for release|google-ready epub complete|final rc1/i;
 
@@ -55,8 +57,8 @@ for (const b of books) {
   if (!b.sample || !exists(b.sample)) fail(`${b.id}: missing web sample ${b.sample}`);
   if (b.samplePdf && !exists(b.samplePdf)) fail(`${b.id}: missing sample PDF ${b.samplePdf}`);
   if (!read('index.html').includes(`href="/${b.slug}/"`)) fail(`${b.id}: homepage card link missing`);
-  // "Published" is only truthful once a retailer listing is live; flag until a retailUrl is recorded.
-  if (/published/i.test(b.status) && !b.retailUrl) warn(`${b.id}: status "Published" has no retailUrl recorded in data.js`);
+  // "Published" is only truthful once a retailer listing is live; a retailUrl must be recorded.
+  if (/published/i.test(b.status) && !b.retailUrl) fail(`${b.id}: status "Published" has no retailUrl recorded in data.js`);
 }
 
 // 3. Harness teaser video stays wired up.

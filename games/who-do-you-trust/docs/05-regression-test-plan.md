@@ -12,8 +12,8 @@ Two goals: **(A)** adding the game must not change anything that already works o
 | Every book has its page, cover, web sample, sample PDF, and homepage card link | catalog regressions |
 | Harness teaser video exists and `clips.html` still references it | the teaser silently disappearing |
 | Every page has a responsive viewport meta | mobile layout regressions |
-| Launch-control status contract (Harness / Last Memory / Better Questions) on data.js, homepage card, app.js override, book page, media kit | status drift coming back |
-| WARN: any "Published" title without a `retailUrl` | "Published" claims with no live listing |
+| Launch-control status contract (Harness / Last Memory / Better Questions / Fight / Stardust) on data.js, homepage card, app.js override, book page, media kit | status drift coming back |
+| FAIL: any "Published" title without a `retailUrl` | "Published" claims with no live listing |
 | **Locked files:** SHA-256 of `missing-page/*` (line endings normalized) vs `scripts/locked-files.json` | any edit, intentional or not, to an existing game |
 
 **Rule:** an existing game's files change only when someone deliberately updates its hash in `locked-files.json`, after the manual pass below. When Episode 001's certified `index.html` is uploaded to `adventures/episode-001/`, add its hash the same day.

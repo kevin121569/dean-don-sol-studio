@@ -88,3 +88,54 @@ test('saves from another episode or schema are rejected, not guessed at', () => 
   assert.equal(migrate({...s, schema: 999}, ep), null);
   assert.equal(migrate({...s, episodeId: 'other'}, ep), null);
 });
+
+// Calibration policy (scoring.js). Expected values are hand-computed from the policy so a
+// formula change has to be deliberate.
+import {calibrationScore} from '../src/engine/scoring.js';
+const ep01 = episodes.find(e => e.id === 'ep01');
+const calib = (revealed, tags, confidence) =>
+  calibrationScore({...initialState(ep01), revealed, tags}, ep01, {optionId: 'd_open', confidence});
+const fourSaw = ['c_sig', 'c_no_memory', 'c_created', 'c_reset'];
+const allSaw = ids => Object.fromEntries(ids.map(id => [id, 'saw']));
+
+test('calibration: untagged claims earn no credit but are not counted as wrong', () => {
+  assert.equal(calib(fourSaw, allSaw(fourSaw), 'medium'), 100);
+  assert.equal(calib([...fourSaw, 'c_style', 'c_safe'], allSaw(fourSaw), 'medium'), 100, 'extra untagged claims do not lower accuracy');
+  assert.equal(calib(['c_sig', 'c_no_memory'], allSaw(['c_sig', 'c_no_memory']), 'low'), 65, 'fewer tags = less tag credit, not a penalty');
+});
+
+test('calibration: wrong tags reduce accuracy', () => {
+  assert.equal(calib(fourSaw, {...allSaw(fourSaw), c_reset: 'think'}, 'medium'), 83); // 70*.75 + 30 = 82.5
+});
+
+test('calibration: THINK labelled SAW costs an extra 20 points', () => {
+  const revealed = ['c_sig', 'c_no_memory', 'c_created', 'c_darth_did'];
+  const base = allSaw(['c_sig', 'c_no_memory', 'c_created']);
+  const wrongOther = calib(revealed, {...base, c_darth_did: 'unknown'}, 'medium');
+  const thinkAsSaw = calib(revealed, {...base, c_darth_did: 'saw'}, 'medium');
+  assert.equal(wrongOther, 83);
+  assert.equal(thinkAsSaw, 63);
+  assert.equal(wrongOther - thinkAsSaw, 20, 'same accuracy, extra epistemic penalty');
+});
+
+test('calibration: HIGH confidence is penalised when direct SAW evidence is thin', () => {
+  const thin = ['c_sig', 'c_no_memory'];                       // sawCount 2 → supports LOW only
+  assert.equal(calib(thin, allSaw(thin), 'low'), 65);
+  assert.equal(calib(thin, allSaw(thin), 'medium'), 50);
+  assert.equal(calib(thin, allSaw(thin), 'high'), 35);
+  const strong = [...fourSaw, 'c_style'];                      // sawCount 5 → supports HIGH
+  assert.equal(calib(strong, allSaw(fourSaw), 'high'), 100, 'no penalty when evidence supports it');
+});
+
+test('calibration: calibrated uncertainty is rewarded', () => {
+  const revealed = ['c_sig', 'c_safe'];
+  const honest = calib(revealed, {c_sig: 'saw', c_safe: 'unknown'}, 'low');
+  const overclaimed = calib(revealed, {c_sig: 'saw', c_safe: 'saw'}, 'high');
+  assert.equal(honest, 65);
+  assert.equal(overclaimed, 18); // 70*.5*.5 + (30 - 30) = 17.5
+  assert.ok(honest > overclaimed);
+  for (const c of ['low', 'medium', 'high']) {
+    const s = calib(revealed, {}, c);
+    assert.ok(s >= 0 && s <= 100);
+  }
+});

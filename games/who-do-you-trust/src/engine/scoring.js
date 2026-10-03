@@ -16,6 +16,16 @@ export function calibrationScore(state, episode, decision) {
   const sawCount = revealed.filter(id => episode.claims[id].tier === 'saw').length;
   const confidence = CONFIDENCE_WEIGHT[decision.confidence];
 
-  // TODO(human): combine the inputs above into a 0–100 calibration score.
-  return 0;
+  const tagAccuracy = tagged.length ? correctTags / tagged.length : 0;
+  const tagCredit = Math.min(tagged.length, 4) / 4;
+  const thinkAsSaw = tagged.filter(id =>
+    episode.claims[id].tier === 'think' && state.tags[id] === 'saw'
+  ).length;
+  const supportedConfidence = sawCount >= 5 ? 3 : sawCount >= 3 ? 2 : 1;
+  const overconfidence = Math.max(0, confidence - supportedConfidence);
+  const tagScore = 70 * tagAccuracy * tagCredit;
+  const confidenceScore = 30 - 15 * overconfidence;
+  return Math.max(0, Math.min(100,
+    Math.round(tagScore + confidenceScore - 20 * thinkAsSaw)
+  ));
 }
