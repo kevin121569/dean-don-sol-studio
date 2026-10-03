@@ -78,7 +78,8 @@ export function reduce(state, action, episode) {
     }
 
     case ACTIONS.ACKNOWLEDGE_UNCERTAINTY:
-      if (state.completed || typeof action.value !== 'boolean' || state.uncertaintyAcknowledged === action.value) return state;
+      // Only offered on the decide screen; restoreState() relies on briefing never carrying it.
+      if (state.sceneId !== 'decide' || typeof action.value !== 'boolean' || state.uncertaintyAcknowledged === action.value) return state;
       return {...state, uncertaintyAcknowledged: action.value};
 
     case ACTIONS.GO_TO_DECISION:

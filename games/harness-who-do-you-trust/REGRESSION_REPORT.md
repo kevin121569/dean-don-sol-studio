@@ -3,10 +3,70 @@
 **For:** Don Sol review (Issue #1, packet Stage C → D)
 **Branch:** `feature/harness-wdyt-episode-001-v0.1` (from `main` @ `54174f6`)
 **Status:** Not merged, not deployed, not linked from the site, `noindex`.
+**Revision:** 2 — adds Don Sol review hardening (Issue #1 comment, 2026-10-03). Revision 1 was `bdcf40c`.
+
+## Issue #1 deliverables — all on this branch
+
+Paths are relative to `games/harness-who-do-you-trust/`.
+
+| Deliverable | Path |
+|---|---|
+| Separated HTML / CSS / JS | `index.html` · `css/game.css` · `js/app.js` (presentation only) |
+| Serializable, presentation-independent state | `js/state.js` |
+| Pure rules engine | `js/engine.js` |
+| Episode 001 data file | `data/episode-001.json` |
+| Content loader + validator | `js/content.js` |
+| Local telemetry interface | `js/telemetry.js` |
+| Tests | `tests/engine.test.js` · `tests/episode-001.test.js` (`package.json` = `"type": "module"`, no dependencies) |
+| Android / Capacitor notes | `android/capacitor-notes.md` |
+| Assets | `assets/characters/*.svg`; `assets/ui/`, `assets/audio/` reserved (README only) |
+| Regression report | this file |
+
+## Don Sol review hardening
+
+**1. `restoreState()` rejects corrupted or inconsistent saves** (`js/state.js`). A save now has to look like one that real play could have produced, or the game starts fresh. It runs three layers of checks:
+- **Shape:** exactly the packet §5 keys. No extra or missing keys, unique id lists, booleans where booleans belong.
+- **References:** every evidence, adviser, decision and outcome id exists in this episode. Every `adviceId` belongs to **that** adviser.
+- **Invariants:**
+  - Visible evidence is always discovered. Hidden evidence only after an adviser who can reveal it was consulted. Inspected evidence only if it was discovered.
+  - Recorded advice whose evidence condition no longer holds is rejected.
+  - Trust can only be set on advisers who were consulted.
+  - `completed` matches outcome/postmortem scenes. Completed means exactly one decision, equal to `outcomeId`.
+  - A hybrid outcome requires the unlock evidence.
+  - A save still on the briefing screen carries no progress.
+
+`explainRestore()` returns the reasons, for debugging. A valid save comes back as a copy.
+
+**2. `validateEpisode()` enforces every runtime assumption** (`js/content.js`). It reports every problem at once and never throws.
+- **Advisers:** exactly `boy, tooth, darth, donsol` in `advisorOrder`, `advisors`, `advice`, and every postmortem.
+- **Advice:**
+  - ids are unique across all advisers.
+  - Only `when` keys the engine evaluates are allowed. A typo such as `inspectd` would previously have been silently ignored, making that line always fire.
+  - Every evidence id in `when`/`reveals` exists, and `reveals` may only target hidden evidence.
+  - Every hidden item must be revealable.
+  - The last variant is unconditional.
+- **`hybridUnlock.inspected`:** non-empty, unique, known ids, plus a hint.
+- **Decisions and postmortems:** unique decision ids, outcome/risk text, exactly one hybrid decision, at least one non-hybrid decision. Exactly one postmortem per decision, each rating all four advisers `strong/weak/mixed`.
+- **Other:** evidence count 3–5 with unique ids and required fields; icons must be relative paths.
+
+**Related engine change:** `acknowledgeUncertainty` is now accepted only on the decide screen, which is the only place the UI offers it. Previously the engine accepted it in briefing too, which would have produced saves the new invariants correctly reject.
+
+**Proof the hardening holds:**
+
+| Check | Result |
+|---|---|
+| No false rejections: 2,000 seeded random playthroughs × 25 steps = 50,000 reachable states, each serialized and restored | ✅ 0 rejected (fuzz also reaches endings) |
+| 23 hand-built impossible/corrupt saves (forged or mismatched adviceId, hidden evidence without BOY, trust on unconsulted adviser, hybrid outcome without unlock, completed/scene mismatch, extra/missing keys, …) | ✅ all rejected |
+| 34 targeted content mutations (missing adviser, typo condition, unknown/duplicate ids, unreachable hidden evidence, bad ratings, missing postmortems, garbage input, …) | ✅ all rejected with a specific message |
+| New tests run against the **pre-hardening** `state.js`/`content.js` | 7 of 7 new tests fail, so they genuinely guard the fixes |
+| Browser: forged `adviceId` written to localStorage, then real reload | ✅ discarded, fresh briefing |
+| Browser: impossible save (hybrid ending without the evidence), then real reload | ✅ discarded, postmortem not rendered |
+| Browser: untampered save (control), then real reload | ✅ restored identically, then played to the postmortem |
+| Browser: episode file with `inspectd` typo | ✅ load stops with `unknown condition "inspectd"`; engine never starts |
 
 ## Summary
 
-All 12 packet §11 gates pass. 22/22 automated tests pass. No file outside `games/harness-who-do-you-trust/` changed. `/missing-page/` is byte-identical to `main` and still works.
+All 12 packet §11 gates pass. **31/31** automated tests pass (22 original + 9 hardening). No file outside `games/harness-who-do-you-trust/` changed. `/missing-page/` is byte-identical to `main` and still works.
 
 ## Method — what was real, what was simulated
 
@@ -27,7 +87,7 @@ All 12 packet §11 gates pass. 22/22 automated tests pass. No file outside `game
 | Consulting all creates no duplicate/contradictory state | ✅ | All 24 adviser orders, each consulted twice, then consult-all: always 4 unique entries; consult-all is idempotent |
 | All decision routes reach a valid postmortem | ✅ | All 4 routes, with full and minimal investigations: known / unknown / adviser ratings / alternatives all populated |
 | Hybrid unlocks only under its condition | ✅ | All 32 subsets of evidence: unlocked **iff** monitor + controller + clock-sync are all *inspected*; surfacing without reading does not count; a locked hybrid cannot be submitted |
-| Refresh / local restore | ✅ | Real page reload mid-episode: state identical, UI restored (advice, trust, surfaced evidence) |
+| Refresh / local restore | ✅ | Real page reload mid-episode: state identical, UI restored (advice, trust, surfaced evidence). Re-verified after hardening, including corrupted and impossible saves being rejected. |
 | Reset | ✅ | Through the real reset dialog; returns to briefing with fresh state |
 | Keyboard-only route | ✅* | All controls are native `button`/`input`; no positive `tabindex`; all targets ≥ 44 px; all inputs labelled; focus stays on the used control within a scene and moves to the scene heading on change. *Physical keypress run pending (see Method). |
 | Reduced-motion path | ✅ | The in-game toggle (persists) and the OS `prefers-reduced-motion` share one CSS rule: 6 running animations → 0. A full route was completed with it on. |

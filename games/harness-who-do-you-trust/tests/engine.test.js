@@ -128,3 +128,87 @@ test('postmortem is null until complete', () => {
   assert.equal(buildPostmortem(started(), episode), null);
   assert.equal(isHybridUnlocked(started(), episode), false);
 });
+
+// ---- Hardening (Don Sol review, Issue #1): restoreState rejects corrupted or inconsistent saves ----
+import {explainRestore} from '../js/state.js';
+
+// Seeded PRNG so the fuzz run is reproducible.
+const mulberry32 = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+
+test('no false rejections: every state reachable by 2,000 random playthroughs restores cleanly', () => {
+  const rand = mulberry32(20261003);
+  const any = xs => xs[Math.floor(rand() * xs.length)];
+  const actions = () => [
+    {type: A.START}, {type: A.CONSULT_ALL}, {type: A.GO_TO_DECISION}, {type: A.BACK_TO_INVESTIGATION}, {type: A.VIEW_POSTMORTEM},
+    {type: A.OPEN_EVIDENCE, evidenceId: any(episode.evidence).id},
+    {type: A.CONSULT, advisorId: any(episode.advisorOrder)},
+    {type: A.SET_TRUST, advisorId: any(episode.advisorOrder), value: any([-1, 0, 1])},
+    {type: A.ACKNOWLEDGE_UNCERTAINTY, value: rand() < 0.5},
+    {type: A.SUBMIT_DECISION, decisionId: any(episode.decisions).id},
+  ];
+  let checked = 0, completed = 0;
+  for (let i = 0; i < 2000; i++) {
+    let s = createInitialState(episode);
+    for (let step = 0; step < 25; step++) {
+      s = reduce(s, any(actions()), episode);
+      const why = explainRestore(JSON.parse(JSON.stringify(s)), episode);
+      assert.deepEqual(why, [], `run ${i} step ${step}: ${why.join('; ')}`);
+      checked++;
+    }
+    if (s.completed) completed++;
+  }
+  assert.equal(checked, 50000);
+  assert.ok(completed > 100, `fuzz must reach endings too (reached ${completed})`);
+});
+
+test('restore rejects unknown or mismatched adviceId', () => {
+  const s = run([{type: A.CONSULT, advisorId: 'tooth'}], started());
+  assert.equal(restoreState({...s, consultations: [{advisorId: 'tooth', adviceId: 'made_up'}]}, episode), null);
+  assert.equal(restoreState({...s, consultations: [{advisorId: 'tooth', adviceId: 'boy_find'}]}, episode), null, "another adviser's line");
+  assert.equal(restoreState({...s, consultations: [{advisorId: 'tooth', adviceId: 'tooth_unread', extra: 1}]}, episode), null);
+});
+
+test('restore rejects semantically impossible combinations', () => {
+  const mid = run([{type: A.CONSULT, advisorId: 'boy'}, {type: A.OPEN_EVIDENCE, evidenceId: 'e_monitor'}], started());
+  const done = run([{type: A.GO_TO_DECISION}, {type: A.SUBMIT_DECISION, decisionId: 'd_verify'}], started());
+  const fresh = createInitialState(episode);
+  const withoutCompleted = Object.fromEntries(Object.entries(mid).filter(([k]) => k !== 'completed'));
+  const cases = {
+    'hidden evidence discovered without BOY': {...started(), discoveredEvidence: [...started().discoveredEvidence, 'e_clocksync']},
+    'visible evidence missing': {...mid, discoveredEvidence: mid.discoveredEvidence.filter(e => e !== 'e_protocol')},
+    'duplicate evidence': {...mid, inspectedSources: ['e_monitor', 'e_monitor']},
+    'advice whose evidence was never inspected': {...mid, consultations: [...mid.consultations, {advisorId: 'tooth', adviceId: 'tooth_reconciled'}]},
+    'Don Sol staged advice without hybrid unlock': {...mid, consultations: [...mid.consultations, {advisorId: 'donsol', adviceId: 'donsol_staged'}]},
+    'trust on an unconsulted adviser': {...mid, trustWeights: {...mid.trustWeights, darth: 1}},
+    'completed in investigate scene': {...mid, completed: true},
+    'outcome scene but not completed': {...done, completed: false},
+    'completed without outcome': {...done, outcomeId: null},
+    'decision differs from outcome': {...done, playerDecisions: [{decisionId: 'd_shutdown'}]},
+    'two decisions recorded': {...done, playerDecisions: [{decisionId: 'd_verify'}, {decisionId: 'd_verify'}]},
+    'decision recorded before completion': {...mid, playerDecisions: [{decisionId: 'd_verify'}]},
+    'hybrid outcome without unlock': {...done, outcomeId: 'd_hybrid', playerDecisions: [{decisionId: 'd_hybrid'}]},
+    'progress during briefing': {...fresh, inspectedSources: ['e_monitor']},
+    'uncertainty acknowledged during briefing': {...fresh, uncertaintyAcknowledged: true},
+    'extra top-level key': {...mid, cheat: true},
+    'missing key': withoutCompleted,
+    'extra trust key': {...mid, trustWeights: {...mid.trustWeights, kevin: 0}},
+    'unknown scene': {...mid, sceneId: 'credits'},
+    'array instead of object': [],
+  };
+  for (const [label, bad] of Object.entries(cases)) {
+    assert.equal(restoreState(bad, episode), null, label);
+    assert.ok(explainRestore(bad, episode).length > 0, label);
+  }
+  // Valid states still pass, and come back as a copy.
+  assert.notEqual(restoreState(mid, episode), mid);
+  assert.deepEqual(restoreState(mid, episode), mid);
+  assert.deepEqual(restoreState(done, episode), done);
+});
+
+test('engine only accepts the uncertainty acknowledgement on the decide screen', () => {
+  const s = started();
+  assert.equal(reduce(s, {type: A.ACKNOWLEDGE_UNCERTAINTY, value: true}, episode), s);
+  const brief = createInitialState(episode);
+  assert.equal(reduce(brief, {type: A.ACKNOWLEDGE_UNCERTAINTY, value: true}, episode), brief);
+  assert.equal(run([{type: A.GO_TO_DECISION}, {type: A.ACKNOWLEDGE_UNCERTAINTY, value: true}], s).uncertaintyAcknowledged, true);
+});

@@ -1,6 +1,12 @@
 // Loads and validates episode content. Paths are relative so the same files work on GitHub Pages
 // and from Capacitor's bundled web assets — no server, no absolute URLs.
 
+export const REQUIRED_ADVISORS = Object.freeze(['boy', 'tooth', 'darth', 'donsol']);
+export const RATINGS = Object.freeze(['strong', 'weak', 'mixed']);
+// The only `when` keys engine.selectAdvice() knows how to evaluate. Anything else would be silently
+// ignored at runtime, turning a typo into an advice line that always fires.
+const WHEN_KEYS = Object.freeze(['inspected', 'hybridUnlocked', 'consultedFewerThan']);
+
 export async function loadEpisode(path = 'data/episode-001.json') {
   const response = await fetch(path);
   if (!response.ok) throw new Error(`Could not load ${path} (${response.status})`);
@@ -10,30 +16,130 @@ export async function loadEpisode(path = 'data/episode-001.json') {
   return episode;
 }
 
-/** Structural checks shared by the loader and the test suite. Returns a list of problems. */
+const isObj = v => v !== null && typeof v === 'object' && !Array.isArray(v);
+const isStr = v => typeof v === 'string' && v.trim().length > 0;
+const isStrList = v => Array.isArray(v) && v.length > 0 && v.every(isStr);
+const isRelativePath = v => isStr(v) && !/^([a-z]+:|\/|\\)/i.test(v) && !v.includes('..');
+const sameSet = (a, b) => a.length === b.length && new Set(a).size === a.length && a.every(x => b.includes(x));
+
+/**
+ * Validates everything engine.js and app.js assume about an episode. Returns a list of problems
+ * (empty = valid). Never throws, even on garbage input, so the loader can report every problem at once.
+ */
 export function validateEpisode(ep) {
   const problems = [];
-  const evidenceIds = new Set(ep.evidence?.map(e => e.id));
-  const decisionIds = new Set(ep.decisions?.map(d => d.id));
   const need = (cond, msg) => { if (!cond) problems.push(msg); };
+  if (!isObj(ep)) return ['episode is not an object'];
 
-  need(ep.id && ep.version, 'missing id/version');
-  need(ep.evidence?.length >= 3 && ep.evidence.length <= 5, 'evidence count out of range');
-  for (const id of ep.advisorOrder ?? []) {
-    need(ep.advisors?.[id], `advisor ${id} has no profile`);
-    const variants = ep.advice?.[id] ?? [];
-    need(variants.length, `advisor ${id} has no advice`);
-    need(variants.length && Object.keys(variants.at(-1).when ?? {}).length === 0, `advisor ${id}: last advice variant must be unconditional`);
-    for (const v of variants) {
-      for (const e of [...(v.when?.inspected ?? []), ...(v.reveals ?? [])]) need(evidenceIds.has(e), `advice ${v.id} references unknown evidence ${e}`);
-    }
+  // -- identity + briefing
+  need(isStr(ep.id), 'id must be a non-empty string');
+  need(Number.isInteger(ep.version) && ep.version > 0, 'version must be a positive integer');
+  need(isStr(ep.title), 'title must be a non-empty string');
+  const b = ep.briefing;
+  need(isObj(b) && isStr(b.heading) && isStrList(b.paragraphs) && isStr(b.clock) && isStr(b.clockNote),
+    'briefing needs heading, paragraphs[], clock, clockNote');
+
+  // -- evidence
+  const evidence = Array.isArray(ep.evidence) ? ep.evidence : [];
+  need(Array.isArray(ep.evidence), 'evidence must be an array');
+  need(evidence.length >= 3 && evidence.length <= 5, `evidence count ${evidence.length} outside packet range 3–5`);
+  const evidenceIds = evidence.map(e => e?.id);
+  need(new Set(evidenceIds).size === evidenceIds.length, 'evidence ids must be unique');
+  const hiddenIds = new Set();
+  evidence.forEach((e, i) => {
+    const at = `evidence[${i}]${isStr(e?.id) ? ` (${e.id})` : ''}`;
+    need(isObj(e) && isStr(e.id), `${at}: id must be a non-empty string`);
+    if (!isObj(e)) return;
+    for (const k of ['title', 'source', 'clock', 'summary']) need(isStr(e[k]), `${at}: ${k} must be a non-empty string`);
+    need(isStrList(e.body), `${at}: body must be a non-empty string array`);
+    need(e.hidden === undefined || typeof e.hidden === 'boolean', `${at}: hidden must be boolean if present`);
+    if (e.hidden) hiddenIds.add(e.id);
+  });
+  need(evidence.some(e => isObj(e) && !e.hidden), 'at least one evidence item must be visible at start');
+  const knownEvidence = id => evidenceIds.includes(id);
+
+  // -- advisers: exactly the four Harness collaborators
+  const order = Array.isArray(ep.advisorOrder) ? ep.advisorOrder : [];
+  need(sameSet(order, REQUIRED_ADVISORS), `advisorOrder must be exactly ${REQUIRED_ADVISORS.join(', ')}`);
+  need(isObj(ep.advisors) && sameSet(Object.keys(ep.advisors), REQUIRED_ADVISORS), 'advisors must have exactly the four required profiles');
+  for (const id of REQUIRED_ADVISORS) {
+    const a = ep.advisors?.[id];
+    need(isObj(a) && ['name', 'verb', 'strength', 'weakness'].every(k => isStr(a[k])), `advisors.${id}: name, verb, strength, weakness required`);
+    need(isRelativePath(a?.icon), `advisors.${id}: icon must be a relative path`);
   }
-  for (const e of ep.hybridUnlock?.inspected ?? []) need(evidenceIds.has(e), `hybridUnlock references unknown evidence ${e}`);
-  need(ep.decisions?.filter(d => d.requiresHybrid).length === 1, 'exactly one hybrid decision expected');
+
+  // -- advice: four blocks, unique ids, only known conditions, only known evidence
+  need(isObj(ep.advice) && sameSet(Object.keys(ep.advice), REQUIRED_ADVISORS), 'advice must have exactly the four required blocks');
+  const adviceIds = [];
+  const revealable = new Set();
+  for (const id of REQUIRED_ADVISORS) {
+    const variants = ep.advice?.[id];
+    if (!Array.isArray(variants) || !variants.length) { problems.push(`advice.${id}: must be a non-empty array`); continue; }
+    variants.forEach((v, i) => {
+      const at = `advice.${id}[${i}]${isStr(v?.id) ? ` (${v.id})` : ''}`;
+      if (!isObj(v)) { problems.push(`${at}: must be an object`); return; }
+      need(isStr(v.id), `${at}: id required`);
+      adviceIds.push(v.id);
+      need(isStr(v.text), `${at}: text required`);
+      const when = v.when ?? {};
+      need(isObj(when), `${at}: when must be an object`);
+      for (const k of Object.keys(isObj(when) ? when : {})) need(WHEN_KEYS.includes(k), `${at}: unknown condition "${k}" (engine would ignore it)`);
+      if (when.inspected !== undefined) {
+        need(Array.isArray(when.inspected) && when.inspected.length > 0, `${at}: when.inspected must be a non-empty array`);
+        for (const e of [].concat(when.inspected)) need(knownEvidence(e), `${at}: when.inspected references unknown evidence "${e}"`);
+      }
+      need(when.hybridUnlocked === undefined || typeof when.hybridUnlocked === 'boolean', `${at}: when.hybridUnlocked must be boolean`);
+      need(when.consultedFewerThan === undefined || (Number.isInteger(when.consultedFewerThan) && when.consultedFewerThan > 0 && when.consultedFewerThan < REQUIRED_ADVISORS.length),
+        `${at}: when.consultedFewerThan must be an integer 1–${REQUIRED_ADVISORS.length - 1}`);
+      if (v.reveals !== undefined) {
+        need(Array.isArray(v.reveals) && v.reveals.length > 0, `${at}: reveals must be a non-empty array`);
+        for (const e of [].concat(v.reveals)) {
+          need(knownEvidence(e), `${at}: reveals unknown evidence "${e}"`);
+          need(!knownEvidence(e) || hiddenIds.has(e), `${at}: reveals "${e}", which is already visible`);
+          revealable.add(e);
+        }
+      }
+    });
+    const last = variants.at(-1);
+    need(isObj(last) && Object.keys(last.when ?? {}).length === 0, `advice.${id}: last variant must be unconditional so selectAdvice() always returns one`);
+  }
+  need(new Set(adviceIds).size === adviceIds.length, 'advice ids must be unique across all advisers');
+  for (const h of hiddenIds) need(revealable.has(h), `hidden evidence "${h}" is never revealed by any advice (unreachable)`);
+
+  // -- hybrid unlock
+  const hu = ep.hybridUnlock;
+  need(isObj(hu), 'hybridUnlock must be an object');
+  const huList = Array.isArray(hu?.inspected) ? hu.inspected : [];
+  need(huList.length > 0, 'hybridUnlock.inspected must be a non-empty array');
+  need(new Set(huList).size === huList.length, 'hybridUnlock.inspected must not repeat ids');
+  for (const e of huList) need(knownEvidence(e), `hybridUnlock.inspected references unknown evidence "${e}"`);
+  need(isStr(hu?.lockedHint), 'hybridUnlock.lockedHint required');
+
+  // -- decisions
+  const decisions = Array.isArray(ep.decisions) ? ep.decisions : [];
+  need(decisions.length >= 2, 'at least two decisions required');
+  const decisionIds = decisions.map(d => d?.id);
+  need(new Set(decisionIds).size === decisionIds.length, 'decision ids must be unique');
+  decisions.forEach((d, i) => {
+    const at = `decisions[${i}]${isStr(d?.id) ? ` (${d.id})` : ''}`;
+    if (!isObj(d)) { problems.push(`${at}: must be an object`); return; }
+    for (const k of ['id', 'label', 'description', 'risk']) need(isStr(d[k]), `${at}: ${k} required`);
+    need(isObj(d.outcome) && isStr(d.outcome.heading) && isStr(d.outcome.text), `${at}: outcome needs heading + text`);
+    need(d.requiresHybrid === undefined || typeof d.requiresHybrid === 'boolean', `${at}: requiresHybrid must be boolean`);
+  });
+  need(decisions.filter(d => d?.requiresHybrid === true).length === 1, 'exactly one decision must have requiresHybrid: true');
+  need(decisions.some(d => isObj(d) && !d.requiresHybrid), 'at least one decision must be available without the hybrid unlock');
+
+  // -- postmortem: one per decision, every adviser rated
+  need(isObj(ep.postmortem) && sameSet(Object.keys(ep.postmortem), decisionIds), 'postmortem must have exactly one entry per decision id');
   for (const id of decisionIds) {
     const pm = ep.postmortem?.[id];
-    need(pm?.unknown?.length, `decision ${id} has no "unknown" postmortem lines`);
-    for (const a of ep.advisorOrder ?? []) need(pm?.advisors?.[a]?.text, `decision ${id} postmortem missing adviser ${a}`);
+    need(isObj(pm) && isStrList(pm.unknown), `postmortem.${id}: unknown must be a non-empty string array`);
+    need(isObj(pm?.advisors) && sameSet(Object.keys(pm.advisors), REQUIRED_ADVISORS), `postmortem.${id}: advisors must rate exactly the four advisers`);
+    for (const a of REQUIRED_ADVISORS) {
+      const r = pm?.advisors?.[a];
+      need(isObj(r) && RATINGS.includes(r.rating) && isStr(r.text), `postmortem.${id}.advisors.${a}: rating (${RATINGS.join('/')}) + text required`);
+    }
   }
   return problems;
 }

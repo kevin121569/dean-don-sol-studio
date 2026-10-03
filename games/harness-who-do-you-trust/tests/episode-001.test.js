@@ -136,3 +136,64 @@ test('no core-play network dependency: no absolute URLs or remote loads in shipp
     assert.ok(fs.existsSync(path.join(root, icon)), `missing ${icon}`);
   }
 });
+
+// ---- Hardening (Don Sol review, Issue #1): validateEpisode enforces every runtime assumption ----
+const mutate = fn => { const ep = structuredClone(episode); fn(ep); return validateEpisode(ep); };
+const rejects = (label, fn, pattern) => {
+  const problems = mutate(fn);
+  assert.ok(problems.length > 0, `${label}: should be rejected`);
+  assert.ok(problems.some(p => pattern.test(p)), `${label}: expected ${pattern}, got ${problems.join(' | ')}`);
+};
+
+test('validator: hybridUnlock.inspected', () => {
+  rejects('missing', ep => { delete ep.hybridUnlock; }, /hybridUnlock/);
+  rejects('empty', ep => { ep.hybridUnlock.inspected = []; }, /hybridUnlock.inspected must be a non-empty/);
+  rejects('unknown id', ep => { ep.hybridUnlock.inspected.push('e_ghost'); }, /unknown evidence "e_ghost"/);
+  rejects('duplicate id', ep => { ep.hybridUnlock.inspected.push('e_monitor'); }, /must not repeat/);
+  rejects('no hint', ep => { delete ep.hybridUnlock.lockedHint; }, /lockedHint/);
+});
+
+test('validator: exactly the four advisers and four advice blocks', () => {
+  rejects('adviser missing from order', ep => { ep.advisorOrder.pop(); }, /advisorOrder must be exactly/);
+  rejects('extra adviser', ep => { ep.advisorOrder.push('kevin'); }, /advisorOrder must be exactly/);
+  rejects('profile missing', ep => { delete ep.advisors.darth; }, /advisors/);
+  rejects('advice block missing', ep => { delete ep.advice.tooth; }, /advice must have exactly the four/);
+  rejects('advice block empty', ep => { ep.advice.boy = []; }, /advice.boy: must be a non-empty array/);
+  rejects('last variant conditional', ep => { ep.advice.darth.pop(); }, /last variant must be unconditional/);
+  rejects('absolute icon path', ep => { ep.advisors.boy.icon = 'https://cdn.example/boy.svg'; }, /icon must be a relative path/);
+});
+
+test('validator: ids referenced by advice', () => {
+  rejects('unknown evidence in when', ep => { ep.advice.tooth[0].when.inspected.push('e_ghost'); }, /unknown evidence "e_ghost"/);
+  rejects('unknown evidence in reveals', ep => { ep.advice.boy[0].reveals = ['e_ghost']; }, /reveals unknown evidence/);
+  rejects('reveals visible evidence', ep => { ep.advice.boy[0].reveals = ['e_monitor']; }, /already visible/);
+  rejects('hidden evidence unreachable', ep => { delete ep.advice.boy[0].reveals; }, /never revealed/);
+  rejects('duplicate advice id', ep => { ep.advice.darth[0].id = 'boy_find'; }, /advice ids must be unique/);
+  rejects('typo in condition', ep => { ep.advice.tooth[0].when = {inspectd: ['e_monitor']}; }, /unknown condition "inspectd"/);
+  rejects('bad consultedFewerThan', ep => { ep.advice.donsol[1].when.consultedFewerThan = 9; }, /consultedFewerThan/);
+  rejects('missing text', ep => { ep.advice.boy[0].text = ''; }, /text required/);
+});
+
+test('validator: decision and postmortem structure', () => {
+  rejects('duplicate decision id', ep => { ep.decisions[1].id = ep.decisions[0].id; }, /decision ids must be unique/);
+  rejects('no hybrid decision', ep => { ep.decisions.forEach(d => delete d.requiresHybrid); }, /exactly one decision/);
+  rejects('two hybrid decisions', ep => { ep.decisions[0].requiresHybrid = true; }, /exactly one decision/);
+  rejects('outcome missing', ep => { delete ep.decisions[0].outcome; }, /outcome needs heading/);
+  rejects('risk missing', ep => { delete ep.decisions[2].risk; }, /risk required/);
+  rejects('postmortem for unknown decision', ep => { ep.postmortem.d_ghost = ep.postmortem.d_verify; }, /exactly one entry per decision/);
+  rejects('postmortem missing', ep => { delete ep.postmortem.d_hybrid; }, /exactly one entry per decision/);
+  rejects('unknown section empty', ep => { ep.postmortem.d_verify.unknown = []; }, /unknown must be a non-empty/);
+  rejects('adviser unrated', ep => { delete ep.postmortem.d_shutdown.advisors.donsol; }, /rate exactly the four/);
+  rejects('bad rating', ep => { ep.postmortem.d_shutdown.advisors.boy.rating = 'perfect'; }, /rating \(strong\/weak\/mixed\)/);
+});
+
+test('validator: evidence + top level, and never throws on garbage', () => {
+  rejects('too many evidence items', ep => { ep.evidence.push({...ep.evidence[0], id: 'e6'}); }, /outside packet range/);
+  rejects('duplicate evidence id', ep => { ep.evidence[1].id = 'e_monitor'; }, /evidence ids must be unique/);
+  rejects('empty body', ep => { ep.evidence[0].body = []; }, /body must be/);
+  rejects('bad version', ep => { ep.version = '1'; }, /version/);
+  for (const garbage of [null, 42, 'x', [], {}, {evidence: 'nope', advice: [], decisions: {}}]) {
+    assert.doesNotThrow(() => validateEpisode(garbage));
+    assert.ok(validateEpisode(garbage).length > 0);
+  }
+});
