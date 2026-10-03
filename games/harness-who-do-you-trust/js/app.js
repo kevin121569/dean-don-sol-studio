@@ -4,6 +4,7 @@ import {loadEpisode} from './content.js';
 import {reduce, ACTIONS as A, isHybridUnlocked, isDecisionAvailable, selectAdvice, buildPostmortem} from './engine.js';
 import {createInitialState, createStore} from './state.js';
 import {createTelemetry, domEventSink} from './telemetry.js';
+import {isAdvisor} from './advice.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const esc = v => String(v).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -11,6 +12,7 @@ const TRUST_LABELS = {'-1': 'Discount', '0': 'Neutral', '1': 'Rely on'};
 const SETTINGS_KEY = 'harness-wdyt:settings';
 
 let episode, store, telemetry, state;
+let liveTimer = null, liveGeneration = 0;
 // UI-only state: never persisted, never part of game state.
 const ui = {openEvidence: new Set(), selectedDecision: null};
 
@@ -40,11 +42,17 @@ async function boot() {
 function dispatch(action) {
   const prev = state;
   const next = reduce(prev, action, episode);
+  if (action.type === A.RESET) invalidateAnnouncements();
+  // Commit before notifying synchronous external sinks. A sink can reset play;
+  // that newer state must win over this dispatch and its pending presentation.
+  if (next !== prev) {
+    state = next;
+    store.save(state);
+  }
   track(action, prev, next);
+  if (state !== next) return next !== prev;
   announce(action, prev, next);
   if (next === prev) return false;
-  state = next;
-  store.save(state);
   render({sceneChanged: prev.sceneId !== next.sceneId});
   return true;
 }
@@ -61,11 +69,12 @@ function track(action, prev, next) {
       if (changed) telemetry.track('evidence_open', {evidenceId: action.evidenceId, inspectedCount: next.inspectedSources.length});
       break;
     case A.CONSULT:
-      if (consultable) telemetry.track('advisor_consult', {advisorId: action.advisorId, adviceId: adviceOf(next, action.advisorId), mode: 'single', updated: adviceOf(prev, action.advisorId) !== adviceOf(next, action.advisorId)});
+      if (consultable && isAdvisor(episode, action.advisorId)) telemetry.track('advisor_consult', {advisorId: action.advisorId, adviceId: adviceOf(next, action.advisorId), mode: 'single', updated: adviceOf(prev, action.advisorId) !== adviceOf(next, action.advisorId)});
       break;
     case A.CONSULT_ALL:
       if (consultable) for (const id of episode.advisorOrder) {
         telemetry.track('advisor_consult', {advisorId: id, adviceId: adviceOf(next, id), mode: 'all', updated: adviceOf(prev, id) !== adviceOf(next, id)});
+        if (state !== next) break;
       }
       break;
     case A.SUBMIT_DECISION:
@@ -75,7 +84,7 @@ function track(action, prev, next) {
           uncertaintyAcknowledged: prev.uncertaintyAcknowledged,
           inspectedCount: prev.inspectedSources.length, consultedCount: prev.consultations.length,
         });
-        telemetry.track('episode_complete', {outcomeId: next.outcomeId, trustWeights: {...next.trustWeights}});
+        if (state === next) telemetry.track('episode_complete', {outcomeId: next.outcomeId, trustWeights: {...next.trustWeights}});
       }
       break;
   }
@@ -102,12 +111,24 @@ function announce(action, prev, next) {
   if (lines.length) say(lines.join(' '));
 }
 
+function invalidateAnnouncements() {
+  liveGeneration++;
+  if (liveTimer !== null) clearTimeout(liveTimer);
+  liveTimer = null;
+  $('#live').textContent = '';
+}
+
 function say(text) {
+  invalidateAnnouncements();
   const live = $('#live');
-  live.textContent = '';
+  const generation = liveGeneration;
   // Clear, then set on a later task so screen readers re-announce identical messages. setTimeout rather
   // than requestAnimationFrame: rAF never fires while the page isn't being drawn (backgrounded WebView).
-  setTimeout(() => { live.textContent = text; }, 30);
+  liveTimer = setTimeout(() => {
+    if (generation !== liveGeneration) return;
+    liveTimer = null;
+    live.textContent = text;
+  }, 30);
 }
 
 // ---------------------------------------------------------------- input
@@ -247,14 +268,15 @@ function investigate() {
 function evidenceCard(e) {
   const open = ui.openEvidence.has(e.id);
   const inspected = state.inspectedSources.includes(e.id);
+  const id = esc(e.id);
   return `
   <li class="evidence${e.hidden ? ' is-new' : ''}">
-    <button type="button" class="evidence-toggle" id="ev-${e.id}" data-action="toggleEvidence" data-id="${e.id}" aria-expanded="${open}" aria-controls="ev-body-${e.id}" aria-labelledby="ev-t-${e.id} ev-src-${e.id} ev-s-${e.id}">
-      <span class="title" id="ev-t-${e.id}">${esc(e.title)}${e.hidden ? ' <span class="muted">· surfaced by BOY</span>' : ''}</span>
-      <span class="source" id="ev-src-${e.id}">${esc(e.source)}</span>
-      <span class="state${inspected ? ' opened' : ''}" id="ev-s-${e.id}">${inspected ? '✓ Opened' : 'Unopened'}</span>
+    <button type="button" class="evidence-toggle" id="ev-${id}" data-action="toggleEvidence" data-id="${id}" aria-expanded="${open}" aria-controls="ev-body-${id}" aria-labelledby="ev-t-${id} ev-src-${id} ev-s-${id}">
+      <span class="title" id="ev-t-${id}">${esc(e.title)}${e.hidden ? ' <span class="muted">· surfaced by BOY</span>' : ''}</span>
+      <span class="source" id="ev-src-${id}">${esc(e.source)}</span>
+      <span class="state${inspected ? ' opened' : ''}" id="ev-s-${id}">${inspected ? '✓ Opened' : 'Unopened'}</span>
     </button>
-    <div class="evidence-body" id="ev-body-${e.id}" ${open ? '' : 'hidden'}>
+    <div class="evidence-body" id="ev-body-${id}" ${open ? '' : 'hidden'}>
       ${e.body.map(line => `<p class="log-line">${esc(line)}</p>`).join('')}
       <p class="clock">Clock source: ${esc(e.clock)}</p>
     </div>
@@ -262,24 +284,25 @@ function evidenceCard(e) {
 }
 
 function advisorCard(id) {
+  const attrId = esc(id);
   const a = episode.advisors[id];
   const c = state.consultations.find(x => x.advisorId === id);
   const stale = c && selectAdvice(state, episode, id).id !== c.adviceId;
   const trust = state.trustWeights[id];
   return `
-  <article class="advisor" data-advisor="${id}" aria-labelledby="adv-${id}-name">
+  <article class="advisor" data-advisor="${attrId}" aria-labelledby="adv-${attrId}-name">
     <div class="advisor-head">
       <img src="${esc(a.icon)}" alt="" width="36" height="36">
-      <div><h3 id="adv-${id}-name">${esc(a.name)}</h3><span class="verb">${esc(a.verb)}</span></div>
+      <div><h3 id="adv-${attrId}-name">${esc(a.name)}</h3><span class="verb">${esc(a.verb)}</span></div>
     </div>
     <dl><dt>Strength</dt><dd>${esc(a.strength)}</dd><dt>Weakness</dt><dd>${esc(a.weakness)}</dd></dl>
     ${c ? `<blockquote class="advice" aria-label="${esc(a.name)} says"><p>${esc(adviceText(id, c.adviceId))}</p></blockquote>` : ''}
     ${stale ? `<p class="muted">You've learned more since you asked. ${esc(a.name)} may see it differently now.</p>` : ''}
-    <button type="button" class="btn" id="consult-${id}" data-action="consult" data-id="${id}">${c ? `Ask ${esc(a.name)} again` : `Consult ${esc(a.name)}`}</button>
+    <button type="button" class="btn" id="consult-${attrId}" data-action="consult" data-id="${attrId}">${c ? `Ask ${esc(a.name)} again` : `Consult ${esc(a.name)}`}</button>
     <fieldset class="trust" ${c ? '' : 'disabled'}>
       <legend>How much do you lean on ${esc(a.name)}?${c ? '' : ' (consult first)'}</legend>
       <div class="segmented">
-        ${[-1, 0, 1].map(v => `<label><input type="radio" name="trust-${id}" id="trust-${id}-${v}" value="${v}" ${trust === v ? 'checked' : ''}><span>${TRUST_LABELS[v]}</span></label>`).join('')}
+        ${[-1, 0, 1].map(v => `<label><input type="radio" name="trust-${attrId}" id="trust-${attrId}-${v}" value="${v}" ${trust === v ? 'checked' : ''}><span>${TRUST_LABELS[v]}</span></label>`).join('')}
       </div>
     </fieldset>
   </article>`;
@@ -300,11 +323,12 @@ function decide() {
       <ul class="choices">
         ${episode.decisions.map(d => {
           const available = !d.requiresHybrid || unlocked;
+          const id = esc(d.id);
           return `<li class="choice">
-            <input type="radio" name="decision" id="dec-${d.id}" value="${d.id}" ${available ? '' : 'disabled aria-describedby="lock-' + d.id + '"'} ${ui.selectedDecision === d.id ? 'checked' : ''}>
-            <label for="dec-${d.id}"><span class="label">${esc(d.label)}${available ? '' : ' — locked'}</span>
+            <input type="radio" name="decision" id="dec-${id}" value="${id}" ${available ? '' : 'disabled aria-describedby="lock-' + id + '"'} ${ui.selectedDecision === d.id ? 'checked' : ''}>
+            <label for="dec-${id}"><span class="label">${esc(d.label)}${available ? '' : ' — locked'}</span>
               <span class="desc">${esc(d.description)}</span>
-              ${available ? '' : `<span class="lock" id="lock-${d.id}">🔒 ${esc(episode.hybridUnlock.lockedHint)}</span>`}</label>
+              ${available ? '' : `<span class="lock" id="lock-${id}">🔒 ${esc(episode.hybridUnlock.lockedHint)}</span>`}</label>
           </li>`;
         }).join('')}
       </ul>

@@ -1,132 +1,135 @@
-# Regression Report — The Harness: Who Do You Trust? · Episode 001 v0.1
+# Harness Episode 001 — Issue #3 remediation regression report
 
-**For:** Don Sol review (Issue #1, packet Stage C → D)
-**Branch:** `feature/harness-wdyt-episode-001-v0.1` (from `main` @ `54174f6`)
-**Status:** Not merged, not deployed, not linked from the site, `noindex`.
-**Revision:** 2 — adds Don Sol review hardening (Issue #1 comment, 2026-10-03). Revision 1 was `bdcf40c`.
+**Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
 
-## Issue #1 deliverables — all on this branch
+All seven Issue #2 findings have code fixes and adversarial regressions. The
+original 31 tests remain unchanged and pass. No merge or deployment was performed.
+Don Sol must review this patch before an Astra re-test is requested.
 
-Paths are relative to `games/harness-who-do-you-trust/`.
-
-| Deliverable | Path |
+| Audit identity | Value |
 |---|---|
-| Separated HTML / CSS / JS | `index.html` · `css/game.css` · `js/app.js` (presentation only) |
-| Serializable, presentation-independent state | `js/state.js` |
-| Pure rules engine | `js/engine.js` |
-| Episode 001 data file | `data/episode-001.json` |
-| Content loader + validator | `js/content.js` |
-| Local telemetry interface | `js/telemetry.js` |
-| Tests | `tests/engine.test.js` · `tests/episode-001.test.js` (`package.json` = `"type": "module"`, no dependencies) |
-| Android / Capacitor notes | `android/capacitor-notes.md` |
-| Assets | `assets/characters/*.svg`; `assets/ui/`, `assets/audio/` reserved (README only) |
-| Regression report | this file |
+| Repository | `kevin121569/dean-don-sol-studio` |
+| Task | [Issue #3](https://github.com/kevin121569/dean-don-sol-studio/issues/3), remediation of Issue #2 |
+| Exact base branch | `feature/harness-wdyt-episode-001-v0.1` |
+| Exact base commit / sole commit parent | `f5083a201c612c78ce5ebedace71bc1fd26290c6` |
+| Remediation branch | `fix/harness-wdyt-redteam-r1` |
+| Fix revision | The commit containing this report; use its commit-pinned handoff link |
+| Allowed scope | `games/harness-who-do-you-trust/` only |
+| Runtime used for checks | Node.js `v24.19.0`; no dependencies installed |
+| Report date | 2026-10-03 UTC |
+| Main comparison commit | `b259244fd7b1391e139bf88e43a92049d8dfaa6d` |
 
-## Don Sol review hardening
+The exact base was materialized from verified Git blobs. All 20 original game
+files in the baseline replay match the base blob hashes. The remote remediation
+commit uses the complete base repository tree, with only game paths replaced or
+added. Its SHA is reported separately in the Don Sol handoff because a commit
+cannot contain its own SHA in this file.
 
-**1. `restoreState()` rejects corrupted or inconsistent saves** (`js/state.js`). A save now has to look like one that real play could have produced, or the game starts fresh. It runs three layers of checks:
-- **Shape:** exactly the packet §5 keys. No extra or missing keys, unique id lists, booleans where booleans belong.
-- **References:** every evidence, adviser, decision and outcome id exists in this episode. Every `adviceId` belongs to **that** adviser.
-- **Invariants:**
-  - Visible evidence is always discovered. Hidden evidence only after an adviser who can reveal it was consulted. Inspected evidence only if it was discovered.
-  - Recorded advice whose evidence condition no longer holds is rejected.
-  - Trust can only be set on advisers who were consulted.
-  - `completed` matches outcome/postmortem scenes. Completed means exactly one decision, equal to `outcomeId`.
-  - A hybrid outcome requires the unlock evidence.
-  - A save still on the briefing screen carries no progress.
+## Exact automated totals
 
-`explainRestore()` returns the reasons, for debugging. A valid save comes back as a copy.
+| Run | Total | Pass | Fail | Skipped / cancelled / todo |
+|---|---:|---:|---:|---:|
+| Node test suite, original plus new tests | 55 | 55 | 0 | 0 / 0 / 0 |
+| Original shipped tests, unchanged | 31 | 31 | 0 | 0 / 0 / 0 |
+| New red-team regressions | 24 | 24 | 0 | 0 / 0 / 0 |
+| Re-executed Issue #2 audit groups | 24 | 24 | 0 | None |
+| Selected failure reproducers against exact old base | 12 | 0 | 12 expected | 0 / 0 / 0 |
 
-**2. `validateEpisode()` enforces every runtime assumption** (`js/content.js`). It reports every problem at once and never throws.
-- **Advisers:** exactly `boy, tooth, darth, donsol` in `advisorOrder`, `advisors`, `advice`, and every postmortem.
-- **Advice:**
-  - ids are unique across all advisers.
-  - Only `when` keys the engine evaluates are allowed. A typo such as `inspectd` would previously have been silently ignored, making that line always fire.
-  - Every evidence id in `when`/`reveals` exists, and `reveals` may only target hidden evidence.
-  - Every hidden item must be revealable.
-  - The last variant is unconditional.
-- **`hybridUnlock.inspected`:** non-empty, unique, known ids, plus a hint.
-- **Decisions and postmortems:** unique decision ids, outcome/risk text, exactly one hybrid decision, at least one non-hybrid decision. Exactly one postmortem per decision, each rating all four advisers `strong/weak/mixed`.
-- **Other:** evidence count 3–5 with unique ids and required fields; icons must be relative paths.
+The 24 audit groups are reported separately from the 55 Node tests; many exercise
+the same scenarios and are not 24 additional unique unit tests. The old-base run
+proves that all 11 Astra failures, plus the new decision-ID injection case, fail
+before the patch. Those 12 regressions pass in the complete fixed suite.
 
-**Related engine change:** `acknowledgeUncertainty` is now accepted only on the decide screen, which is the only place the UI offers it. Previously the engine accepted it in briefing too, which would have produced saves the new invariants correctly reject.
+Run from this game folder:
 
-**Proof the hardening holds:**
-
-| Check | Result |
-|---|---|
-| No false rejections: 2,000 seeded random playthroughs × 25 steps = 50,000 reachable states, each serialized and restored | ✅ 0 rejected (fuzz also reaches endings) |
-| 23 hand-built impossible/corrupt saves (forged or mismatched adviceId, hidden evidence without BOY, trust on unconsulted adviser, hybrid outcome without unlock, completed/scene mismatch, extra/missing keys, …) | ✅ all rejected |
-| 34 targeted content mutations (missing adviser, typo condition, unknown/duplicate ids, unreachable hidden evidence, bad ratings, missing postmortems, garbage input, …) | ✅ all rejected with a specific message |
-| New tests run against the **pre-hardening** `state.js`/`content.js` | 7 of 7 new tests fail, so they genuinely guard the fixes |
-| Browser: forged `adviceId` written to localStorage, then real reload | ✅ discarded, fresh briefing |
-| Browser: impossible save (hybrid ending without the evidence), then real reload | ✅ discarded, postmortem not rendered |
-| Browser: untampered save (control), then real reload | ✅ restored identically, then played to the postmortem |
-| Browser: episode file with `inspectd` typo | ✅ load stops with `unknown condition "inspectd"`; engine never starts |
-
-## Summary
-
-All 12 packet §11 gates pass. **31/31** automated tests pass (22 original + 9 hardening). No file outside `games/harness-who-do-you-trust/` changed. `/missing-page/` is byte-identical to `main` and still works.
-
-## Method — what was real, what was simulated
-
-| Layer | How it was tested |
-|---|---|
-| Engine, content, persistence, telemetry | `node --test` (Node 24), headless, exhaustive where feasible |
-| Browser UI | Chromium (in-app browser) at 1280×800 and 375×812, served over local HTTP. During the browser pass the app window was minimized, so **screenshots and OS-level pointer/key input were unavailable.** UI routes were driven inside the page with real `.focus()` + `.click()` on the rendered buttons and inputs. That exercises the real DOM, event delegation, rendering, focus management, persistence and telemetry, but not a physical tap or keypress. |
-| **Still needs a human pass** | One physical-keyboard run (Tab/Shift-Tab/Enter/Space/Esc), one real phone (touch), one screen-reader run (NVDA or TalkBack), and a visual look at both widths. About 10 minutes. |
-
-## Packet §11 gates
-
-| Gate | Result | Evidence |
-|---|---|---|
-| Episode completes on desktop width | ✅ | 1280×800: reset → briefing → evidence → BOY reveal → hybrid unlock → consult all → trust → decide → outcome → postmortem |
-| Episode completes on phone width | ✅ | 375×812: **all four routes** completed; no horizontal overflow on any scene; single-column layout |
-| Every evidence order works | ✅ | All 120 orders of 5 items × every valid point to consult BOY = 360 runs; plus every subset of visible evidence in every order |
-| Each adviser can be consulted independently | ✅ | Test + UI |
-| Consulting all creates no duplicate/contradictory state | ✅ | All 24 adviser orders, each consulted twice, then consult-all: always 4 unique entries; consult-all is idempotent |
-| All decision routes reach a valid postmortem | ✅ | All 4 routes, with full and minimal investigations: known / unknown / adviser ratings / alternatives all populated |
-| Hybrid unlocks only under its condition | ✅ | All 32 subsets of evidence: unlocked **iff** monitor + controller + clock-sync are all *inspected*; surfacing without reading does not count; a locked hybrid cannot be submitted |
-| Refresh / local restore | ✅ | Real page reload mid-episode: state identical, UI restored (advice, trust, surfaced evidence). Re-verified after hardening, including corrupted and impossible saves being rejected. |
-| Reset | ✅ | Through the real reset dialog; returns to briefing with fresh state |
-| Keyboard-only route | ✅* | All controls are native `button`/`input`; no positive `tabindex`; all targets ≥ 44 px; all inputs labelled; focus stays on the used control within a scene and moves to the scene heading on change. *Physical keypress run pending (see Method). |
-| Reduced-motion path | ✅ | The in-game toggle (persists) and the OS `prefers-reduced-motion` share one CSS rule: 6 running animations → 0. A full route was completed with it on. |
-| No core-play network dependency | ✅ | 11/11 loaded resources same-origin; test bans remote/absolute URLs, `@import`, and remote fetch |
-| `/missing-page/` unchanged and functioning | ✅ | 5/5 files hash-identical to `main`; loads with no console errors; cases open; 3/3 casebook PDFs serve; separate storage key (`idea-lab:missing-page:v1` vs `harness-wdyt:*`) |
-
-Additional checks: a corrupt save is discarded and the game starts fresh with no errors; no console errors in either game; ending text contains no "right AI" or false-certainty language (tested).
-
-## Bugs found and fixed during this build
-
-1. **Screen-reader announcements could silently drop.** The live region updated via `requestAnimationFrame`, which never fires while the page isn't being drawn (as in a backgrounded Android WebView). Switched to `setTimeout`.
-2. **Reset could silently fail.** It depended on the dialog's async `close` event, which did not fire while the page was not being drawn. The confirm button now resets directly.
-3. **Evidence buttons lacked a robust accessible name.** Added `aria-labelledby` (title + source + opened state).
-
-## Deviations from the packet (Stage A notes)
-
-| Packet | v0.1 | Why |
-|---|---|---|
-| §4 structure | Followed exactly, plus `package.json` (`"type": "module"`, no dependencies) and this report | `package.json` lets `node --test` load the same ES modules the browser runs, so tests exercise shipped code, not copies |
-| `discoveredEvidence` / `inspectedSources` | *Discovered* = visible to the player; *inspected* = actually opened | Lets BOY "surface hidden references" without giving reading credit; the hybrid unlock keys off **inspected** |
-| `consultations: []` | One entry per adviser `{advisorId, adviceId}`, holding the latest advice | Meets "no duplicate or contradictory state"; the full consult history lives in telemetry |
-| `trustWeights` | Player-set −1 / 0 / +1 (Discount / Neutral / Rely on), only after consulting | Makes "who do you trust?" an explicit, reviewable choice; shown back in the postmortem |
-| `uncertaintyAcknowledged` | Optional checkbox on the decide screen | Never blocks a decision; reported in the postmortem and telemetry |
-| Runs from `file://` | Not supported (ES modules + `fetch`) | Works on any static host and in Capacitor (`https://localhost`). Documented in `android/capacitor-notes.md`. |
-
-## Canon / content review needed from Don Sol
-
-Episode 001 uses only what the packet specifies: Open Forge in containment, Server 4, a monitoring alert, a conflicting timestamp, a technician, and an escalation rule. The specific details are new and need canon sign-off:
-- the 10.4.0.22 archive node, 41.2 MB, 02:13 vs 02:10/02:16
-- the +6 min 10 s clock drift
-- the four advisers' lines
-- the four outcomes
-
-No manuscript text was used or changed.
-
-## How to reproduce
-
-```
-node --test "games/harness-who-do-you-trust/tests/*.test.js"
+```sh
+npm test
+node --test --test-reporter=tap "tests/*.test.js"
+node tests/astra-audit.mjs /tmp/harness-astra-audit.json
 ```
 
-Browser: serve the repo root over HTTP and open `/games/harness-who-do-you-trust/`. The QA handle `window.HarnessWDYT.getState()` / `.events()` exposes ids and counts only.
+Evidence is committed with the patch:
+
+- [Node suite TAP](tests/results/node-test.tap)
+- [Original audit rerun results and diagnostics](tests/results/astra-audit.json)
+- [Expected failures against the exact base](tests/results/base-reproducers.tap)
+
+The baseline replay uses the unchanged 20 base files and copies only the new
+`redteam.test.js`, `ui-harness.js`, and `advice.js` harness dependency alongside
+them. The original app, content, engine, and state modules are not patched.
+`advice.js` supplies an injected dependency unused by the old app. Run the selected
+reproducers there with:
+
+```sh
+node --test --test-reporter=tap \
+  --test-name-pattern="Astra reproducer|F1.*ID injection|F2 denied" \
+  tests/redteam.test.js
+```
+
+## Astra defect → fix → regression
+
+All test names below are in [tests/redteam.test.js](tests/redteam.test.js).
+
+| Finding | Code change | Regression coverage |
+|---|---|---|
+| F1 HIGH — identifier/attribute injection | `content.js` enforces safe episode, evidence, advice and decision IDs; advisers remain an exact fixed set. `app.js` escapes every interpolated identifier attribute in evidence, adviser, trust and decision controls. | `F1 evidence ID injection...` and `F1 decision ID injection...` reject consistent malicious content, inspect the safe loader error, then bypass validation to independently verify escaped attribute boundaries and absence of injected image/script nodes or event-handler attributes. `F1 reject unsafe IDs...` checks every definition type. |
+| F2 HIGH — storage-denied startup | `state.js` acquires the default storage property inside `try`; denied access uses a no-op backend. Storage method errors stay guarded. | `F2 denied localStorage property getter...` installs a getter throwing `SecurityError`, exercises the adapter and boots/plays the actual app. `F2 unavailable storage methods...` verifies denied methods and explicit no-op storage. |
+| F3 MEDIUM — impossible saves | `state.js` requires saved advice's mandatory reveal effects. Shared first-match selection checks whether each saved variant was selectable at a prior inspection prefix and possible prior adviser count; it does not require the variant to match current evidence. | `F3 mandatory BOY reveal...` and `F3 Don Sol frame as first and sole...` reproduce both forged saves exactly. `F3 legitimate stale advice...` preserves thin/unread stale advice and valid later frame/staged re-consultations. |
+| F4 MEDIUM — validator holes | `content.js` rejects explicit null conditions and duplicate reveal IDs. A finite exploration using the shared selector proves every hidden item reachable from initial discovery, inspection and consultation sets. `engine.js` also de-duplicates discovery effects defensively. | `F4 null when...`, `F4 duplicate reveals...`, and `F4 self-dependent reveal...` reproduce the three Astra mutations. `F4 reachability...` additionally rejects an unconditional rule shadowing a reveal and accepts a reachable conditional reveal. |
+| F5 MEDIUM — inherited adviser actions | Shared `advice.js` checks explicit adviser membership, own advice property and array shape before lookup. Engine consultations/trust and restore use own-property-safe handling. | `F5 prototype adviser IDs...` verifies `constructor`, `__proto__`, and `toString` return the identical state, cannot set trust, and are rejected in saves without throwing. |
+| F6 MEDIUM — dispatch/reset and live-region races | `app.js` commits state before notifying synchronous telemetry sinks and stops old-dispatch presentation/events if a nested reset changes state. Reset cancels live timers and invalidates callbacks with a generation counter. | `F6 synchronous telemetry listener...` verifies state, persisted state and rendered briefing after the exact nested reset. `F6 delayed pre-reset live callback...` forcibly invokes a retained BOY callback before and after the reset message. Additional consult-all and decision telemetry reset cases reject stale events and announcements. |
+| F7 LOW — failed-consult telemetry | `app.js` only logs single consultation attempts for known advisers. Valid repeated consultations and consult-all retain intentional `updated:false`. | `F7 invalid adviser attempts...` checks unknown and prototype IDs emit zero normal consultation events. `F7 valid repeated consultations...` verifies 10 valid events, the repeated single no-op and four consult-all no-op events; out-of-scene attempts emit none. |
+
+`js/advice.js` contains the pure selection logic shared by engine, validator,
+restore and UI. Engine's existing `selectAdvice` and `isHybridUnlocked` exports
+remain available. No episode text, decision, outcome, adviser profile, CSS or
+asset was changed.
+
+## Preserved mechanics and required reruns
+
+| Check | Independently verified result |
+|---|---|
+| Evidence order and BOY reveal timing | 120 permutations, 360 valid BOY timings; all evidence inspected once, hybrid available, saves restore |
+| Adviser order / repeated consultation | 24 orders; four unique advisers, expected final advice set, idempotent repeats and consult-all |
+| Hybrid gating | All 32 evidence subsets: 28 locked, 4 unlocked; locked submissions return the identical state |
+| Outcomes and postmortems | All 4 outcomes × minimal applicable/full investigations = 8 engine routes and 8 app rendering routes |
+| Postmortem content | Known/unknown, four adviser ratings, uncertainty, three alternatives and risks populated; no invented certainty |
+| Common corrupted saves | 36 additional original-audit mutations rejected, plus the two Astra semantic forgeries |
+| Common malformed content | 30 additional original-audit mutations rejected, plus null/duplicate/circular Astra cases and injection variants |
+| Reachable state restore | Original 50,000 seeded samples pass; new 30,000 samples pass, with 1,233 completed samples at seed `0x51d27b93` |
+| Refresh / settings / reset | App state and trust/uncertainty restore, corrupt saves start fresh, reset persists briefing, motion preference survives reload |
+| Reduced motion | All 4 OS/manual combinations choose expected scroll behavior; existing CSS motion guards verified |
+| Local/static operation | 13 core resources return HTTP 200 locally, including new `js/advice.js`; existing scan verifies no core-play remote loads |
+| Text escaping | Original audit ordinary-content payload test passes; identifier escaping independently tested in both evidence and decision renderers |
+| Missing Page isolation | All 5 `/missing-page/` file blob hashes match exact base and main |
+| Scope isolation | Only game files differ from the exact base; main and original feature branch remain at their recorded SHAs |
+
+The repeated 30,000-sample audit rerun uses the same seed as the new test; it is
+not counted as another distinct set of reachable states.
+
+## Missing Page hash parity
+
+| Path | Git blob SHA, identical in base and main |
+|---|---|
+| `missing-page/The_Missing_Page_Archivist_Casebook.pdf` | `077974c1302ec25b310ece2abaf026492fbe1ad6` |
+| `missing-page/The_Missing_Page_Junior_Casebook.pdf` | `f0cec2e533b57dfbc97fdba8e7782ec5da2e8838` |
+| `missing-page/The_Missing_Page_Sleuth_Casebook.pdf` | `d31cd13e7a9b9ece5d28ba7b063daaf25a4a7754` |
+| `missing-page/don-sol-avatar.webp` | `ba0002509e9ed8e3e7b94e808555a011a1e0682a` |
+| `missing-page/index.html` | `21b9cfae6d3a68ee0a2364520fbdb5ea1944341f` |
+
+These files are preserved by retaining the complete base tree outside the game
+folder. Remote tree/ref verification is part of the final commit handoff.
+
+## Limits and review gate
+
+The UI regressions execute the actual app functions in a deterministic
+DOM-interface harness with controlled storage, telemetry and timers. HTML token
+checks verify the tested injection payloads' attribute boundaries without
+executing HTML. These results do not establish native browser layout, physical
+keyboard/touch navigation, screen-reader speech, native dialog focus/inert
+behavior, or Android/Capacitor WebView operation. No usable Chromium runtime was
+available; those native checks remain outstanding.
+
+The patch is ready for Don Sol's review. No Astra re-test has been requested and
+no merge, deployment, publishing, or manuscript-canon change is authorized by
+this report.

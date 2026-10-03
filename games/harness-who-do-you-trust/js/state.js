@@ -1,5 +1,6 @@
 // Serializable, presentation-independent game state (packet §5) and local persistence.
 // No DOM access here except the optional storage backend passed in.
+import {isAdvisor, selectAdvice} from './advice.js';
 
 export const STATE_VERSION = 1;
 export const SCENES = ['briefing', 'investigate', 'decide', 'outcome', 'postmortem'];
@@ -60,11 +61,11 @@ export function explainRestore(raw, episode) {
   const decisionById = new Map(episode.decisions.map(d => [d.id, d]));
   for (const id of raw.discoveredEvidence) if (!evidenceById.has(id)) fail(`unknown evidence ${id}`);
   for (const id of raw.inspectedSources) if (!raw.discoveredEvidence.includes(id)) fail(`inspected ${id} was never discovered`);
-  const advice = {};
+  const advice = new Map();
   for (const c of raw.consultations) {
-    const a = episode.advice[c.advisorId]?.find(v => v.id === c.adviceId);
+    const a = isAdvisor(episode, c.advisorId) ? episode.advice[c.advisorId].find(v => v.id === c.adviceId) : undefined;
     if (!a) fail(`advice ${c.adviceId} does not belong to adviser ${c.advisorId}`);
-    else advice[c.advisorId] = a;
+    else advice.set(c.advisorId, a);
   }
   if (new Set(raw.consultations.map(c => c.advisorId)).size !== raw.consultations.length) fail('duplicate adviser in consultations');
   for (const id of episode.advisorOrder) if (!TRUST_VALUES.includes(raw.trustWeights[id])) fail(`trust for ${id} must be -1, 0 or 1`);
@@ -81,10 +82,23 @@ export function explainRestore(raw, episode) {
     if (e.hidden && raw.discoveredEvidence.includes(e.id) &&
         ![...consulted].some(a => episode.advice[a].some(v => v.reveals?.includes(e.id)))) fail(`hidden ${e.id} discovered without a revealing consultation`);
   }
-  for (const a of Object.values(advice)) {
+  for (const [id, a] of advice) {
     // Inspected only grows, so an advice line's evidence condition must still hold.
     if (!(a.when?.inspected ?? []).every(e => inspected.has(e))) fail(`advice ${a.id} requires evidence not inspected`);
     if (a.when?.hybridUnlocked === true && !episode.hybridUnlock.inspected.every(e => inspected.has(e))) fail(`advice ${a.id} requires the hybrid unlock`);
+    if (!(a.reveals ?? []).every(e => raw.discoveredEvidence.includes(e))) fail(`advice ${a.id} is missing mandatory revealed evidence`);
+    // A saved line may be stale. It must have been the FIRST matching variant
+    // at some inspection prefix and possible consultation count in its history.
+    const firstConsult = raw.consultations.findIndex(c => c.advisorId === id);
+    const others = raw.consultations.filter(c => c.advisorId !== id);
+    let selectable = false;
+    for (let opened = 0; opened <= raw.inspectedSources.length && !selectable; opened++) {
+      for (let count = firstConsult; count <= others.length; count++) {
+        const past = {inspectedSources: raw.inspectedSources.slice(0, opened), consultations: others.slice(0, count)};
+        if (selectAdvice(past, episode, id)?.id === a.id) { selectable = true; break; }
+      }
+    }
+    if (!selectable) fail(`advice ${a.id} was never selectable in this consultation history`);
   }
   for (const id of episode.advisorOrder) if (raw.trustWeights[id] !== 0 && !consulted.has(id)) fail(`trust set for unconsulted adviser ${id}`);
 
@@ -106,7 +120,11 @@ export function explainRestore(raw, episode) {
  * getItem/setItem/removeItem shape (e.g. a synchronous cache in front of @capacitor/preferences).
  * Every call is guarded: private mode or blocked storage must never break play.
  */
-export function createStore(episode, backend = globalThis.localStorage) {
+export function createStore(episode, backend) {
+  if (backend === undefined) {
+    try { backend = globalThis.localStorage; }
+    catch { backend = null; } // Accessing the property itself can throw SecurityError.
+  }
   const key = `harness-wdyt:${episode.id}:v${STATE_VERSION}`;
   return {
     key,
@@ -115,7 +133,7 @@ export function createStore(episode, backend = globalThis.localStorage) {
       catch { return null; }
     },
     save(state) {
-      try { backend?.setItem(key, JSON.stringify(state)); return true; }
+      try { if (!backend) return false; backend.setItem(key, JSON.stringify(state)); return true; }
       catch { return false; }
     },
     clear() {

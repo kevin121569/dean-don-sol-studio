@@ -1,6 +1,8 @@
 // Pure game rules. (state, action, episode) → state. No DOM, storage, time, or randomness,
 // so the same core runs in the browser, in a Capacitor WebView, and under `node --test`.
 import {TRUST_VALUES, createInitialState} from './state.js';
+import {isAdvisor, isHybridUnlocked, selectAdvice} from './advice.js';
+export {isHybridUnlocked, selectAdvice} from './advice.js';
 
 export const ACTIONS = Object.freeze({
   START: 'start',
@@ -16,32 +18,18 @@ export const ACTIONS = Object.freeze({
   RESET: 'reset',
 });
 
-const has = (list, ids = []) => ids.every(id => list.includes(id));
-
-export function isHybridUnlocked(state, episode) {
-  return has(state.inspectedSources, episode.hybridUnlock.inspected);
-}
-
 export function isDecisionAvailable(state, episode, decisionId) {
   const d = episode.decisions.find(x => x.id === decisionId);
   return Boolean(d) && (!d.requiresHybrid || isHybridUnlocked(state, episode));
 }
 
-/** First advice variant whose conditions hold. Variants are ordered most-specific first in content. */
-export function selectAdvice(state, episode, advisorId) {
-  const others = state.consultations.filter(c => c.advisorId !== advisorId).length;
-  return episode.advice[advisorId].find(({when = {}}) =>
-    has(state.inspectedSources, when.inspected) &&
-    (when.hybridUnlocked === undefined || when.hybridUnlocked === isHybridUnlocked(state, episode)) &&
-    (when.consultedFewerThan === undefined || others < when.consultedFewerThan));
-}
-
 const investigating = state => state.sceneId === 'investigate' && !state.completed;
 
 function consult(state, episode, advisorId) {
-  if (!investigating(state) || !episode.advice[advisorId]) return state;
+  if (!investigating(state) || !isAdvisor(episode, advisorId)) return state;
   const advice = selectAdvice(state, episode, advisorId);
-  const discovered = [...state.discoveredEvidence, ...(advice.reveals ?? []).filter(id => !state.discoveredEvidence.includes(id))];
+  if (!advice) return state;
+  const discovered = [...new Set([...state.discoveredEvidence, ...(advice.reveals ?? [])])];
   const prior = state.consultations.find(c => c.advisorId === advisorId);
   if (prior?.adviceId === advice.id && discovered.length === state.discoveredEvidence.length) return state;
   // One entry per adviser, holding their latest advice, kept in first-consulted order.
@@ -71,7 +59,7 @@ export function reduce(state, action, episode) {
 
     case ACTIONS.SET_TRUST: {
       const {advisorId, value} = action;
-      if (state.completed || !(advisorId in state.trustWeights) || !TRUST_VALUES.includes(value)) return state;
+      if (state.completed || !Object.hasOwn(state.trustWeights, advisorId) || !TRUST_VALUES.includes(value)) return state;
       if (!state.consultations.some(c => c.advisorId === advisorId)) return state; // judge only what you've heard
       if (state.trustWeights[advisorId] === value) return state;
       return {...state, trustWeights: {...state.trustWeights, [advisorId]: value}};

@@ -1,5 +1,6 @@
 // Loads and validates episode content. Paths are relative so the same files work on GitHub Pages
 // and from Capacitor's bundled web assets — no server, no absolute URLs.
+import {selectAdvice} from './advice.js';
 
 export const REQUIRED_ADVISORS = Object.freeze(['boy', 'tooth', 'darth', 'donsol']);
 export const RATINGS = Object.freeze(['strong', 'weak', 'mixed']);
@@ -18,6 +19,8 @@ export async function loadEpisode(path = 'data/episode-001.json') {
 
 const isObj = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const isStr = v => typeof v === 'string' && v.trim().length > 0;
+// IDs are used in HTML attributes, ARIA references, and delegated controls.
+const isId = v => typeof v === 'string' && /^[A-Za-z][A-Za-z0-9_-]*$/.test(v);
 const isStrList = v => Array.isArray(v) && v.length > 0 && v.every(isStr);
 const isRelativePath = v => isStr(v) && !/^([a-z]+:|\/|\\)/i.test(v) && !v.includes('..');
 const sameSet = (a, b) => a.length === b.length && new Set(a).size === a.length && a.every(x => b.includes(x));
@@ -32,7 +35,7 @@ export function validateEpisode(ep) {
   if (!isObj(ep)) return ['episode is not an object'];
 
   // -- identity + briefing
-  need(isStr(ep.id), 'id must be a non-empty string');
+  need(isId(ep.id), 'id must be a safe identifier (letter followed by letters, digits, _ or -)');
   need(Number.isInteger(ep.version) && ep.version > 0, 'version must be a positive integer');
   need(isStr(ep.title), 'title must be a non-empty string');
   const b = ep.briefing;
@@ -48,7 +51,7 @@ export function validateEpisode(ep) {
   const hiddenIds = new Set();
   evidence.forEach((e, i) => {
     const at = `evidence[${i}]${isStr(e?.id) ? ` (${e.id})` : ''}`;
-    need(isObj(e) && isStr(e.id), `${at}: id must be a non-empty string`);
+    need(isObj(e) && isId(e.id), `${at}: id must be a safe identifier`);
     if (!isObj(e)) return;
     for (const k of ['title', 'source', 'clock', 'summary']) need(isStr(e[k]), `${at}: ${k} must be a non-empty string`);
     need(isStrList(e.body), `${at}: body must be a non-empty string array`);
@@ -78,12 +81,12 @@ export function validateEpisode(ep) {
     variants.forEach((v, i) => {
       const at = `advice.${id}[${i}]${isStr(v?.id) ? ` (${v.id})` : ''}`;
       if (!isObj(v)) { problems.push(`${at}: must be an object`); return; }
-      need(isStr(v.id), `${at}: id required`);
+      need(isId(v.id), `${at}: id must be a safe identifier`);
       adviceIds.push(v.id);
       need(isStr(v.text), `${at}: text required`);
-      const when = v.when ?? {};
-      need(isObj(when), `${at}: when must be an object`);
-      for (const k of Object.keys(isObj(when) ? when : {})) need(WHEN_KEYS.includes(k), `${at}: unknown condition "${k}" (engine would ignore it)`);
+      need(v.when === undefined || isObj(v.when), `${at}: when must be an object if present`);
+      const when = isObj(v.when) ? v.when : {};
+      for (const k of Object.keys(when)) need(WHEN_KEYS.includes(k), `${at}: unknown condition "${k}" (engine would ignore it)`);
       if (when.inspected !== undefined) {
         need(Array.isArray(when.inspected) && when.inspected.length > 0, `${at}: when.inspected must be a non-empty array`);
         for (const e of [].concat(when.inspected)) need(knownEvidence(e), `${at}: when.inspected references unknown evidence "${e}"`);
@@ -93,6 +96,7 @@ export function validateEpisode(ep) {
         `${at}: when.consultedFewerThan must be an integer 1–${REQUIRED_ADVISORS.length - 1}`);
       if (v.reveals !== undefined) {
         need(Array.isArray(v.reveals) && v.reveals.length > 0, `${at}: reveals must be a non-empty array`);
+        need(Array.isArray(v.reveals) && new Set(v.reveals).size === v.reveals.length, `${at}: reveals must not repeat ids`);
         for (const e of [].concat(v.reveals)) {
           need(knownEvidence(e), `${at}: reveals unknown evidence "${e}"`);
           need(!knownEvidence(e) || hiddenIds.has(e), `${at}: reveals "${e}", which is already visible`);
@@ -101,7 +105,7 @@ export function validateEpisode(ep) {
       }
     });
     const last = variants.at(-1);
-    need(isObj(last) && Object.keys(last.when ?? {}).length === 0, `advice.${id}: last variant must be unconditional so selectAdvice() always returns one`);
+    need(isObj(last) && (last.when === undefined || (isObj(last.when) && Object.keys(last.when).length === 0)), `advice.${id}: last variant must be unconditional so selectAdvice() always returns one`);
   }
   need(new Set(adviceIds).size === adviceIds.length, 'advice ids must be unique across all advisers');
   for (const h of hiddenIds) need(revealable.has(h), `hidden evidence "${h}" is never revealed by any advice (unreachable)`);
@@ -124,6 +128,7 @@ export function validateEpisode(ep) {
     const at = `decisions[${i}]${isStr(d?.id) ? ` (${d.id})` : ''}`;
     if (!isObj(d)) { problems.push(`${at}: must be an object`); return; }
     for (const k of ['id', 'label', 'description', 'risk']) need(isStr(d[k]), `${at}: ${k} required`);
+    need(isId(d.id), `${at}: id must be a safe identifier`);
     need(isObj(d.outcome) && isStr(d.outcome.heading) && isStr(d.outcome.text), `${at}: outcome needs heading + text`);
     need(d.requiresHybrid === undefined || typeof d.requiresHybrid === 'boolean', `${at}: requiresHybrid must be boolean`);
   });
@@ -141,5 +146,44 @@ export function validateEpisode(ep) {
       need(isObj(r) && RATINGS.includes(r.rating) && isStr(r.text), `postmortem.${id}.advisors.${a}: rating (${RATINGS.join('/')}) + text required`);
     }
   }
+  // Structural checks must pass before executing the shared rules on content.
+  if (!problems.length) {
+    const reached = reachableEvidence(ep);
+    for (const h of hiddenIds) need(reached.has(h), `hidden evidence "${h}" cannot be reached from the initial state`);
+  }
   return problems;
+}
+
+/** Explore all discovery/inspection/consultation sets (at most 3^5 * 2^4 states).
+ * Advice selection depends only on those sets, so repeat consultations and all
+ * adviser orders are included without retaining presentation or trust state.
+ */
+function reachableEvidence(ep) {
+  const initial = ep.evidence.reduce((mask, e, i) => e.hidden ? mask : mask | (1 << i), 0);
+  const queue = [[initial, 0, 0]];
+  const seen = new Set([`${initial}:0:0`]);
+  const reached = new Set();
+  const enqueue = (discovered, inspected, consulted) => {
+    const key = `${discovered}:${inspected}:${consulted}`;
+    if (!seen.has(key)) { seen.add(key); queue.push([discovered, inspected, consulted]); }
+  };
+  for (let at = 0; at < queue.length; at++) {
+    const [discovered, inspected, consulted] = queue[at];
+    const state = {
+      inspectedSources: ep.evidence.filter((_, i) => inspected & (1 << i)).map(e => e.id),
+      consultations: ep.advisorOrder.filter((_, i) => consulted & (1 << i)).map(advisorId => ({advisorId})),
+    };
+    ep.evidence.forEach((e, i) => {
+      if (discovered & (1 << i)) {
+        reached.add(e.id);
+        enqueue(discovered, inspected | (1 << i), consulted);
+      }
+    });
+    ep.advisorOrder.forEach((id, i) => {
+      const advice = selectAdvice(state, ep, id);
+      const revealed = (advice.reveals ?? []).reduce((mask, evidenceId) => mask | (1 << ep.evidence.findIndex(e => e.id === evidenceId)), discovered);
+      enqueue(revealed, inspected, consulted | (1 << i));
+    });
+  }
+  return reached;
 }

@@ -1,0 +1,340 @@
+TAP version 13
+# Subtest: initial state matches the packet §5 shape and is JSON-serializable
+ok 1 - initial state matches the packet §5 shape and is JSON-serializable
+  ---
+  duration_ms: 2.150146
+  type: 'test'
+  ...
+# Subtest: invalid or out-of-scene actions return the same object
+ok 2 - invalid or out-of-scene actions return the same object
+  ---
+  duration_ms: 0.506552
+  type: 'test'
+  ...
+# Subtest: opening evidence twice does not duplicate it
+ok 3 - opening evidence twice does not duplicate it
+  ---
+  duration_ms: 0.254734
+  type: 'test'
+  ...
+# Subtest: BOY surfaces the hidden clock-sync report exactly once
+ok 4 - BOY surfaces the hidden clock-sync report exactly once
+  ---
+  duration_ms: 0.31182
+  type: 'test'
+  ...
+# Subtest: re-consulting after new evidence replaces that adviser's entry instead of appending
+ok 5 - re-consulting after new evidence replaces that adviser's entry instead of appending
+  ---
+  duration_ms: 0.308624
+  type: 'test'
+  ...
+# Subtest: trust weights accept only -1/0/1 for consulted advisers
+ok 6 - trust weights accept only -1/0/1 for consulted advisers
+  ---
+  duration_ms: 0.273932
+  type: 'test'
+  ...
+# Subtest: Don Sol is only as good as the inputs: thin → framing → staged
+ok 7 - Don Sol is only as good as the inputs: thin → framing → staged
+  ---
+  duration_ms: 0.442546
+  type: 'test'
+  ...
+# Subtest: reset returns a fresh initial state from any scene
+ok 8 - reset returns a fresh initial state from any scene
+  ---
+  duration_ms: 0.348304
+  type: 'test'
+  ...
+# Subtest: completed episodes are frozen except for viewing the postmortem and reset
+ok 9 - completed episodes are frozen except for viewing the postmortem and reset
+  ---
+  duration_ms: 0.302185
+  type: 'test'
+  ...
+# Subtest: refresh restore: save → load round-trips mid-episode state
+ok 10 - refresh restore: save → load round-trips mid-episode state
+  ---
+  duration_ms: 1.194037
+  type: 'test'
+  ...
+# Subtest: corrupt, foreign, or future saves are rejected rather than guessed at
+ok 11 - corrupt, foreign, or future saves are rejected rather than guessed at
+  ---
+  duration_ms: 1.507409
+  type: 'test'
+  ...
+# Subtest: telemetry events carry stable type, timestamp, episode and fields; unknown types throw
+ok 12 - telemetry events carry stable type, timestamp, episode and fields; unknown types throw
+  ---
+  duration_ms: 1.045663
+  type: 'test'
+  ...
+# Subtest: postmortem is null until complete
+ok 13 - postmortem is null until complete
+  ---
+  duration_ms: 0.220733
+  type: 'test'
+  ...
+# Subtest: no false rejections: every state reachable by 2,000 random playthroughs restores cleanly
+ok 14 - no false rejections: every state reachable by 2,000 random playthroughs restores cleanly
+  ---
+  duration_ms: 343.707202
+  type: 'test'
+  ...
+# Subtest: restore rejects unknown or mismatched adviceId
+ok 15 - restore rejects unknown or mismatched adviceId
+  ---
+  duration_ms: 0.296767
+  type: 'test'
+  ...
+# Subtest: restore rejects semantically impossible combinations
+ok 16 - restore rejects semantically impossible combinations
+  ---
+  duration_ms: 0.97716
+  type: 'test'
+  ...
+# Subtest: engine only accepts the uncertainty acknowledgement on the decide screen
+ok 17 - engine only accepts the uncertainty acknowledgement on the decide screen
+  ---
+  duration_ms: 0.211188
+  type: 'test'
+  ...
+# Subtest: content validates
+ok 18 - content validates
+  ---
+  duration_ms: 9.243061
+  type: 'test'
+  ...
+# Subtest: every evidence order works (120 orders × every valid point to consult BOY = 360 runs)
+ok 19 - every evidence order works (120 orders × every valid point to consult BOY = 360 runs)
+  ---
+  duration_ms: 17.306505
+  type: 'test'
+  ...
+# Subtest: every subset of visible evidence (any order) leaves a valid, decidable state
+ok 20 - every subset of visible evidence (any order) leaves a valid, decidable state
+  ---
+  duration_ms: 1.174708
+  type: 'test'
+  ...
+# Subtest: each adviser can be consulted independently
+ok 21 - each adviser can be consulted independently
+  ---
+  duration_ms: 0.278479
+  type: 'test'
+  ...
+# Subtest: consulting all advisers: no duplicates, no contradictions, idempotent, order-independent result set
+ok 22 - consulting all advisers: no duplicates, no contradictions, idempotent, order-independent result set
+  ---
+  duration_ms: 2.712581
+  type: 'test'
+  ...
+# Subtest: hybrid unlock is deterministic: exactly when monitor + controller + clock-sync are all inspected
+ok 23 - hybrid unlock is deterministic: exactly when monitor + controller + clock-sync are all inspected
+  ---
+  duration_ms: 0.753934
+  type: 'test'
+  ...
+# Subtest: every decision route reaches a complete, valid postmortem
+ok 24 - every decision route reaches a complete, valid postmortem
+  ---
+  duration_ms: 1.651306
+  type: 'test'
+  ...
+# Subtest: no ending text claims a single "right AI" or false certainty
+ok 25 - no ending text claims a single "right AI" or false certainty
+  ---
+  duration_ms: 0.293882
+  type: 'test'
+  ...
+# Subtest: no core-play network dependency: no absolute URLs or remote loads in shipped files
+ok 26 - no core-play network dependency: no absolute URLs or remote loads in shipped files
+  ---
+  duration_ms: 1.54769
+  type: 'test'
+  ...
+# Subtest: validator: hybridUnlock.inspected
+ok 27 - validator: hybridUnlock.inspected
+  ---
+  duration_ms: 2.296406
+  type: 'test'
+  ...
+# Subtest: validator: exactly the four advisers and four advice blocks
+ok 28 - validator: exactly the four advisers and four advice blocks
+  ---
+  duration_ms: 2.402285
+  type: 'test'
+  ...
+# Subtest: validator: ids referenced by advice
+ok 29 - validator: ids referenced by advice
+  ---
+  duration_ms: 1.71461
+  type: 'test'
+  ...
+# Subtest: validator: decision and postmortem structure
+ok 30 - validator: decision and postmortem structure
+  ---
+  duration_ms: 2.131698
+  type: 'test'
+  ...
+# Subtest: validator: evidence + top level, and never throws on garbage
+ok 31 - validator: evidence + top level, and never throws on garbage
+  ---
+  duration_ms: 3.483412
+  type: 'test'
+  ...
+# Subtest: F1 evidence ID injection: reject malicious content and escape attribute boundaries
+ok 32 - F1 evidence ID injection: reject malicious content and escape attribute boundaries
+  ---
+  duration_ms: 6.670088
+  type: 'test'
+  ...
+# Subtest: F1 decision ID injection: reject malicious content and escape attribute boundaries
+ok 33 - F1 decision ID injection: reject malicious content and escape attribute boundaries
+  ---
+  duration_ms: 2.294753
+  type: 'test'
+  ...
+# Subtest: F1 reject unsafe IDs at every identifier definition
+ok 34 - F1 reject unsafe IDs at every identifier definition
+  ---
+  duration_ms: 0.973665
+  type: 'test'
+  ...
+# Subtest: F2 denied localStorage property getter: adapter and application boot remain playable
+ok 35 - F2 denied localStorage property getter: adapter and application boot remain playable
+  ---
+  duration_ms: 3.765196
+  type: 'test'
+  ...
+# Subtest: F2 unavailable storage methods and explicit no-op backend cannot break play
+ok 36 - F2 unavailable storage methods and explicit no-op backend cannot break play
+  ---
+  duration_ms: 0.244107
+  type: 'test'
+  ...
+# Subtest: F3 mandatory BOY reveal required in a save (Astra reproducer)
+ok 37 - F3 mandatory BOY reveal required in a save (Astra reproducer)
+  ---
+  duration_ms: 0.356186
+  type: 'test'
+  ...
+# Subtest: F3 Don Sol frame as first and sole consultation is impossible (Astra reproducer)
+ok 38 - F3 Don Sol frame as first and sole consultation is impossible (Astra reproducer)
+  ---
+  duration_ms: 0.234673
+  type: 'test'
+  ...
+# Subtest: F3 legitimate stale advice and Don Sol re-consultation still restore
+ok 39 - F3 legitimate stale advice and Don Sol re-consultation still restore
+  ---
+  duration_ms: 1.153075
+  type: 'test'
+  ...
+# Subtest: F4 null when rejected before runtime (Astra reproducer)
+ok 40 - F4 null when rejected before runtime (Astra reproducer)
+  ---
+  duration_ms: 0.430979
+  type: 'test'
+  ...
+# Subtest: F4 duplicate reveals rejected before producing an invalid save (Astra reproducer)
+ok 41 - F4 duplicate reveals rejected before producing an invalid save (Astra reproducer)
+  ---
+  duration_ms: 0.473914
+  type: 'test'
+  ...
+# Subtest: F4 self-dependent reveal rejected as unreachable (Astra reproducer)
+ok 42 - F4 self-dependent reveal rejected as unreachable (Astra reproducer)
+  ---
+  duration_ms: 2.009895
+  type: 'test'
+  ...
+# Subtest: F4 reachability rejects a shadowed reveal and accepts a reachable conditional reveal
+ok 43 - F4 reachability rejects a shadowed reveal and accepts a reachable conditional reveal
+  ---
+  duration_ms: 3.247998
+  type: 'test'
+  ...
+# Subtest: F5 prototype adviser IDs are harmless engine no-ops (Astra reproducer)
+ok 44 - F5 prototype adviser IDs are harmless engine no-ops (Astra reproducer)
+  ---
+  duration_ms: 0.313061
+  type: 'test'
+  ...
+# Subtest: F6 synchronous telemetry listener cannot undo a requested reset (Astra reproducer)
+ok 45 - F6 synchronous telemetry listener cannot undo a requested reset (Astra reproducer)
+  ---
+  duration_ms: 4.19265
+  type: 'test'
+  ...
+# Subtest: F6 delayed pre-reset live callback cannot write old-run advice (Astra reproducer)
+ok 46 - F6 delayed pre-reset live callback cannot write old-run advice (Astra reproducer)
+  ---
+  duration_ms: 3.338634
+  type: 'test'
+  ...
+# Subtest: F6 consult-all telemetry reset stops old-run events and announcements
+ok 47 - F6 consult-all telemetry reset stops old-run events and announcements
+  ---
+  duration_ms: 1.533999
+  type: 'test'
+  ...
+# Subtest: F6 decision telemetry reset cannot emit a stale episode_complete
+ok 48 - F6 decision telemetry reset cannot emit a stale episode_complete
+  ---
+  duration_ms: 1.537343
+  type: 'test'
+  ...
+# Subtest: F7 invalid adviser attempts do not emit advisor_consult (Astra reproducer)
+ok 49 - F7 invalid adviser attempts do not emit advisor_consult (Astra reproducer)
+  ---
+  duration_ms: 1.442561
+  type: 'test'
+  ...
+# Subtest: F7 valid repeated consultations and consultAll preserve updated:false telemetry
+ok 50 - F7 valid repeated consultations and consultAll preserve updated:false telemetry
+  ---
+  duration_ms: 1.58103
+  type: 'test'
+  ...
+# Subtest: red-team routes: all four outcomes with minimal applicable and full investigations
+ok 51 - red-team routes: all four outcomes with minimal applicable and full investigations
+  ---
+  duration_ms: 12.249414
+  type: 'test'
+  ...
+# Subtest: red-team subsets: 32 evidence subsets produce exactly 28 locked and four unlocked hybrids
+ok 52 - red-team subsets: 32 evidence subsets produce exactly 28 locked and four unlocked hybrids
+  ---
+  duration_ms: 0.3722
+  type: 'test'
+  ...
+# Subtest: red-team refresh, restore, corrupt saves, reset and four reduced-motion combinations
+ok 53 - red-team refresh, restore, corrupt saves, reset and four reduced-motion combinations
+  ---
+  duration_ms: 10.133029
+  type: 'test'
+  ...
+# Subtest: red-team seeded reachable states: 30,000 samples restore without false rejections
+ok 54 - red-team seeded reachable states: 30,000 samples restore without false rejections
+  ---
+  duration_ms: 350.744668
+  type: 'test'
+  ...
+# Subtest: red-team static hosting: all 13 core resources are local and HTTP-accessible
+ok 55 - red-team static hosting: all 13 core resources are local and HTTP-accessible
+  ---
+  duration_ms: 54.721665
+  type: 'test'
+  ...
+1..55
+# tests 55
+# suites 0
+# pass 55
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 552.885719
