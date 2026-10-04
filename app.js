@@ -19,6 +19,16 @@
     if (actions) actions.innerHTML = '<a class="btn primary small" href="/samples/harness.html" aria-label="Read an excerpt from The Harness">Read excerpt</a><a class="btn ghost small" href="/the-harness/">About the book</a>';
   }
 
+  // The Book of Better Questions is complete; only release validation remains.
+  const questionsCard = $('.book a[href="/the-book-of-better-questions/"]')?.closest('.book');
+  if (questionsCard) {
+    const status = $('.status', questionsCard);
+    if (status) {
+      status.textContent = 'Final validation pending';
+      status.className = 'status ready';
+    }
+  }
+
   // Keep the homepage film section current without forcing a full static rebuild.
   const film = $('#film');
   if (film) {
