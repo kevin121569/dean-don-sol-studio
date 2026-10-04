@@ -375,7 +375,26 @@ await check('r2 gap4: engine-impossible discoveredEvidence order rejected; reach
  return counts.r2OrderReachableStates=checked;
 });
 
-const auditResult={target:{branch:'fix/harness-wdyt-redteam-r2',baseCommit:'c1dedcc97a774157724c1e3b99ac5652ea770d62'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
+// ---- Issue #7 (r3). Independent of tests/redteam-r3.test.js. ----
+await check('r3 feasible history: Astra conditional-reveal forgery rejected; every engine-reachable shipped save restores',async()=>{
+ const fx=clone(ep);fx.evidence.find(e=>e.id==='e_protocol').hidden=true;
+ fx.advice.boy=[{id:'boy_conditional',when:{inspected:['e_monitor']},text:'c',reveals:['e_clocksync','e_protocol']},{id:'boy_find',text:'f',reveals:['e_protocol','e_clocksync']}];
+ assert.deepEqual(validateEpisode(fx),[]);
+ const control=run([{type:A.START},consult('boy')],fx);
+ assert(restoreState(clone(control),fx),'legitimate control');
+ const forged={...control,discoveredEvidence:[...control.discoveredEvidence.slice(0,3),...control.discoveredEvidence.slice(3).reverse()]};
+ assert.equal(restoreState(forged,fx),null,'forged conditional-variant order accepted');
+ // Ground truth by driving the real engine: every reachable shipped save must restore.
+ const key=s=>JSON.stringify([s.discoveredEvidence,s.inspectedSources,s.consultations]);
+ const s0=run([{type:A.START}]);const seen=new Map([[key(s0),s0]]),q=[s0];
+ const acts=[...ids.map(open),...ep.advisorOrder.map(consult),{type:A.CONSULT_ALL}];
+ for(let i=0;i<q.length;i++)for(const a of acts){const n=reduce(q[i],a,ep);const k=key(n);if(!seen.has(k)){seen.set(k,n);q.push(n);}}
+ let rejected=0;for(const s of seen.values())if(!restoreState(clone(s),ep))rejected++;
+ assert.equal(rejected,0,'reachable shipped saves rejected');
+ return counts.r3ReachableShippedSaves=seen.size;
+});
+
+const auditResult={target:{branch:'fix/harness-wdyt-redteam-r3',baseCommit:'1babcff446b7cb49630474df9d8b43857d9d135c'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
 if(process.argv[2])fs.writeFileSync(path.resolve(process.argv[2]),JSON.stringify(auditResult,null,2)+'\n');
 for(const r of results)console.log(r.result+' '+r.name+(r.error?' — '+r.error.split('\n')[0]:''));
 console.log(JSON.stringify({groups:results.length,passed:results.filter(r=>r.result==='PASS').length,failed:results.filter(r=>r.result==='FAIL').length,counts}));

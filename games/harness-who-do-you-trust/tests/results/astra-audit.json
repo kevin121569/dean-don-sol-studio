@@ -1,7 +1,7 @@
 {
   "target": {
-    "branch": "fix/harness-wdyt-redteam-r2",
-    "baseCommit": "c1dedcc97a774157724c1e3b99ac5652ea770d62"
+    "branch": "fix/harness-wdyt-redteam-r3",
+    "baseCommit": "1babcff446b7cb49630474df9d8b43857d9d135c"
   },
   "method": "Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.",
   "results": [
@@ -167,6 +167,11 @@
       "name": "r2 gap4: engine-impossible discoveredEvidence order rejected; reachable orders restore",
       "result": "PASS",
       "details": 15000
+    },
+    {
+      "name": "r3 feasible history: Astra conditional-reveal forgery rejected; every engine-reachable shipped save restores",
+      "result": "PASS",
+      "details": 87142
     }
   ],
   "counts": {
@@ -200,7 +205,8 @@
       "rejected": 11,
       "accepted": 2
     },
-    "r2OrderReachableStates": 15000
+    "r2OrderReachableStates": 15000,
+    "r3ReachableShippedSaves": 87142
   },
   "diagnostics": {
     "missingMandatoryReveal": {
@@ -233,6 +239,7 @@
         "completed": false
       },
       "reasons": [
+        "no feasible engine history: no sequence of opens and consults under first-match advice rules produces this discoveredEvidence order, inspection order and advice",
         "advice boy_find is missing mandatory revealed evidence"
       ],
       "accepted": false
@@ -267,6 +274,7 @@
         "completed": false
       },
       "reasons": [
+        "no feasible engine history: no sequence of opens and consults under first-match advice rules produces this discoveredEvidence order, inspection order and advice",
         "advice donsol_frame was never selectable in this consultation history"
       ],
       "accepted": false
@@ -367,7 +375,7 @@
       {
         "path": "js/state.js",
         "status": 200,
-        "bytes": 10463
+        "bytes": 14091
       },
       {
         "path": "js/engine.js",

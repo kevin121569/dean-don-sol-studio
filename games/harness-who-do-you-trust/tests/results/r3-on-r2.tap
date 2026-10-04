@@ -1,0 +1,280 @@
+TAP version 13
+# Subtest: r3 fixtures are valid episodes (the defect is in restore, not content validation)
+ok 1 - r3 fixtures are valid episodes (the defect is in restore, not content validation)
+  ---
+  duration_ms: 14.7477
+  type: 'test'
+  ...
+# Subtest: r3 case 1 — Astra exact: unsatisfied when.inspected variant's reveal order is forged
+not ok 2 - r3 case 1 — Astra exact: unsatisfied when.inspected variant's reveal order is forged
+  ---
+  duration_ms: 2.9191
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:64:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:70:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: r3 case 2 — when.hybridUnlocked: an order only the never-satisfiable hybrid variant produces
+not ok 3 - r3 case 2 — when.hybridUnlocked: an order only the never-satisfiable hybrid variant produces
+  ---
+  duration_ms: 0.5924
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:74:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:78:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r3 case 3 — when.consultedFewerThan: first-in variant forged for an adviser consulted second
+not ok 4 - r3 case 3 — when.consultedFewerThan: first-in variant forged for an adviser consulted second
+  ---
+  duration_ms: 0.7042
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:86:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:91:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r3 case 4 — first-consultation order: re-consulted legit save with its consultation order swapped
+not ok 5 - r3 case 4 — first-consultation order: re-consulted legit save with its consultation order swapped
+  ---
+  duration_ms: 0.5258
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:96:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:105:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r3 case 5 — prerequisite inspection order: revealed item opened before the prerequisite
+not ok 6 - r3 case 5 — prerequisite inspection order: revealed item opened before the prerequisite
+  ---
+  duration_ms: 0.4862
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:108:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:114:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r3 case 6 — phantom conditional revelation: hidden item only an unsatisfied variant reveals
+not ok 7 - r3 case 6 — phantom conditional revelation: hidden item only an unsatisfied variant reveals
+  ---
+  duration_ms: 0.4011
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:121:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r3 stale advice on the shipped episode still restores (unread → conflict → reconciled history)
+ok 8 - r3 stale advice on the shipped episode still restores (unread → conflict → reconciled history)
+  ---
+  duration_ms: 0.4052
+  type: 'test'
+  ...
+# Subtest: r3 differential (tiny episode 1): validator accepts EXACTLY the engine-reachable saves
+not ok 9 - r3 differential (tiny episode 1): validator accepts EXACTLY the engine-reachable saves
+  ---
+  duration_ms: 2645.9503
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:196:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    no impossible save accepted
+    
+    5055 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 5055
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:210:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# tiny1: candidates=104720 reachable=6221 accepted=11276 falseAccepts=5055 falseRejects=0
+# Subtest: r3 differential (tiny episode 2): validator accepts EXACTLY the engine-reachable saves
+not ok 10 - r3 differential (tiny episode 2): validator accepts EXACTLY the engine-reachable saves
+  ---
+  duration_ms: 1084.9999
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:196:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    no impossible save accepted
+    
+    7444 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 7444
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:210:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# tiny2: candidates=50640 reachable=1871 accepted=9315 falseAccepts=7444 falseRejects=0
+# Subtest: r3 differential (Astra fixture + shipped): seeded mutations of reachable saves accepted iff reachable
+not ok 11 - r3 differential (Astra fixture + shipped): seeded mutations of reachable saves accepted iff reachable
+  ---
+  duration_ms: 4281.6593
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:215:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    astra #2 (hiddenOrder)
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:233:14)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r3 no false rejections: EVERY engine-reachable save of the Astra fixture restores
+ok 12 - r3 no false rejections: EVERY engine-reachable save of the Astra fixture restores
+  ---
+  duration_ms: 7717.5954
+  type: 'test'
+  ...
+# astra reachable saves=194852 rejected=0
+# Subtest: r3 performance: search states and selections stay within the documented packet bound
+not ok 13 - r3 performance: search states and selections stay within the documented packet bound
+  ---
+  duration_ms: 1672.9747
+  type: 'test'
+  location: 'C:\\dds-r2\\games\\harness-who-do-you-trust\\tests\\redteam-r3.test.js:251:1'
+  failureType: 'testCodeFailure'
+  error: 'feasibleHistory is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r2/games/harness-who-do-you-trust/tests/redteam-r3.test.js:265:57)
+    async Test.run (node:internal/test_runner/test:1332:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 3
+# fail 10
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17597.5825

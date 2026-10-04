@@ -1,4 +1,114 @@
-# Harness Episode 001 — Issue #5 remediation r2 regression report
+# Harness Episode 001 — Issue #7 remediation r3 regression report
+
+**Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
+
+The Issue #6 MEDIUM save-history defect is fixed. Restore now requires **one feasible engine history** that explains the save's discovery order, inspection order, first-consultation order and every saved advice line at once. An exact differential against a reference explorer driving the real engine shows the validator accepts **exactly** the reachable saves: 0 false accepts and 0 false rejects. All 71 prior tests and all 28 prior audit groups pass, and **no prior test was modified**. No merge or deployment. Per Issue #7, no Astra re-test is requested until Don Sol reviews r3.
+
+| Audit identity | Value |
+|---|---|
+| Task | [Issue #7](https://github.com/kevin121569/dean-don-sol-studio/issues/7), from the [Issue #6](https://github.com/kevin121569/dean-don-sol-studio/issues/6) re-test |
+| Exact base / sole parent | `fix/harness-wdyt-redteam-r2` @ `1babcff446b7cb49630474df9d8b43857d9d135c` |
+| Remediation branch | `fix/harness-wdyt-redteam-r3` |
+| Fix revision | The commit containing this report (SHA in the Don Sol handoff) |
+| Product change | `js/state.js` only |
+| Scope | `games/harness-who-do-you-trust/` only (verified); `main` untouched at `b259244fd7b1391e139bf88e43a92049d8dfaa6d` |
+| Runtime | Node.js `v24.18.0`, LF checkout, no dependencies; Chromium smoke test |
+| Report date | 2026-10-04 UTC |
+
+## Exact totals
+
+| Run | Total | Pass | Fail |
+|---|---:|---:|---:|
+| Node suite, all files | **84** | **84** | 0 |
+| ↳ prior (`engine` 17 + `episode-001` 14 + `redteam` 24 + `redteam-r2` 16), unmodified | 71 | 71 | 0 |
+| ↳ new `redteam-r3.test.js` | 13 | 13 | 0 |
+| Astra-style audit (28 prior + 1 r3) | **29** | **29** | 0 |
+| **Before:** r3 tests on r2 `1babcff` | 13 | 3 controls | 10 expected |
+| **Before:** audit on r2 `1babcff` | 29 | 28 | 1 (the r3 group) |
+
+Skipped / cancelled / todo: 0 / 0 / 0. Suite duration ≈ 50 s. Almost all of it is the exhaustive differentials, about 350,000 real-engine saves restored.
+
+## Before / after proof
+
+Evidence: [r3-on-r2.tap](tests/results/r3-on-r2.tap) (before) and [node-test.tap](tests/results/node-test.tap) (after).
+
+| r3 test | r2 `1babcff` | r3 |
+|---|---|---|
+| Fixtures are valid episodes (control) | pass | pass |
+| Case 1 — Astra exact: unsatisfied `when.inspected` order forged | **FAIL (accepted)** | pass |
+| Case 2 — `when.hybridUnlocked` order forged (+ stale re-consult control) | **FAIL** | pass |
+| Case 3 — `when.consultedFewerThan` first-in order for an adviser consulted second | **FAIL** | pass |
+| Case 4 — first-consultation order swapped on a re-consulted save | **FAIL** | pass |
+| Case 5 — revealed item opened before the reveal's prerequisite | **FAIL** | pass |
+| Case 6 — phantom: hidden item only an unsatisfied variant reveals | **FAIL** | pass |
+| Stale advice on shipped episode (control) | pass | pass |
+| Differential, tiny episode 1 (104,720 candidate saves) | **FAIL: 5,055 false accepts** | pass: 0 / 0 |
+| Differential, tiny episode 2 (50,640 candidate saves) | **FAIL: 7,444 false accepts** | pass: 0 / 0 |
+| Seeded mutations ×4 episodes (10,000; 1,566 impossible) | **FAIL** | pass |
+| Every reachable Astra-fixture save restores (control, 194,852) | pass | pass |
+| Performance bound | FAIL (`feasibleHistory` absent in r2) | pass |
+
+Neither r2 nor r3 ever falsely **rejected** a reachable save. The r2 defect was purely false acceptance.
+
+## Defect → code fix → regression
+
+| Defect | Code fix | Regressions |
+|---|---|---|
+| **MEDIUM — conditional-reveal save reachability** (Issue #6). r2's `revealOrderReachable()` could pick a reveal variant whose `when` conditions were never true at the moment of any consultation in a history consistent with the save. | `js/state.js`: `revealOrderReachable()` is **replaced** by `feasibleHistory()`, a breadth-first search over engine histories (details below). Restore fails with `no feasible engine history …` when none exists. The canonical-visible-prefix gate and the r1 per-advice checks remain as fast necessary conditions. | `redteam-r3.test.js`: cases 1–6 with legitimate engine-produced controls; stale/re-consult controls; exact differential on two tiny episodes; seeded mutation differential on Astra/shipped/phantom/first-in fixtures; exhaustive no-false-rejection on the Astra fixture; performance bound. Audit group `r3 feasible history` (Astra exact case + all 87,142 reachable shipped saves restore). |
+
+### How `feasibleHistory()` meets each Issue #7 requirement
+
+| # | Requirement | Mechanism |
+|---|---|---|
+| 1 | Canonical initial visible order | Search starts at `createInitialState()`'s visible prefix; the prefix gate runs first |
+| 2 | Monotonic inspection growth, feasible order | Opens follow the saved `inspectedSources` order, and an item may be opened only after it is discovered at that point in the history |
+| 3 | Consultation order / re-consults | New advisers join only in saved first-consultation order; already-consulted advisers may be re-consulted at any point, any number of times |
+| 4 | `selectAdvice()` first-match | Every consult calls the shared `selectAdvice()` on the state **at that moment** |
+| 5 | `when.inspected` / `hybridUnlocked` / `consultedFewerThan` true when selected | Evaluated by `selectAdvice()` against the inspected prefix and consulted count at that moment |
+| 6 | Reveal append + dedupe exactly as engine | `[...new Set(reveals)]`; already-discovered ids skipped; each new id must be the next saved id (discovery only appends) |
+| 7 | Final `discoveredEvidence` order | Goal requires discovered length = saved length, and every step must stay a prefix of the saved order |
+| 8 | Saved latest advice reachable, including stale | Goal requires each adviser's **last** selected advice to equal the saved line; stale lines arise naturally when a later inspection or consultation would select differently |
+
+**Why the state space is small (exact, not approximate):** `selectAdvice(adviser)` reads only the inspected prefix and how many *other* advisers are consulted, never which advice they hold. So the search state is (opened count `i`, discovered length `d`, consulted count `k`, a match bitmask `m`), where bit `j` records whether adviser `j`'s current advice equals the saved line. The two-way exhaustive differential confirms the abstraction loses nothing.
+
+## Performance bounds
+
+| Quantity | Formula | Packet maximum (5 evidence, ≥1 visible, 4 advisers) | Measured worst-case shape* |
+|---|---|---:|---:|
+| Search states | (I+1)·(H+1)·Σ_{k=0..C} 2^k | 6·5·31 = **930** | max **128** explored |
+| Successors per state | ≤ C+1 | 5 | — |
+| `selectAdvice()` calls (memoized per adviser, i, k) | ≤ C·(I+1)·(C+1) | 4·6·5 = **120** | max **76** |
+| Time per search (warmed) | — | — | p50 **0.010 ms**, p99 **0.17 ms**, p99.9 **0.50 ms**, max 4.6 ms (GC pause) |
+
+\*157,158 searches: every reachable save of a 1-visible/4-hidden, all-`when`-keys episode, plus a forged variant of each.
+
+The bound is **independent of how many advice variants an adviser has**, so content authors can't make restore slow. Restore runs once per page load. Across all 194,852 reachable Astra-fixture saves, full `restoreState()` averaged about 0.09 ms (r2: about 0.02 ms). There's no user-visible effect on web or Android.
+
+## Preserved (re-run)
+
+| Check | Result |
+|---|---|
+| All 11 original Astra reproducers / 7 Issue #2 fixes | `redteam.test.js` 24/24, unmodified |
+| All 4 Issue #4 fixes | `redteam-r2.test.js` 16/16, unmodified (72/4/4 namespace pairs; 255 accepted / 292 rejected id sets; 60,000 states / 211 stale runs) |
+| 120 evidence permutations / 360 BOY timings | audit pass |
+| 24 adviser orders | audit pass |
+| 32 subsets (28 locked / 4 unlocked), locked hybrid rejected | audit pass |
+| 8 minimal/full outcome routes (engine + rendered) | audit pass |
+| Reset / restore / reduced motion (4 combos) / local hosting (14 resources) | audit pass; Chromium: stale-advice save restored exactly after reload, full hybrid route, all resources same-origin, no console errors |
+| `/missing-page/` | 5/5 byte-identical to `main` |
+
+## Follow-ups (unchanged, not folded in)
+
+- `tests/ui-harness.js` CRLF-sensitive import stripping (`\n` → `\r?\n`). All numbers here come from an LF checkout.
+- Native browser, physical keyboard, touch, screen reader and Android WebView verification.
+
+Ready for Don Sol's review. No Astra re-test requested; no merge, deployment, publishing or canon change.
+
+---
+
+# History — Issue #5 (r2) and Issue #3 (r1) reports, unchanged
+
+## Harness Episode 001 — Issue #5 remediation r2 regression report
 
 **Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
 
@@ -110,7 +220,7 @@ Ready for Don Sol's review. No Astra re-test requested; no merge, deployment, pu
 
 ---
 
-# History — Issue #3 (r1) report, unchanged
+## History — Issue #3 (r1) report, unchanged
 
 ## Harness Episode 001 — Issue #3 remediation regression report
 

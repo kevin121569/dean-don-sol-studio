@@ -82,15 +82,13 @@ export function explainRestore(raw, episode) {
     if (e.hidden && raw.discoveredEvidence.includes(e.id) &&
         ![...consulted].some(a => episode.advice[a].some(v => v.reveals?.includes(e.id)))) fail(`hidden ${e.id} discovered without a revealing consultation`);
   }
-  // Discovery ORDER must be engine-reachable too (Issue #4 gap 4): createInitialState() lays down the visible
-  // evidence in episode order, and each consult appends the not-yet-discovered items of one advice line's
-  // `reveals`, in listed order. Which consult revealed what is history the save does not keep, so accept the
-  // order if ANY sequence of reveals by consulted advisers produces it.
+  // Discovery ORDER must be engine-reachable (Issue #4 gap 4), and — Issue #7 — reachable by ONE history that
+  // also explains the inspection order, the first-consultation order and every saved advice line at once.
   const visible = episode.evidence.filter(e => !e.hidden).map(e => e.id);
   if (!visible.every((id, i) => raw.discoveredEvidence[i] === id)) {
     fail('discoveredEvidence order: must begin with the visible evidence in episode order');
-  } else if (!revealOrderReachable(raw.discoveredEvidence.slice(visible.length), new Set(visible), consulted, episode)) {
-    fail('discoveredEvidence order: hidden evidence is not in an order any sequence of reveals could produce');
+  } else if (!feasibleHistory(raw, episode).feasible) {
+    fail('no feasible engine history: no sequence of opens and consults under first-match advice rules produces this discoveredEvidence order, inspection order and advice');
   }
   for (const [id, a] of advice) {
     // Inspected only grows, so an advice line's evidence condition must still hold.
@@ -125,18 +123,77 @@ export function explainRestore(raw, episode) {
   return why;
 }
 
-/** Can `suffix` be built by appending reveal chunks, mirroring engine.js consult()? Depth ≤ hidden count. */
-function revealOrderReachable(suffix, discovered, consulted, episode, at = 0) {
-  if (at === suffix.length) return true;
-  for (const advisorId of consulted) {
-    for (const variant of episode.advice[advisorId]) {
-      // Exactly engine.js: [...new Set([...discovered, ...reveals])] — deduped, first occurrence wins.
-      const chunk = [...new Set(variant.reveals ?? [])].filter(id => !discovered.has(id));
-      if (chunk.length && chunk.every((id, k) => suffix[at + k] === id) &&
-          revealOrderReachable(suffix, new Set([...discovered, ...chunk]), consulted, episode, at + chunk.length)) return true;
+/**
+ * Feasible-history search (Issue #7). Is there ANY interleaving of OPEN_EVIDENCE and CONSULT actions that,
+ * replayed with engine.js's exact rules, turns createInitialState() into this save's discoveredEvidence,
+ * inspectedSources and consultations? The save fixes almost everything about such a history:
+ *   - opens happen in exactly the saved inspectedSources order (the engine only appends), and each item
+ *     must already be discovered when opened;
+ *   - an adviser's FIRST consult happens in saved consultations order (the engine appends new advisers);
+ *     re-consulting an already-consulted adviser may happen any number of times, in any interleaving;
+ *   - every consult picks selectAdvice()'s first matching variant for the state at THAT moment — its
+ *     when.inspected / when.hybridUnlocked / when.consultedFewerThan are evaluated then, not at save time;
+ *   - discovery appends [...new Set([...discovered, ...reveals])] and never shrinks, so every intermediate
+ *     list is a prefix of the saved one;
+ *   - the history must end with each adviser's LATEST advice equal to the saved line (stale lines included).
+ * Exact state abstraction: selectAdvice(adviser) reads only the inspected prefix (when.inspected,
+ * when.hybridUnlocked) and HOW MANY other advisers are consulted (when.consultedFewerThan) — never which
+ * advice they hold. So an adviser's current advice matters only as "does it equal the saved line yet?",
+ * and the search state is (opened count i, discovered length d, consulted count k, match mask m), where bit
+ * j of m says adviser j's current advice already equals the saved one.
+ * Bound: (I+1)·(H+1)·Σ_{k=0..C} 2^k states (I inspected, H hidden, C consulted), each with ≤ C+1 successors,
+ * and ≤ C·(I+1)·(C+1) distinct selectAdvice() calls — independent of how many advice variants exist.
+ * For the packet maximum (5 evidence, ≥1 visible, 4 advisers): ≤ 6·5·31 = 930 states, ≤ 120 selections.
+ * Exported for tests and diagnostics; restoreState() uses it through explainRestore().
+ */
+export function feasibleHistory(raw, episode) {
+  const target = raw.discoveredEvidence, opened = raw.inspectedSources;
+  const order = raw.consultations.map(c => c.advisorId);
+  const latest = raw.consultations.map(c => c.adviceId);
+  const C = order.length, goalMask = (1 << C) - 1;
+  const position = new Map(target.map((id, x) => [id, x]));
+  // selectAdvice() depends only on (adviser j, opened i, consulted k): memoize it per triple.
+  const picked = new Map();
+  const select = (j, i, k) => {
+    const key = `${j}|${i}|${k}`;
+    if (!picked.has(key)) {
+      const view = {inspectedSources: opened.slice(0, i), consultations: order.slice(0, k).map(advisorId => ({advisorId}))};
+      picked.set(key, selectAdvice(view, episode, order[j]) ?? null);
+    }
+    return picked.get(key);
+  };
+  const start = {i: 0, d: episode.evidence.filter(e => !e.hidden).length, k: 0, m: 0};
+  const keyOf = s => `${s.i},${s.d},${s.k},${s.m}`;
+  const seen = new Set([keyOf(start)]);
+  const queue = [start];
+  for (let at = 0; at < queue.length; at++) {
+    const s = queue[at];
+    if (s.i === opened.length && s.d === target.length && s.k === C && s.m === goalMask) {
+      return {feasible: true, explored: at + 1, selections: picked.size};
+    }
+    const push = n => { const key = keyOf(n); if (!seen.has(key)) { seen.add(key); queue.push(n); } };
+    // Open the next saved item, if it has been discovered by now.
+    if (s.i < opened.length && (position.get(opened[s.i]) ?? Infinity) < s.d) push({...s, i: s.i + 1});
+    // Consult: any adviser already consulted (re-consult), or the next one in first-consultation order.
+    for (let j = 0; j <= s.k && j < C; j++) {
+      const advice = select(j, s.i, s.k);
+      if (!advice) continue;
+      // Exactly engine.js: [...new Set([...discovered, ...reveals])]. Discovery only appends, so every
+      // intermediate list must be a prefix of the saved one.
+      let d = s.d, ok = true;
+      for (const id of new Set(advice.reveals ?? [])) {
+        const x = position.get(id);
+        if (x !== undefined && x < d) continue;           // already discovered: deduped
+        if (x !== d) { ok = false; break; }                // would not extend the saved prefix in order
+        d++;
+      }
+      if (!ok) continue;
+      const bit = 1 << j;
+      const m = advice.id === latest[j] ? s.m | bit : s.m & ~bit;
+      push({i: s.i, d, k: Math.max(s.k, j + 1), m});
     }
   }
-  return false;
+  return {feasible: false, explored: queue.length, selections: picked.size};
 }
 
 /**
