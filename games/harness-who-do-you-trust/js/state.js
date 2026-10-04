@@ -82,6 +82,16 @@ export function explainRestore(raw, episode) {
     if (e.hidden && raw.discoveredEvidence.includes(e.id) &&
         ![...consulted].some(a => episode.advice[a].some(v => v.reveals?.includes(e.id)))) fail(`hidden ${e.id} discovered without a revealing consultation`);
   }
+  // Discovery ORDER must be engine-reachable too (Issue #4 gap 4): createInitialState() lays down the visible
+  // evidence in episode order, and each consult appends the not-yet-discovered items of one advice line's
+  // `reveals`, in listed order. Which consult revealed what is history the save does not keep, so accept the
+  // order if ANY sequence of reveals by consulted advisers produces it.
+  const visible = episode.evidence.filter(e => !e.hidden).map(e => e.id);
+  if (!visible.every((id, i) => raw.discoveredEvidence[i] === id)) {
+    fail('discoveredEvidence order: must begin with the visible evidence in episode order');
+  } else if (!revealOrderReachable(raw.discoveredEvidence.slice(visible.length), new Set(visible), consulted, episode)) {
+    fail('discoveredEvidence order: hidden evidence is not in an order any sequence of reveals could produce');
+  }
   for (const [id, a] of advice) {
     // Inspected only grows, so an advice line's evidence condition must still hold.
     if (!(a.when?.inspected ?? []).every(e => inspected.has(e))) fail(`advice ${a.id} requires evidence not inspected`);
@@ -113,6 +123,20 @@ export function explainRestore(raw, episode) {
   }
   if (raw.sceneId === 'briefing' && (inspected.size || consulted.size || raw.uncertaintyAcknowledged)) fail('progress recorded while still in briefing');
   return why;
+}
+
+/** Can `suffix` be built by appending reveal chunks, mirroring engine.js consult()? Depth ≤ hidden count. */
+function revealOrderReachable(suffix, discovered, consulted, episode, at = 0) {
+  if (at === suffix.length) return true;
+  for (const advisorId of consulted) {
+    for (const variant of episode.advice[advisorId]) {
+      // Exactly engine.js: [...new Set([...discovered, ...reveals])] — deduped, first occurrence wins.
+      const chunk = [...new Set(variant.reveals ?? [])].filter(id => !discovered.has(id));
+      if (chunk.length && chunk.every((id, k) => suffix[at + k] === id) &&
+          revealOrderReachable(suffix, new Set([...discovered, ...chunk]), consulted, episode, at + chunk.length)) return true;
+    }
+  }
+  return false;
 }
 
 /**

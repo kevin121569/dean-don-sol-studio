@@ -5,6 +5,7 @@ import {reduce, ACTIONS as A, isHybridUnlocked, isDecisionAvailable, selectAdvic
 import {createInitialState, createStore} from './state.js';
 import {createTelemetry, domEventSink} from './telemetry.js';
 import {isAdvisor} from './advice.js';
+import {domId} from './dom-ids.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const esc = v => String(v).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -13,6 +14,9 @@ const SETTINGS_KEY = 'harness-wdyt:settings';
 
 let episode, store, telemetry, state;
 let liveTimer = null, liveGeneration = 0;
+// Bumped only by RESET. Telemetry for an action belongs to the run it was dispatched in: an ordinary
+// nested dispatch (same run) must not truncate it; a reset (new run) must cancel it.
+let runGeneration = 0;
 // UI-only state: never persisted, never part of game state.
 const ui = {openEvidence: new Set(), selectedDecision: null};
 
@@ -42,14 +46,16 @@ async function boot() {
 function dispatch(action) {
   const prev = state;
   const next = reduce(prev, action, episode);
-  if (action.type === A.RESET) invalidateAnnouncements();
+  if (action.type === A.RESET) { invalidateAnnouncements(); runGeneration++; }
+  const run = runGeneration;
   // Commit before notifying synchronous external sinks. A sink can reset play;
   // that newer state must win over this dispatch and its pending presentation.
   if (next !== prev) {
     state = next;
     store.save(state);
   }
-  track(action, prev, next);
+  track(action, prev, next, run);
+  // A nested dispatch already rendered/announced newer state; never draw this older one over it.
   if (state !== next) return next !== prev;
   announce(action, prev, next);
   if (next === prev) return false;
@@ -57,7 +63,8 @@ function dispatch(action) {
   return true;
 }
 
-function track(action, prev, next) {
+function track(action, prev, next, run) {
+  const sameRun = () => runGeneration === run;
   const changed = next !== prev;
   const consultable = prev.sceneId === 'investigate' && !prev.completed;
   const adviceOf = (s, id) => s.consultations.find(c => c.advisorId === id)?.adviceId ?? null;
@@ -74,7 +81,7 @@ function track(action, prev, next) {
     case A.CONSULT_ALL:
       if (consultable) for (const id of episode.advisorOrder) {
         telemetry.track('advisor_consult', {advisorId: id, adviceId: adviceOf(next, id), mode: 'all', updated: adviceOf(prev, id) !== adviceOf(next, id)});
-        if (state !== next) break;
+        if (!sameRun()) break; // reset/new run only; ordinary nested transitions keep logging
       }
       break;
     case A.SUBMIT_DECISION:
@@ -84,7 +91,7 @@ function track(action, prev, next) {
           uncertaintyAcknowledged: prev.uncertaintyAcknowledged,
           inspectedCount: prev.inspectedSources.length, consultedCount: prev.consultations.length,
         });
-        if (state === next) telemetry.track('episode_complete', {outcomeId: next.outcomeId, trustWeights: {...next.trustWeights}});
+        if (sameRun()) telemetry.track('episode_complete', {outcomeId: next.outcomeId, trustWeights: {...next.trustWeights}});
       }
       break;
   }
@@ -269,14 +276,15 @@ function evidenceCard(e) {
   const open = ui.openEvidence.has(e.id);
   const inspected = state.inspectedSources.includes(e.id);
   const id = esc(e.id);
+  const dom = k => esc(domId[k](e.id)); // shared with validateEpisode's collision check
   return `
   <li class="evidence${e.hidden ? ' is-new' : ''}">
-    <button type="button" class="evidence-toggle" id="ev-${id}" data-action="toggleEvidence" data-id="${id}" aria-expanded="${open}" aria-controls="ev-body-${id}" aria-labelledby="ev-t-${id} ev-src-${id} ev-s-${id}">
-      <span class="title" id="ev-t-${id}">${esc(e.title)}${e.hidden ? ' <span class="muted">· surfaced by BOY</span>' : ''}</span>
-      <span class="source" id="ev-src-${id}">${esc(e.source)}</span>
-      <span class="state${inspected ? ' opened' : ''}" id="ev-s-${id}">${inspected ? '✓ Opened' : 'Unopened'}</span>
+    <button type="button" class="evidence-toggle" id="${dom('evidenceToggle')}" data-action="toggleEvidence" data-id="${id}" aria-expanded="${open}" aria-controls="${dom('evidenceBody')}" aria-labelledby="${dom('evidenceTitle')} ${dom('evidenceSource')} ${dom('evidenceState')}">
+      <span class="title" id="${dom('evidenceTitle')}">${esc(e.title)}${e.hidden ? ' <span class="muted">· surfaced by BOY</span>' : ''}</span>
+      <span class="source" id="${dom('evidenceSource')}">${esc(e.source)}</span>
+      <span class="state${inspected ? ' opened' : ''}" id="${dom('evidenceState')}">${inspected ? '✓ Opened' : 'Unopened'}</span>
     </button>
-    <div class="evidence-body" id="ev-body-${id}" ${open ? '' : 'hidden'}>
+    <div class="evidence-body" id="${dom('evidenceBody')}" ${open ? '' : 'hidden'}>
       ${e.body.map(line => `<p class="log-line">${esc(line)}</p>`).join('')}
       <p class="clock">Clock source: ${esc(e.clock)}</p>
     </div>
@@ -290,19 +298,19 @@ function advisorCard(id) {
   const stale = c && selectAdvice(state, episode, id).id !== c.adviceId;
   const trust = state.trustWeights[id];
   return `
-  <article class="advisor" data-advisor="${attrId}" aria-labelledby="adv-${attrId}-name">
+  <article class="advisor" data-advisor="${attrId}" aria-labelledby="${esc(domId.adviserName(id))}">
     <div class="advisor-head">
       <img src="${esc(a.icon)}" alt="" width="36" height="36">
-      <div><h3 id="adv-${attrId}-name">${esc(a.name)}</h3><span class="verb">${esc(a.verb)}</span></div>
+      <div><h3 id="${esc(domId.adviserName(id))}">${esc(a.name)}</h3><span class="verb">${esc(a.verb)}</span></div>
     </div>
     <dl><dt>Strength</dt><dd>${esc(a.strength)}</dd><dt>Weakness</dt><dd>${esc(a.weakness)}</dd></dl>
     ${c ? `<blockquote class="advice" aria-label="${esc(a.name)} says"><p>${esc(adviceText(id, c.adviceId))}</p></blockquote>` : ''}
     ${stale ? `<p class="muted">You've learned more since you asked. ${esc(a.name)} may see it differently now.</p>` : ''}
-    <button type="button" class="btn" id="consult-${attrId}" data-action="consult" data-id="${attrId}">${c ? `Ask ${esc(a.name)} again` : `Consult ${esc(a.name)}`}</button>
+    <button type="button" class="btn" id="${esc(domId.consult(id))}" data-action="consult" data-id="${attrId}">${c ? `Ask ${esc(a.name)} again` : `Consult ${esc(a.name)}`}</button>
     <fieldset class="trust" ${c ? '' : 'disabled'}>
       <legend>How much do you lean on ${esc(a.name)}?${c ? '' : ' (consult first)'}</legend>
       <div class="segmented">
-        ${[-1, 0, 1].map(v => `<label><input type="radio" name="trust-${attrId}" id="trust-${attrId}-${v}" value="${v}" ${trust === v ? 'checked' : ''}><span>${TRUST_LABELS[v]}</span></label>`).join('')}
+        ${[-1, 0, 1].map(v => `<label><input type="radio" name="trust-${attrId}" id="${esc(domId.trust(id, v))}" value="${v}" ${trust === v ? 'checked' : ''}><span>${TRUST_LABELS[v]}</span></label>`).join('')}
       </div>
     </fieldset>
   </article>`;
@@ -324,11 +332,12 @@ function decide() {
         ${episode.decisions.map(d => {
           const available = !d.requiresHybrid || unlocked;
           const id = esc(d.id);
+          const decId = esc(domId.decision(d.id)), lockId = esc(domId.decisionLock(d.id));
           return `<li class="choice">
-            <input type="radio" name="decision" id="dec-${id}" value="${id}" ${available ? '' : 'disabled aria-describedby="lock-' + id + '"'} ${ui.selectedDecision === d.id ? 'checked' : ''}>
-            <label for="dec-${id}"><span class="label">${esc(d.label)}${available ? '' : ' — locked'}</span>
+            <input type="radio" name="decision" id="${decId}" value="${id}" ${available ? '' : 'disabled aria-describedby="' + lockId + '"'} ${ui.selectedDecision === d.id ? 'checked' : ''}>
+            <label for="${decId}"><span class="label">${esc(d.label)}${available ? '' : ' — locked'}</span>
               <span class="desc">${esc(d.description)}</span>
-              ${available ? '' : `<span class="lock" id="lock-${id}">🔒 ${esc(episode.hybridUnlock.lockedHint)}</span>`}</label>
+              ${available ? '' : `<span class="lock" id="${lockId}">🔒 ${esc(episode.hybridUnlock.lockedHint)}</span>`}</label>
           </li>`;
         }).join('')}
       </ul>

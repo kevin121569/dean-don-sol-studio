@@ -317,7 +317,7 @@ await check('delayed pre-reset live callback cannot write old-run advice',async(
 });
 
 await check('all static-host core resources same-origin and HTTP-accessible',async()=>{
- const paths=['index.html','css/game.css','js/app.js','js/advice.js','js/state.js','js/engine.js','js/content.js','js/telemetry.js','data/episode-001.json',...Object.values(ep.advisors).map(a=>a.icon)];
+ const paths=['index.html','css/game.css','js/app.js','js/advice.js','js/dom-ids.js','js/state.js','js/engine.js','js/content.js','js/telemetry.js','data/episode-001.json',...Object.values(ep.advisors).map(a=>a.icon)];
  const server=http.createServer((req,res)=>{
   const file=path.join(game,decodeURIComponent(req.url));
   if(!file.startsWith(game)||!fs.existsSync(file)){res.writeHead(404);res.end();return;}
@@ -332,7 +332,50 @@ await check('all static-host core resources same-origin and HTTP-accessible',asy
  diagnostics.staticResources=resources;return counts.staticResources=resources.length;
 });
 
-const auditResult={target:{branch:'fix/harness-wdyt-redteam-r1',baseCommit:'f5083a201c612c78ce5ebedace71bc1fd26290c6'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
+// ---- Issue #4 gaps (r2). Written independently of tests/redteam-r2.test.js. ----
+await check('r2 gap1: ordinary nested transition during consult-all telemetry keeps four committed events; reset still cancels',async()=>{
+ const ordinary=await makeUI();await ordinary.app.boot();ordinary.app.dispatch({type:A.START});let hop=0;
+ ordinary.window.handlers.push(e=>{if(e.detail.type==='advisor_consult'&&!hop++)ordinary.app.dispatch({type:A.GO_TO_DECISION});});
+ ordinary.app.dispatch({type:A.CONSULT_ALL});
+ const ev=ordinary.app.events().filter(e=>e.type==='advisor_consult');
+ assert.equal(ordinary.app.getState().sceneId,'decide');
+ assert.deepEqual(ev.map(e=>e.advisorId),ep.advisorOrder,'all four committed advisers logged once');
+ const reset=await makeUI();await reset.app.boot();reset.app.dispatch({type:A.START});let r=0;
+ reset.window.handlers.push(e=>{if(e.detail.type==='advisor_consult'&&!r++)reset.app.resetGame();});
+ reset.app.dispatch({type:A.CONSULT_ALL});
+ assert.equal(reset.app.getState().sceneId,'briefing');
+ assert.equal(reset.app.events().filter(e=>e.type==='advisor_consult').length,1,'reset cancels the old run');
+ return counts.r2TelemetryEvents={ordinary:ev.length,afterReset:1};
+});
+
+await check('r2 gap2: generated DOM id collisions rejected, including the body-e_monitor reproducer',async()=>{
+ const rename=(v,o,n)=>typeof v==='string'?(v===o?n:v):Array.isArray(v)?v.map(x=>rename(x,o,n)):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).map(([k,x])=>[k===o?n:k,rename(x,o,n)])):v;
+ let rejected=0;const cases=[['e_controller','body-e_monitor'],['e_controller','t-e_monitor'],['e_controller','s-e_monitor'],['e_controller','src-e_monitor'],['e_monitor','body-e_technician'],['e_technician','src-e_protocol']];
+ for(const [from,to] of cases){const p=validateEpisode(rename(clone(ep),from,to));assert(p.some(x=>/DOM id collision/.test(x)),from+'→'+to);rejected++;}
+ assert.deepEqual(validateEpisode(rename(clone(ep),'e_controller','body_e_monitor')),[],'non-colliding lookalike still valid');
+ return counts.r2IdCollisions=rejected;
+});
+
+await check('r2 gap3: obfuscated/external/backtracking icon paths rejected, local relative icons accepted',async()=>{
+ const bad=[' https://example.invalid/boy.svg','\thttps://example.invalid/boy.svg','\nhttps://example.invalid/boy.svg','//example.invalid/boy.svg',' //example.invalid/boy.svg','https://example.invalid/boy.svg','assets/../x.svg','assets/%2e%2e/x.svg','assets\\characters\\boy.svg','/assets/characters/boy.svg','assets/characters/boy.svg?x'];
+ const good=['assets/characters/boy.svg','assets/ui/x-1.png'];
+ const test=icon=>{const e=clone(ep);e.advisors.boy.icon=icon;return validateEpisode(e).some(p=>/advisors\.boy: icon/.test(p));};
+ for(const b of bad)assert(test(b),JSON.stringify(b));
+ for(const g of good)assert(!test(g),g);
+ return counts.r2Icons={rejected:bad.length,accepted:good.length};
+});
+
+await check('r2 gap4: engine-impossible discoveredEvidence order rejected; reachable orders restore',async()=>{
+ const s=run([{type:A.START},consult('boy')]);
+ assert(restoreState(s,ep));
+ assert.equal(restoreState({...s,discoveredEvidence:[...s.discoveredEvidence].reverse()},ep),null,'reversed');
+ assert.equal(restoreState({...s,discoveredEvidence:['e_clocksync',...s.discoveredEvidence.slice(0,4)]},ep),null,'hidden first');
+ let x=0x2b2b2b,checked=0;const rand=()=>(x=(x*16807)%2147483647)/2147483647,any=a=>a[Math.floor(rand()*a.length)];
+ for(let i=0;i<1000;i++){let st=createInitialState(ep);for(let k=0;k<15;k++){st=reduce(st,any([{type:A.START},{type:A.CONSULT_ALL},consult(any(ep.advisorOrder)),open(any(ids)),{type:A.GO_TO_DECISION}]),ep);assert.deepEqual(explainRestore(clone(st),ep),[]);checked++;}}
+ return counts.r2OrderReachableStates=checked;
+});
+
+const auditResult={target:{branch:'fix/harness-wdyt-redteam-r2',baseCommit:'c1dedcc97a774157724c1e3b99ac5652ea770d62'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
 if(process.argv[2])fs.writeFileSync(path.resolve(process.argv[2]),JSON.stringify(auditResult,null,2)+'\n');
 for(const r of results)console.log(r.result+' '+r.name+(r.error?' — '+r.error.split('\n')[0]:''));
 console.log(JSON.stringify({groups:results.length,passed:results.filter(r=>r.result==='PASS').length,failed:results.filter(r=>r.result==='FAIL').length,counts}));

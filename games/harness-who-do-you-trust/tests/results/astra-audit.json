@@ -1,7 +1,7 @@
 {
   "target": {
-    "branch": "fix/harness-wdyt-redteam-r1",
-    "baseCommit": "f5083a201c612c78ce5ebedace71bc1fd26290c6"
+    "branch": "fix/harness-wdyt-redteam-r2",
+    "baseCommit": "c1dedcc97a774157724c1e3b99ac5652ea770d62"
   },
   "method": "Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.",
   "results": [
@@ -140,7 +140,33 @@
     {
       "name": "all static-host core resources same-origin and HTTP-accessible",
       "result": "PASS",
-      "details": 13
+      "details": 14
+    },
+    {
+      "name": "r2 gap1: ordinary nested transition during consult-all telemetry keeps four committed events; reset still cancels",
+      "result": "PASS",
+      "details": {
+        "ordinary": 4,
+        "afterReset": 1
+      }
+    },
+    {
+      "name": "r2 gap2: generated DOM id collisions rejected, including the body-e_monitor reproducer",
+      "result": "PASS",
+      "details": 6
+    },
+    {
+      "name": "r2 gap3: obfuscated/external/backtracking icon paths rejected, local relative icons accepted",
+      "result": "PASS",
+      "details": {
+        "rejected": 11,
+        "accepted": 2
+      }
+    },
+    {
+      "name": "r2 gap4: engine-impossible discoveredEvidence order rejected; reachable orders restore",
+      "result": "PASS",
+      "details": 15000
     }
   ],
   "counts": {
@@ -164,7 +190,17 @@
     },
     "uiRenderedRoutes": 8,
     "motionCombinations": 4,
-    "staticResources": 13
+    "staticResources": 14,
+    "r2TelemetryEvents": {
+      "ordinary": 4,
+      "afterReset": 1
+    },
+    "r2IdCollisions": 6,
+    "r2Icons": {
+      "rejected": 11,
+      "accepted": 2
+    },
+    "r2OrderReachableStates": 15000
   },
   "diagnostics": {
     "missingMandatoryReveal": {
@@ -316,7 +352,7 @@
       {
         "path": "js/app.js",
         "status": 200,
-        "bytes": 20029
+        "bytes": 20858
       },
       {
         "path": "js/advice.js",
@@ -324,9 +360,14 @@
         "bytes": 1013
       },
       {
+        "path": "js/dom-ids.js",
+        "status": 200,
+        "bytes": 2662
+      },
+      {
         "path": "js/state.js",
         "status": 200,
-        "bytes": 8832
+        "bytes": 10463
       },
       {
         "path": "js/engine.js",
@@ -336,7 +377,7 @@
       {
         "path": "js/content.js",
         "status": 200,
-        "bytes": 11385
+        "bytes": 12799
       },
       {
         "path": "js/telemetry.js",

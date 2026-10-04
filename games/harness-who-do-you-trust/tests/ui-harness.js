@@ -6,6 +6,7 @@ import {isAdvisor} from '../js/advice.js';
 import {reduce, ACTIONS as A, isHybridUnlocked, isDecisionAvailable, selectAdvice, buildPostmortem} from '../js/engine.js';
 import {createInitialState, createStore} from '../js/state.js';
 import {createTelemetry, domEventSink} from '../js/telemetry.js';
+import {domId} from '../js/dom-ids.js';
 
 const source = fs.readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 const body = source.replace(/^import .*;\n/gm, '').replace('\nboot();', '\n');
@@ -58,7 +59,7 @@ export function makeUI(episode, options = {}) {
     reduce, A, isAdvisor, isHybridUnlocked, isDecisionAvailable, selectAdvice, buildPostmortem,
     createInitialState,
     createStore: ep => options.defaultStorage ? createStore(ep) : createStore(ep, storage),
-    createTelemetry, domEventSink,
+    createTelemetry, domEventSink, domId,
   };
   const create = new Function(...Object.keys(dependencies), body + '\nreturn {boot,dispatch,onClick,onChange,resetGame,render,getState:()=>state,events:()=>telemetry.events()};');
   const app = create(...Object.values(dependencies));

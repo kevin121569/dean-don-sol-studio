@@ -1,4 +1,118 @@
-# Harness Episode 001 — Issue #3 remediation regression report
+# Harness Episode 001 — Issue #5 remediation r2 regression report
+
+**Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
+
+All four Issue #4 conditional-pass gaps have code fixes, exact Astra reproducers, controls, and broader property coverage. All 55 prior tests pass, and 2 of them were minimally maintained (listed below). All 24 prior audit groups pass. No merge or deployment was performed. Per Issue #5, no Astra re-test is requested until Don Sol reviews this patch.
+
+| Audit identity | Value |
+|---|---|
+| Repository | `kevin121569/dean-don-sol-studio` |
+| Task | [Issue #5](https://github.com/kevin121569/dean-don-sol-studio/issues/5), closing [Issue #4](https://github.com/kevin121569/dean-don-sol-studio/issues/4) gaps |
+| Exact base branch | `fix/harness-wdyt-redteam-r1` |
+| Exact base commit / sole commit parent | `c1dedcc97a774157724c1e3b99ac5652ea770d62` |
+| Remediation branch | `fix/harness-wdyt-redteam-r2` |
+| Fix revision | The commit containing this report (its SHA is in the Don Sol handoff) |
+| Allowed scope | `games/harness-who-do-you-trust/` only (verified: no other path changed) |
+| Runtime used for checks | Node.js `v24.18.0`, no dependencies; Chromium (in-app browser) smoke test |
+| Report date | 2026-10-04 UTC |
+| Main comparison commit | `b259244fd7b1391e139bf88e43a92049d8dfaa6d` (untouched) |
+
+## Exact automated totals
+
+| Run | Total | Pass | Fail | Skipped / cancelled / todo |
+|---|---:|---:|---:|---:|
+| Node test suite, all files | **71** | **71** | 0 | 0 / 0 / 0 |
+| ↳ prior suite (`engine` 17 + `episode-001` 14 + `redteam` 24) | 55 | 55 | 0 | 0 / 0 / 0 |
+| ↳ new r2 regressions (`redteam-r2.test.js`) | 16 | 16 | 0 | 0 / 0 / 0 |
+| Astra-style audit groups (24 prior + 4 r2) | **28** | **28** | 0 | None |
+| r2 regressions against exact unfixed base `c1dedcc` | 16 | 5 controls | 11 expected | 0 / 0 / 0 |
+| r2 audit groups against exact unfixed base | 4 | 0 | 4 expected | None |
+
+The 5 r2 tests that pass on the unfixed base are deliberate **controls**, so they must pass both before and after the fix:
+- reset still cancels consult-all
+- reset followed by a new-run START is still a cancellation
+- the exactly-once nested repeat
+- valid icons are accepted
+- 60,000-state no-false-rejection
+
+Every reproducer and gap-specific test fails on the base: [r2-base-reproducers.tap](tests/results/r2-base-reproducers.tap).
+
+Evidence committed with the patch:
+- [Node suite TAP, all 71](tests/results/node-test.tap)
+- [Audit results + diagnostics, 28 groups](tests/results/astra-audit.json)
+- [r2 regressions against the unfixed base](tests/results/r2-base-reproducers.tap)
+- [r1 base reproducers](tests/results/base-reproducers.tap) (unchanged from r1)
+
+Run from this game folder:
+
+```sh
+npm test
+node --test --test-reporter=tap "tests/*.test.js"
+node tests/astra-audit.mjs /tmp/harness-astra-audit.json
+```
+
+## Issue #4 gap → code fix → regression test
+
+All r2 test names are in [tests/redteam-r2.test.js](tests/redteam-r2.test.js). Audit groups are prefixed `r2 gapN` in [tests/astra-audit.mjs](tests/astra-audit.mjs).
+
+| Gap (Issue #4) | Code fix | Regression tests |
+|---|---|---|
+| **1 MEDIUM — CONSULT_ALL telemetry truncated by ordinary nested state change** | `js/app.js`: a `runGeneration` counter, bumped **only** by RESET, is captured per dispatch. Consult-all telemetry continues while the run is unchanged and stops only when a reset started a new run. r1 used `state !== next`, which treated any nested change as a cancellation. The same rule now governs `episode_complete`, which had the same root cause. The render/announce guard (`state !== next` → don't draw stale state) is deliberately unchanged, and commit-before-notify is untouched, so the r1 reset-overwrite fix holds. | `R2-1 Astra reproducer` (nested GO_TO_DECISION during BOY's event → 4 events, in order, matching committed advice) · `R2-1 control: reset during CONSULT_ALL` (1 event, reset state wins, no stale announcement, new run logs normally) · `R2-1 control: reset followed by new-run START` · `R2-1 same root cause` (nested VIEW_POSTMORTEM keeps `episode_complete`) · `R2-1 exactly once` (nested repeat consult-all: 4 updates + 4 intentional no-ops) · audit `r2 gap1` · browser: a live `harness:telemetry` listener clicking *I'm ready to decide* → 4 events logged |
+| **2 MEDIUM — generated DOM ID collisions** | New `js/dom-ids.js` is the single source of every generated id (`ID_NAMESPACES`, `domId`, `STATIC_IDS`, `generatedIds`, `duplicateDomIds`). `js/app.js` now renders every content-derived id and ARIA reference through `domId` (output strings are byte-identical to r1). `js/content.js` runs `duplicateDomIds` with **the same functions** and rejects any episode whose generated ids would collide with each other or with a static id. | `R2-2 Astra reproducer` (`e_controller`→`body-e_monitor` rejected naming `ev-body-e_monitor`; app refuses to boot; unvalidated render shown to really collide) · `R2-2 pairwise` (72 ordered namespace pairs examined; the 4 collidable ones in the `ev-` family each solved for a colliding id and rejected) · `R2-2 property` (600 seeded adversarial id sets: **255 accepted** → every scene rendered with all ids unique and every ARIA/`for` reference resolving to exactly one element; **292 rejected** → each a genuine collision; 53 merged-id sets skipped as structurally invalid) · `R2-2 completeness` (every rendered id is enumerated; `STATIC_IDS` covers every literal id in `app.js` and `index.html`) · audit `r2 gap2` · browser: 59 ids unique, 29 references resolve once |
+| **3 MEDIUM — relative asset URL validation bypass** | `js/content.js`: the r1 denylist is replaced with an **allowlist**, `^assets(/[A-Za-z0-9_-]+)+\.(svg\|png\|webp)$`. That shape excludes every whitespace/control character (which WHATWG URL parsing strips), schemes, `//`, backslashes, `%`-encoding, `.`/`..`, query and fragment. As a second guard, the value must resolve through `new URL()` to exactly the same local path. | `R2-3 Astra reproducers` (leading space, tab, newline, CR LF, protocol-relative, space + protocol-relative; each first shown to resolve **externally** in a WHATWG parser, then rejected) · `R2-3 broader` (38 more: schemes, NBSP/BOM/control chars, embedded tab, root-absolute, UNC/backslash, `..`, `%2e%2e`, `%2f`, `./`, `//`, query, fragment, trailing space, missing extension, wrong folder, non-strings) · `R2-3 valid relative icons` (accepted and resolve inside `assets/`) · audit `r2 gap3` · browser: all 4 icons load same-origin |
+| **4 LOW — engine-impossible `discoveredEvidence` order** | `js/state.js`: restore requires the canonical visible prefix in episode order, then a hidden suffix that `revealOrderReachable()` can build by appending reveal chunks from consulted advisers. It mirrors `engine.js` exactly (`[...new Set(reveals)]`, first occurrence wins, already-discovered skipped). Which consult revealed what is not stored, so any legitimate sequence is accepted. | `R2-4 Astra reproducer` (reversed BOY save rejected; the real save restores) · `R2-4 broader` (exactly 1 of 120 orders of 5 items restores; exactly 1 of 24 visible-prefix orders) · `R2-4 append semantics` (second episode shape: either cross-adviser reveal order restores, a multi-item reveal keeps its listed order, hidden-before-visible rejected) · `R2-4 no false rejections` (**60,000** seeded reachable states across both episode shapes restore, including **211** runs with stale advice) · audit `r2 gap4` (+15,000 states) · browser: real save restores after reload, reversed copy discarded |
+
+## Prior tests maintained (2) and harness changes, all disclosed
+
+| File | Change | Why |
+|---|---|---|
+| `tests/redteam.test.js` | Static-hosting test title and pinned count `13` → `14` | It enumerates `js/` and pins the total as a tripwire. `js/dom-ids.js` is the deliberate new core module. |
+| `tests/astra-audit.mjs` | Added `js/dom-ids.js` to the static resource list; added 4 `r2 gapN` groups; target metadata → r2 | Same new module; r2 audit coverage |
+| `tests/ui-harness.js` | Imports and injects `domId` | The harness strips `app.js` imports and injects them by name |
+| `tests/results/*` | `node-test.tap` and `astra-audit.json` regenerated; `r2-base-reproducers.tap` added | Evidence for this revision |
+
+No other prior test changed. The icon validation message still contains *"icon must be a relative path"*, so the Issue #1 validator test passes unmodified.
+
+## Preserved mechanics and required reruns
+
+| Check | Result (r2) |
+|---|---|
+| Evidence order and BOY reveal timing | 120 permutations, 360 valid BOY timings |
+| Adviser order / repeated consultation | 24 orders with repeats and consult-all |
+| Hybrid gating | 32 subsets: 28 locked, 4 unlocked; locked submission rejected |
+| Outcomes | 4 outcomes × minimal/full = 8 engine routes + 8 rendered app routes |
+| Reset / restore / corrupt saves | 36 common corrupt saves rejected; reset persists briefing; restore re-verified in a real browser |
+| Malformed content | 30 common content mutations rejected, plus all r1 and r2 cases |
+| Reachable-state restore | r1 50,000 + r1 audit 30,000 (seed `0x51d27b93`, 1,233 completed) + r2 60,000 + r2 audit 15,000 |
+| Reduced motion | 4 OS/manual combinations |
+| Local-only hosting | 14 core resources HTTP 200, all same-origin (browser: 7 JS modules, all same-origin) |
+| All 7 Issue #2 fixes / 11 original Astra reproducers | All `F1`–`F7` tests in `redteam.test.js` pass unmodified |
+| `/missing-page/` parity | 5/5 files byte-identical to `main` (blob SHAs listed in the r1 section below, unchanged) |
+| Scope | Only `games/harness-who-do-you-trust/` differs from base; `main` untouched |
+| Console | No errors in the browser smoke test |
+
+## Environment note (not a product defect)
+
+On a Windows checkout with `core.autocrlf=true`, the **unmodified r1 base** reports 44/55 tests and 16/24 audit groups. `tests/ui-harness.js` strips imports with `/^import .*;\n/gm`, which does not match `\r\n`. On an LF checkout the same base is 55/55 and 24/24, matching r1's claims. All r2 numbers here come from an LF worktree. Recommended follow-up, deliberately not changed under Issue #5's scope: make that regex `\r?\n`, or add `.gitattributes` `* text eol=lf` for the game folder.
+
+## Limits and review gate
+
+The r2 regressions run the actual app functions in the deterministic DOM-interface harness. They were also smoke-tested in Chromium:
+- live telemetry listener
+- rendered id/ARIA uniqueness
+- icon loading
+- save restore and the reversed-order rejection across real reloads
+- a full hybrid route
+
+Physical keyboard/touch, screen-reader speech and Android WebView remain outstanding, as in r1.
+
+Ready for Don Sol's review. No Astra re-test requested; no merge, deployment, publishing or canon change is authorized by this report.
+
+---
+
+# History — Issue #3 (r1) report, unchanged
+
+## Harness Episode 001 — Issue #3 remediation regression report
 
 **Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
 

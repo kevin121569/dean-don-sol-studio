@@ -307,7 +307,7 @@ test('red-team seeded reachable states: 30,000 samples restore without false rej
   assert.equal(samples, 30000); assert.equal(completed, 1233);
 });
 
-test('red-team static hosting: all 13 core resources are local and HTTP-accessible', async () => {
+test('red-team static hosting: all 14 core resources are local and HTTP-accessible', async () => {
   const paths = ['index.html', 'css/game.css', ...fs.readdirSync(path.join(root, 'js')).map(f => 'js/' + f), 'data/episode-001.json', ...Object.values(episode.advisors).map(a => a.icon)];
   const server = http.createServer((req, res) => {
     const file = path.join(root, decodeURIComponent(req.url));
@@ -323,5 +323,5 @@ test('red-team static hosting: all 13 core resources are local and HTTP-accessib
       assert.equal(response.status, 200, resource); assert((await response.arrayBuffer()).byteLength > 0);
     }
   } finally { await new Promise(resolve => server.close(resolve)); }
-  assert.equal(paths.length, 13);
+  assert.equal(paths.length, 14); // r2: +js/dom-ids.js
 });

@@ -1,6 +1,7 @@
 // Loads and validates episode content. Paths are relative so the same files work on GitHub Pages
 // and from Capacitor's bundled web assets — no server, no absolute URLs.
 import {selectAdvice} from './advice.js';
+import {duplicateDomIds} from './dom-ids.js';
 
 export const REQUIRED_ADVISORS = Object.freeze(['boy', 'tooth', 'darth', 'donsol']);
 export const RATINGS = Object.freeze(['strong', 'weak', 'mixed']);
@@ -22,7 +23,19 @@ const isStr = v => typeof v === 'string' && v.trim().length > 0;
 // IDs are used in HTML attributes, ARIA references, and delegated controls.
 const isId = v => typeof v === 'string' && /^[A-Za-z][A-Za-z0-9_-]*$/.test(v);
 const isStrList = v => Array.isArray(v) && v.length > 0 && v.every(isStr);
-const isRelativePath = v => isStr(v) && !/^([a-z]+:|\/|\\)/i.test(v) && !v.includes('..');
+// Icons must be plain local asset paths: assets/<segment>/.../<name>.(svg|png|webp). An allowlist, not a
+// denylist: it excludes every whitespace/control character (which WHATWG URL parsing strips, turning
+// ' https://x' or '\thttps://x' external), schemes, '//', backslashes, %-encoding, '.', '..', query and fragment.
+const ASSET_PATH = /^assets(?:\/[A-Za-z0-9_-]+)+\.(?:svg|png|webp)$/;
+const ASSET_BASE = 'https://game.invalid/g/';
+const isLocalAssetPath = v => {
+  if (typeof v !== 'string' || !ASSET_PATH.test(v)) return false;
+  // Defence in depth: however a browser normalizes it, it must still resolve to exactly this local path.
+  try {
+    const u = new URL(v, ASSET_BASE);
+    return u.origin === 'https://game.invalid' && u.pathname === '/g/' + v && !u.search && !u.hash;
+  } catch { return false; }
+};
 const sameSet = (a, b) => a.length === b.length && new Set(a).size === a.length && a.every(x => b.includes(x));
 
 /**
@@ -68,7 +81,7 @@ export function validateEpisode(ep) {
   for (const id of REQUIRED_ADVISORS) {
     const a = ep.advisors?.[id];
     need(isObj(a) && ['name', 'verb', 'strength', 'weakness'].every(k => isStr(a[k])), `advisors.${id}: name, verb, strength, weakness required`);
-    need(isRelativePath(a?.icon), `advisors.${id}: icon must be a relative path`);
+    need(isLocalAssetPath(a?.icon), `advisors.${id}: icon must be a relative path to a local asset (assets/<folder>/<name>.svg|png|webp)`);
   }
 
   // -- advice: four blocks, unique ids, only known conditions, only known evidence
@@ -146,6 +159,15 @@ export function validateEpisode(ep) {
       need(isObj(r) && RATINGS.includes(r.rating) && isStr(r.text), `postmortem.${id}.advisors.${a}: rating (${RATINGS.join('/')}) + text required`);
     }
   }
+  // -- generated DOM ids: safe syntax is not enough; prefixed ids must also be unique (evidence
+  // 'body-e_monitor' would render ev-body-e_monitor, the body id of e_monitor). Same functions as app.js.
+  const idsSafe = evidence.every(e => isObj(e) && isId(e.id)) && decisions.every(d => isObj(d) && isId(d.id));
+  if (idsSafe) {
+    for (const dup of duplicateDomIds({evidence, decisions, advisorOrder: REQUIRED_ADVISORS})) {
+      problems.push(`generated DOM id collision: "${dup}" would appear more than once — rename the evidence/decision id that produces it`);
+    }
+  }
+
   // Structural checks must pass before executing the shared rules on content.
   if (!problems.length) {
     const reached = reachableEvidence(ep);
