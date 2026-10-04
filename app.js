@@ -19,12 +19,12 @@
     if (actions) actions.innerHTML = '<a class="btn primary small" href="/samples/harness.html" aria-label="Read an excerpt from The Harness">Read excerpt</a><a class="btn ghost small" href="/the-harness/">About the book</a>';
   }
 
-  // The Book of Better Questions is complete; only release validation remains.
+  // Better Questions cleared official EPUBCheck 5.4.0; retailer upload / processed preview is next.
   const questionsCard = $('.book a[href="/the-book-of-better-questions/"]')?.closest('.book');
   if (questionsCard) {
     const status = $('.status', questionsCard);
     if (status) {
-      status.textContent = 'Final validation pending';
+      status.textContent = 'Ready for retailer upload';
       status.className = 'status ready';
     }
   }
