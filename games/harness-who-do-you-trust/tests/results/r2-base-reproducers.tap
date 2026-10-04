@@ -1,0 +1,430 @@
+TAP version 13
+# Subtest: R2-1 Astra reproducer: ordinary nested GO_TO_DECISION during BOY event keeps all four consult-all events
+not ok 1 - R2-1 Astra reproducer: ordinary nested GO_TO_DECISION during BOY event keeps all four consult-all events
+  ---
+  duration_ms: 12.5153
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:31:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    each committed adviser logged exactly once, in order
+    + actual - expected
+    
+      [
+        'boy',
+    -   'tooth',
+    -   'darth',
+    -   'donsol'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'boy'
+    1: 'tooth'
+    2: 'darth'
+    3: 'donsol'
+  actual:
+    0: 'boy'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-base/games/harness-who-do-you-trust/tests/redteam-r2.test.js:44:10)
+    async Test.run (node:internal/test_runner/test:1332:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: R2-1 control: reset during CONSULT_ALL still cancels the old run (no reset-overwrite race)
+ok 2 - R2-1 control: reset during CONSULT_ALL still cancels the old run (no reset-overwrite race)
+  ---
+  duration_ms: 5.6761
+  type: 'test'
+  ...
+# Subtest: R2-1 control: reset followed by a new-run START inside the listener is still a cancellation
+ok 3 - R2-1 control: reset followed by a new-run START inside the listener is still a cancellation
+  ---
+  duration_ms: 2.7433
+  type: 'test'
+  ...
+# Subtest: R2-1 same root cause: ordinary nested VIEW_POSTMORTEM during decision_submit keeps episode_complete
+not ok 4 - R2-1 same root cause: ordinary nested VIEW_POSTMORTEM during decision_submit keeps episode_complete
+  ---
+  duration_ms: 3.1796
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:78:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-base/games/harness-who-do-you-trust/tests/redteam-r2.test.js:85:10)
+    async Test.run (node:internal/test_runner/test:1332:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: R2-1 exactly once: a nested repeat CONSULT_ALL logs its own four no-op events, outer still logs four
+ok 5 - R2-1 exactly once: a nested repeat CONSULT_ALL logs its own four no-op events, outer still logs four
+  ---
+  duration_ms: 3.1638
+  type: 'test'
+  ...
+# Subtest: R2-2 Astra reproducer: e_controller renamed to body-e_monitor is rejected before rendering
+not ok 6 - R2-2 Astra reproducer: e_controller renamed to body-e_monitor is rejected before rendering
+  ---
+  duration_ms: 3.7609
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:130:1'
+  failureType: 'testCodeFailure'
+  error: ''
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-base/games/harness-who-do-you-trust/tests/redteam-r2.test.js:133:3)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: R2-2 pairwise: every namespace pair that can collide is rejected (evidence and decision ids)
+not ok 7 - R2-2 pairwise: every namespace pair that can collide is rejected (evidence and decision ids)
+  ---
+  duration_ms: 1.2475
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:141:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module 'C:\\dds-base\\games\\harness-who-do-you-trust\\js\\dom-ids.js' imported from C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    moduleResolve (node:internal/modules/esm/resolve:865:10)
+    defaultResolve (node:internal/modules/esm/resolve:992:11)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    #resolve (node:internal/modules/esm/loader:683:17)
+    ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    node:internal/modules/esm/loader:632:32
+    TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+  ...
+# Subtest: R2-2 property: 600 seeded adversarial id sets — accepted ⇒ every rendered DOM id and ARIA ref is unique; rejected ⇒ a real collision
+not ok 8 - R2-2 property: 600 seeded adversarial id sets — accepted ⇒ every rendered DOM id and ARIA ref is unique; rejected ⇒ a real collision
+  ---
+  duration_ms: 0.8998
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:164:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module 'C:\\dds-base\\games\\harness-who-do-you-trust\\js\\dom-ids.js' imported from C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    moduleResolve (node:internal/modules/esm/resolve:865:10)
+    defaultResolve (node:internal/modules/esm/resolve:992:11)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    #resolve (node:internal/modules/esm/loader:683:17)
+    ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    node:internal/modules/esm/loader:632:32
+    TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+  ...
+# Subtest: R2-2 completeness: every id the renderer emits is enumerated by generatedIds(), and STATIC_IDS covers every literal id
+not ok 9 - R2-2 completeness: every id the renderer emits is enumerated by generatedIds(), and STATIC_IDS covers every literal id
+  ---
+  duration_ms: 0.723
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:199:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot find module 'C:\\dds-base\\games\\harness-who-do-you-trust\\js\\dom-ids.js' imported from C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js"
+  code: 'ERR_MODULE_NOT_FOUND'
+  stack: |-
+    finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    moduleResolve (node:internal/modules/esm/resolve:865:10)
+    defaultResolve (node:internal/modules/esm/resolve:992:11)
+    #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    #resolve (node:internal/modules/esm/loader:683:17)
+    ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    node:internal/modules/esm/loader:632:32
+    TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+  ...
+# Subtest: R2-3 Astra reproducers: whitespace/control-obfuscated and protocol-relative icons are rejected
+not ok 10 - R2-3 Astra reproducers: whitespace/control-obfuscated and protocol-relative icons are rejected
+  ---
+  duration_ms: 2.7287
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:216:1'
+  failureType: 'testCodeFailure'
+  error: 'leading space'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-base/games/harness-who-do-you-trust/tests/redteam-r2.test.js:229:5)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: R2-3 broader: absolute, scheme, encoded, backtracking and malformed local paths are rejected
+not ok 11 - R2-3 broader: absolute, scheme, encoded, backtracking and malformed local paths are rejected
+  ---
+  duration_ms: 2.7718
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:233:1'
+  failureType: 'testCodeFailure'
+  error: '" \\t\\n//x.invalid/a.svg"'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-base/games/harness-who-do-you-trust/tests/redteam-r2.test.js:245:32)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: R2-3 valid relative icons are still accepted and resolve inside the game's assets folder
+ok 12 - R2-3 valid relative icons are still accepted and resolve inside the game's assets folder
+  ---
+  duration_ms: 14.5882
+  type: 'test'
+  ...
+# Subtest: R2-4 Astra reproducer: a valid BOY save with discoveredEvidence reversed is rejected
+not ok 13 - R2-4 Astra reproducer: a valid BOY save with discoveredEvidence reversed is rejected
+  ---
+  duration_ms: 1.0098
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:263:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + {
+    +   completed: false,
+    +   consultations: [
+    +     {
+    +       adviceId: 'boy_find',
+    +       advisorId: 'boy'
+    +     }
+    +   ],
+    +   discoveredEvidence: [
+    +     'e_clocksync',
+    +     'e_protocol',
+    +     'e_technician',
+    +     'e_controller',
+    +     'e_monitor'
+    +   ],
+    +   episodeId: 'episode-001',
+    +   inspectedSources: [],
+    +   outcomeId: null,
+    +   playerDecisions: [],
+    +   sceneId: 'investigate',
+    +   trustWeights: {
+    +     boy: 0,
+    +     darth: 0,
+    +     donsol: 0,
+    +     tooth: 0
+    +   },
+    +   uncertaintyAcknowledged: false,
+    +   version: 1
+    + }
+    - null
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual:
+    version: 1
+    episodeId: 'episode-001'
+    sceneId: 'investigate'
+    discoveredEvidence:
+      0: 'e_clocksync'
+      1: 'e_protocol'
+      2: 'e_technician'
+      3: 'e_controller'
+      4: 'e_monitor'
+    inspectedSources:
+    consultations:
+      0:
+        advisorId: 'boy'
+        adviceId: 'boy_find'
+    trustWeights:
+      boy: 0
+      tooth: 0
+      darth: 0
+      donsol: 0
+    playerDecisions:
+    uncertaintyAcknowledged: false
+    outcomeId: ~
+    completed: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-base/games/harness-who-do-you-trust/tests/redteam-r2.test.js:267:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: R2-4 broader: every non-canonical order of the 5 discovered items is rejected; only the engine order restores
+not ok 14 - R2-4 broader: every non-canonical order of the 5 discovered items is rejected; only the engine order restores
+  ---
+  duration_ms: 0.9251
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:271:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'e_monitor',
+        'e_controller',
+        'e_technician',
+    +   'e_clocksync',
+        'e_protocol',
+    -   'e_clocksync'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'e_monitor'
+    1: 'e_controller'
+    2: 'e_technician'
+    3: 'e_protocol'
+    4: 'e_clocksync'
+  actual:
+    0: 'e_monitor'
+    1: 'e_controller'
+    2: 'e_technician'
+    3: 'e_clocksync'
+    4: 'e_protocol'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-base/games/harness-who-do-you-trust/tests/redteam-r2.test.js:277:34)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: R2-4 append semantics: either reveal order across advisers restores; impossible orders do not
+not ok 15 - R2-4 append semantics: either reveal order across advisers restores; impossible orders do not
+  ---
+  duration_ms: 3.6793
+  type: 'test'
+  location: 'C:\\dds-base\\games\\harness-who-do-you-trust\\tests\\redteam-r2.test.js:300:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    only Don Sol consulted: his reveal order is fixed
+    + actual - expected
+    
+    + {
+    +   completed: false,
+    +   consultations: [
+    +     {
+    +       adviceId: 'donsol_both',
+    +       advisorId: 'donsol'
+    +     }
+    +   ],
+    +   discoveredEvidence: [
+    +     'e_monitor',
+    +     'e_controller',
+    +     'e_technician',
+    +     'e_clocksync',
+    +     'e_protocol'
+    +   ],
+    +   episodeId: 'episode-001',
+    +   inspectedSources: [
+    +     'e_technician'
+    +   ],
+    +   outcomeId: null,
+    +   playerDecisions: [],
+    +   sceneId: 'investigate',
+    +   trustWeights: {
+    +     boy: 0,
+    +     darth: 0,
+    +     donsol: 0,
+    +     tooth: 0
+    +   },
+    +   uncertaintyAcknowledged: false,
+    +   version: 1
+    + }
+    - null
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual:
+    version: 1
+    episodeId: 'episode-001'
+    sceneId: 'investigate'
+    discoveredEvidence:
+      0: 'e_monitor'
+      1: 'e_controller'
+      2: 'e_technician'
+      3: 'e_clocksync'
+      4: 'e_protocol'
+    inspectedSources:
+      0: 'e_technician'
+    consultations:
+      0:
+        advisorId: 'donsol'
+        adviceId: 'donsol_both'
+    trustWeights:
+      boy: 0
+      tooth: 0
+      darth: 0
+      donsol: 0
+    playerDecisions:
+    uncertaintyAcknowledged: false
+    outcomeId: ~
+    completed: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-base/games/harness-who-do-you-trust/tests/redteam-r2.test.js:313:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: R2-4 no false rejections: 3,000 seeded runs × 20 steps on both episode shapes, including stale advice
+ok 16 - R2-4 no false rejections: 3,000 seeded runs × 20 steps on both episode shapes, including stale advice
+  ---
+  duration_ms: 655.1546
+  type: 'test'
+  ...
+# reachable states restored=60000 staleAdviceRuns=211
+1..16
+# tests 16
+# suites 0
+# pass 5
+# fail 11
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 855.3823

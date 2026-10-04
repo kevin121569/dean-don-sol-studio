@@ -1,0 +1,422 @@
+{
+  "target": {
+    "branch": "fix/harness-wdyt-redteam-r3",
+    "baseCommit": "1babcff446b7cb49630474df9d8b43857d9d135c"
+  },
+  "method": "Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.",
+  "results": [
+    {
+      "name": "120 evidence permutations, 360 valid BOY timings",
+      "result": "PASS",
+      "details": {
+        "permutations": 120,
+        "runs": 360
+      }
+    },
+    {
+      "name": "24 adviser orders, repeats and consult-all idempotence",
+      "result": "PASS",
+      "details": 24
+    },
+    {
+      "name": "32 subsets: exact hybrid condition and blocked submissions",
+      "result": "PASS",
+      "details": {
+        "total": 32,
+        "locked": 28,
+        "unlocked": 4
+      }
+    },
+    {
+      "name": "all four outcomes: minimal applicable and full investigations",
+      "result": "PASS",
+      "details": 8
+    },
+    {
+      "name": "ordinary corrupt/tampered saves rejected",
+      "result": "PASS",
+      "details": 36
+    },
+    {
+      "name": "mandatory BOY reveal required in a save",
+      "result": "PASS"
+    },
+    {
+      "name": "Don Sol frame cannot exist without two prior other advisers",
+      "result": "PASS"
+    },
+    {
+      "name": "additional content mutations rejected without throws",
+      "result": "PASS",
+      "details": 30
+    },
+    {
+      "name": "null when rejected before runtime",
+      "result": "PASS"
+    },
+    {
+      "name": "duplicate reveals rejected before creating invalid state",
+      "result": "PASS"
+    },
+    {
+      "name": "self-dependent reveal rejected as unreachable",
+      "result": "PASS"
+    },
+    {
+      "name": "reachable state machine and refresh/reset properties, new seeded run",
+      "result": "PASS",
+      "details": {
+        "checked": 30000,
+        "completedSamples": 1233,
+        "seed": "0x51d27b93"
+      }
+    },
+    {
+      "name": "storage round-trip, corruption, denied methods, reset clear",
+      "result": "PASS",
+      "details": {
+        "validSaveRoundTrip": true,
+        "corruptSaveRejected": true,
+        "deniedStorageMethodsGuarded": true
+      }
+    },
+    {
+      "name": "denied localStorage getter does not break boot adapter",
+      "result": "PASS"
+    },
+    {
+      "name": "prototype adviser ids rejected by pure engine without exception",
+      "result": "PASS"
+    },
+    {
+      "name": "actual app renders all eight minimal/full outcome routes in DOM harness",
+      "result": "PASS",
+      "details": 8
+    },
+    {
+      "name": "telemetry: valid repeats/no-ops, consult-all counts and reset",
+      "result": "PASS",
+      "details": {
+        "singleConsultEvents": 2,
+        "consultAllEvents": 8,
+        "secondConsultAllUpdated": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "repeatEvidenceEvents": 1,
+        "outOfSceneConsultEvents": 0
+      }
+    },
+    {
+      "name": "failed invalid consultation not logged as adviser consultation",
+      "result": "PASS"
+    },
+    {
+      "name": "episode JSON ids cannot inject executable HTML into renderer",
+      "result": "PASS"
+    },
+    {
+      "name": "all ordinary content text escaped by renderer",
+      "result": "PASS",
+      "details": {
+        "textFieldsEscaped": true
+      }
+    },
+    {
+      "name": "app refresh, corrupted restore, settings and reduced-motion code paths",
+      "result": "PASS",
+      "details": 4
+    },
+    {
+      "name": "synchronous telemetry listener cannot undo requested reset",
+      "result": "PASS"
+    },
+    {
+      "name": "delayed pre-reset live callback cannot write old-run advice",
+      "result": "PASS"
+    },
+    {
+      "name": "all static-host core resources same-origin and HTTP-accessible",
+      "result": "PASS",
+      "details": 14
+    },
+    {
+      "name": "r2 gap1: ordinary nested transition during consult-all telemetry keeps four committed events; reset still cancels",
+      "result": "PASS",
+      "details": {
+        "ordinary": 4,
+        "afterReset": 1
+      }
+    },
+    {
+      "name": "r2 gap2: generated DOM id collisions rejected, including the body-e_monitor reproducer",
+      "result": "PASS",
+      "details": 6
+    },
+    {
+      "name": "r2 gap3: obfuscated/external/backtracking icon paths rejected, local relative icons accepted",
+      "result": "PASS",
+      "details": {
+        "rejected": 11,
+        "accepted": 2
+      }
+    },
+    {
+      "name": "r2 gap4: engine-impossible discoveredEvidence order rejected; reachable orders restore",
+      "result": "PASS",
+      "details": 15000
+    },
+    {
+      "name": "r3 feasible history: Astra conditional-reveal forgery rejected; every engine-reachable shipped save restores",
+      "result": "PASS",
+      "details": 87142
+    }
+  ],
+  "counts": {
+    "evidenceOrders": {
+      "permutations": 120,
+      "runs": 360
+    },
+    "adviserOrders": 24,
+    "hybridSubsets": {
+      "total": 32,
+      "locked": 28,
+      "unlocked": 4
+    },
+    "outcomeRoutes": 8,
+    "rejectedCommonSaves": 36,
+    "rejectedContentMutations": 30,
+    "reachableStates": {
+      "checked": 30000,
+      "completedSamples": 1233,
+      "seed": "0x51d27b93"
+    },
+    "uiRenderedRoutes": 8,
+    "motionCombinations": 4,
+    "staticResources": 14,
+    "r2TelemetryEvents": {
+      "ordinary": 4,
+      "afterReset": 1
+    },
+    "r2IdCollisions": 6,
+    "r2Icons": {
+      "rejected": 11,
+      "accepted": 2
+    },
+    "r2OrderReachableStates": 15000,
+    "r3ReachableShippedSaves": 87142
+  },
+  "diagnostics": {
+    "missingMandatoryReveal": {
+      "save": {
+        "version": 1,
+        "episodeId": "episode-001",
+        "sceneId": "investigate",
+        "discoveredEvidence": [
+          "e_monitor",
+          "e_controller",
+          "e_technician",
+          "e_protocol"
+        ],
+        "inspectedSources": [],
+        "consultations": [
+          {
+            "advisorId": "boy",
+            "adviceId": "boy_find"
+          }
+        ],
+        "trustWeights": {
+          "boy": 0,
+          "tooth": 0,
+          "darth": 0,
+          "donsol": 0
+        },
+        "playerDecisions": [],
+        "uncertaintyAcknowledged": false,
+        "outcomeId": null,
+        "completed": false
+      },
+      "reasons": [
+        "no feasible engine history: no sequence of opens and consults under first-match advice rules produces this discoveredEvidence order, inspection order and advice",
+        "advice boy_find is missing mandatory revealed evidence"
+      ],
+      "accepted": false
+    },
+    "impossibleDonSolFrame": {
+      "save": {
+        "version": 1,
+        "episodeId": "episode-001",
+        "sceneId": "investigate",
+        "discoveredEvidence": [
+          "e_monitor",
+          "e_controller",
+          "e_technician",
+          "e_protocol"
+        ],
+        "inspectedSources": [],
+        "consultations": [
+          {
+            "advisorId": "donsol",
+            "adviceId": "donsol_frame"
+          }
+        ],
+        "trustWeights": {
+          "boy": 0,
+          "tooth": 0,
+          "darth": 0,
+          "donsol": 0
+        },
+        "playerDecisions": [],
+        "uncertaintyAcknowledged": false,
+        "outcomeId": null,
+        "completed": false
+      },
+      "reasons": [
+        "no feasible engine history: no sequence of opens and consults under first-match advice rules produces this discoveredEvidence order, inspection order and advice",
+        "advice donsol_frame was never selectable in this consultation history"
+      ],
+      "accepted": false
+    },
+    "nullWhen": {
+      "problems": [
+        "advice.boy[0] (boy_find): when must be an object if present",
+        "advice.boy: last variant must be unconditional so selectAdvice() always returns one"
+      ],
+      "runtimeError": "TypeError: Cannot read properties of null (reading 'inspected')"
+    },
+    "duplicateReveal": {
+      "problems": [
+        "advice.boy[0] (boy_find): reveals must not repeat ids"
+      ],
+      "discovered": [
+        "e_monitor",
+        "e_controller",
+        "e_technician",
+        "e_protocol",
+        "e_clocksync"
+      ],
+      "restoreReasons": []
+    },
+    "circularReveal": {
+      "problems": [
+        "hidden evidence \"e_clocksync\" cannot be reached from the initial state"
+      ],
+      "discovered": [
+        "e_monitor",
+        "e_controller",
+        "e_technician",
+        "e_protocol"
+      ],
+      "hybridUnlocked": false
+    },
+    "deniedStorageGetter": {
+      "error": null
+    },
+    "prototypeAdviserIds": [],
+    "validNoOpTelemetry": {
+      "singleConsultEvents": 2,
+      "consultAllEvents": 8,
+      "secondConsultAllUpdated": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "repeatEvidenceEvents": 1,
+      "outOfSceneConsultEvents": 0
+    },
+    "invalidConsultTelemetry": [],
+    "evidenceIdInjection": {
+      "payload": "e_monitor\"><img src=x onerror=\"globalThis.__auditXss=1\">",
+      "problems": [
+        "evidence[0] (e_monitor\"><img src=x onerror=\"globalThis.__auditXss=1\">): id must be a safe identifier"
+      ],
+      "executableMarkupInOutput": false
+    },
+    "reentrantReset": {
+      "resetRequested": true,
+      "finalScene": "briefing"
+    },
+    "staleLiveAfterReset": {
+      "finalScene": "briefing",
+      "firstDelayedText": "",
+      "pendingCallbacks": 1,
+      "retainedCallbacks": 2,
+      "finalText": "Progress reset. Episode 001 is back at the briefing."
+    },
+    "staticResources": [
+      {
+        "path": "index.html",
+        "status": 200,
+        "bytes": 2931
+      },
+      {
+        "path": "css/game.css",
+        "status": 200,
+        "bytes": 11578
+      },
+      {
+        "path": "js/app.js",
+        "status": 200,
+        "bytes": 20858
+      },
+      {
+        "path": "js/advice.js",
+        "status": 200,
+        "bytes": 1013
+      },
+      {
+        "path": "js/dom-ids.js",
+        "status": 200,
+        "bytes": 2662
+      },
+      {
+        "path": "js/state.js",
+        "status": 200,
+        "bytes": 14091
+      },
+      {
+        "path": "js/engine.js",
+        "status": 200,
+        "bytes": 5743
+      },
+      {
+        "path": "js/content.js",
+        "status": 200,
+        "bytes": 12799
+      },
+      {
+        "path": "js/telemetry.js",
+        "status": 200,
+        "bytes": 1424
+      },
+      {
+        "path": "data/episode-001.json",
+        "status": 200,
+        "bytes": 12771
+      },
+      {
+        "path": "assets/characters/boy.svg",
+        "status": 200,
+        "bytes": 317
+      },
+      {
+        "path": "assets/characters/tooth.svg",
+        "status": 200,
+        "bytes": 420
+      },
+      {
+        "path": "assets/characters/darth.svg",
+        "status": 200,
+        "bytes": 385
+      },
+      {
+        "path": "assets/characters/donsol.svg",
+        "status": 200,
+        "bytes": 382
+      }
+    ]
+  }
+}

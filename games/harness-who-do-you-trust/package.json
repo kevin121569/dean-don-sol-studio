@@ -1,0 +1,7 @@
+{
+  "name": "harness-who-do-you-trust",
+  "private": true,
+  "type": "module",
+  "description": "Marks this folder as ES modules for node --test. No dependencies; nothing to install.",
+  "scripts": {"test": "node --test \"tests/*.test.js\""}
+}
