@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Living Learning Objects — EP001 Reference Board v1</title>
+<style>
+:root{--paper:#F4F3EF;--ink:#121212;--navy:#1A2B4C;--line:#DDDCD5;--muted:#666;--yellow:#F4E35C}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.45 system-ui,sans-serif;padding:28px}
+.board{max-width:1180px;margin:auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;box-shadow:0 12px 30px rgba(0,0,0,.06)}
+h1{margin:0;font-size:22px}.sub{color:var(--muted);margin:6px 0 24px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.card{border:1px solid var(--line);border-radius:10px;padding:18px;min-height:185px;display:grid;place-items:center;align-content:start;gap:12px;background:#FAFAF7;text-align:center}.name{font-weight:900}.note{font-size:12px;color:var(--muted)}.asset{width:120px;height:92px;display:grid;place-items:center;position:relative}
+.percy-wrap{display:flex;align-items:center;justify-content:center;gap:38px;height:80px}.percy{fill:var(--navy)}
+.paperclip{width:21px;height:54px;border:4px solid #B8C0C8;border-radius:12px;position:relative;transform:rotate(6deg)}.paperclip:after{content:"";position:absolute;top:9px;left:4px;width:7px;height:34px;border:4px solid #B8C0C8;border-bottom:0;border-radius:7px 7px 0 0}
+.pencil{width:13px;height:55px;background:#E5A93C;position:relative;transform:rotate(15deg);border-radius:2px}.pencil:before{content:"";position:absolute;top:-10px;left:0;width:13px;height:10px;background:#E88395;border-bottom:3px solid #A0A0A0;border-radius:3px 3px 0 0}.pencil:after{content:"";position:absolute;bottom:-13px;left:0;border-left:6.5px solid transparent;border-right:6.5px solid transparent;border-top:13px solid #D4982B}
+.eraser{width:54px;height:32px;transform:skew(-12deg);border-radius:3px;background:linear-gradient(135deg,#F09BAA,#E88395);box-shadow:-3px 4px 6px rgba(0,0,0,.12)}
+.highlighter{position:relative;width:82px;height:23px;transform:rotate(-7deg)}.highlighter .body{position:absolute;left:0;top:0;width:62px;height:23px;border:1px solid #CDBB2F;border-radius:4px 2px 2px 4px;background:linear-gradient(#FFF37A,#F4E35C)}.highlighter .cap{position:absolute;right:0;top:1px;width:22px;height:21px;border-radius:2px 5px 5px 2px;background:#3B3B38}.highlighter .tip{position:absolute;right:-8px;top:7px;width:10px;height:10px;background:#D9C62A;clip-path:polygon(0 15%,100% 0,100% 100%,0 85%)}
+.ruler{position:relative;width:96px;height:28px;border:1px solid #9D743F;border-radius:3px;background:linear-gradient(#E6C995,#D6B37A);box-shadow:0 2px 5px rgba(0,0,0,.12)}.ruler:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 8px,#5C4428 8px 9px);opacity:.8}
+.sticky{position:relative;width:72px;height:72px;background:linear-gradient(145deg,#F6E978,#E7D95D);box-shadow:0 5px 10px rgba(0,0,0,.12);transform:rotate(-2deg);display:grid;place-items:center;font:800 9px/1.15 system-ui;text-align:center;padding:8px}.sticky:after{content:"";position:absolute;right:0;bottom:0;width:18px;height:18px;background:linear-gradient(135deg,#CDBF44 0 49%,#FFF3A0 50% 100%);clip-path:polygon(0 100%,100% 0,100% 100%)}
+.cursor{position:relative;width:42px;height:55px}.cursor:before{content:"";position:absolute;inset:0;background:#121212;clip-path:polygon(0 0,0 90%,28% 66%,43% 100%,56% 94%,42% 61%,78% 61%)}.cursor:after{content:"";position:absolute;inset:5px 8px 9px 5px;background:#fff;clip-path:polygon(0 0,0 86%,27% 64%,41% 96%,48% 92%,35% 57%,70% 57%)}
+.phone{width:54px;height:92px;border:4px solid #1A1A1A;border-radius:11px;background:#202020;padding:6px;box-shadow:0 4px 9px rgba(0,0,0,.14)}.phone:before{content:"";display:block;width:18px;height:3px;background:#555;border-radius:99px;margin:0 auto 4px}.screen{height:69px;border-radius:5px;background:#F8FAFD;display:grid;place-items:center;color:#1A2B4C;font-size:10px;font-weight:900;line-height:1.1;text-align:center}
+.env{margin-top:24px;border:1px solid var(--line);border-radius:10px;padding:18px;background:#FAFAF7}.lab{height:250px;display:grid;grid-template-columns:1.1fr 1fr 1.2fr;gap:12px;align-items:end}.zone{height:100%;border:1px solid #D7D6CF;border-radius:8px;background:#fff;position:relative;padding:12px}.zone h3{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.08em}.table{position:absolute;left:10%;right:10%;bottom:28px;height:72px;background:#D2B48C;border-radius:5px}.tray{position:absolute;left:12%;right:12%;bottom:55px;height:28px;background:#E9E9E5;border:1px solid #BDBDB7;border-radius:4px}.guard{position:absolute;left:12%;right:12%;bottom:34px;height:78px;border:3px solid #A5A6A0;border-radius:8px;background:repeating-linear-gradient(90deg,#F3F3EF 0 18px,#E3E3DD 18px 36px)}.carrier{position:absolute;left:18%;right:18%;bottom:126px;height:24px;background:#F8F8F5;border:1px solid #9E9E98;border-radius:4px}.split{position:absolute;left:45%;bottom:20px;width:10px;height:110px;background:#777;transform:rotate(18deg);transform-origin:bottom}.status{position:absolute;right:12px;top:40px;width:54px;height:32px;border:1px solid #AAA;background:#F5F5F1;border-radius:4px}.status:before{content:"";display:block;width:9px;height:9px;background:#C9A000;border-radius:50%;margin:6px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.lab{grid-template-columns:1fr;height:auto}.zone{height:200px}}
+</style>
+</head>
+<body>
+<main class="board">
+<h1>Living Learning Objects — Episode 001 Reference Board v1</h1>
+<p class="sub">Pre-animation identity lock. Native-object silhouette outranks mascot styling.</p>
+<section class="grid">
+<div class="card"><div class="asset"><div class="percy-wrap"><svg class="percy" viewBox="0 0 20 60" width="24" height="72"><path d="M14 4 C 6 18, 6 42, 14 56 C 11 40, 11 20, 14 4 Z"/></svg><svg class="percy" viewBox="0 0 20 60" width="24" height="72"><path d="M6 4 C 14 18, 14 42, 6 56 C 9 40, 9 20, 6 4 Z"/></svg></div></div><div class="name">Percy</div><div class="note">One paired-parenthesis character. Fixed-size navy curves. No growth or VFX.</div></div>
+<div class="card"><div class="asset"><div class="paperclip"></div></div><div class="name">Clipper</div><div class="note">Slightly bent silver paper clip. Grandpa. Fastens by direct contact.</div></div>
+<div class="card"><div class="asset"><div class="pencil"></div></div><div class="name">Pencil</div><div class="note">Gold pencil, pink eraser, visible point. Creates/drafts.</div></div>
+<div class="card"><div class="asset"><div class="eraser"></div></div><div class="name">Eraser</div><div class="note">Pink block eraser. Corrects only where physically rubbing.</div></div>
+<div class="card"><div class="asset"><div class="highlighter"><span class="body"></span><span class="cap"></span><span class="tip"></span></div></div><div class="name">Hue</div><div class="note">Real chisel-tip highlighter. Yellow emphasis is functional.</div></div>
+<div class="card"><div class="asset"><div class="ruler"></div></div><div class="name">Ruler</div><div class="note">Wood ruler with stable measurement ticks.</div></div>
+<div class="card"><div class="asset"><div class="sticky">CARD 3<br>POINTS LEFT</div></div><div class="name">Sticky Note</div><div class="note">One deliberate reminder. Text stays stable.</div></div>
+<div class="card"><div class="asset"><div class="cursor"></div></div><div class="name">Cursor</div><div class="note">System pointer. Selects; never moves physical objects.</div></div>
+<div class="card"><div class="asset"><div class="phone"><div class="screen">WHAT<br>CAN WE<br>CHECK?</div></div></div><div class="name">Mobi</div><div class="note">Mobile AI interface. Shared evidence only; no omniscient overlays.</div></div>
+</section>
+<section class="env">
+<h2>Learning Lab Geography Lock</h2>
+<div class="lab">
+<div class="zone"><h3>LEFT — Worktable</h3><div class="table"></div></div>
+<div class="zone"><h3>CENTER — Safe Interface</h3><div class="tray"></div><div class="status"></div></div>
+<div class="zone"><h3>RIGHT — Guarded Transfer</h3><div class="guard"></div><div class="carrier"></div><div class="split"></div></div>
+</div>
+<p class="note">Final Percy sequence stays on the shallow exposed carrier along the outside face of the guarded mechanism. No tunnel, chute, or machine-interior shot.</p>
+</section>
+</main>
+</body>
+</html>
