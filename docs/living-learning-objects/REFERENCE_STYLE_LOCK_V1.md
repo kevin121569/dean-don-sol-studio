@@ -146,7 +146,7 @@ If not, simplify.
 
 ## Percy proof target
 
-The next visual proof should show only:
+The visual proof should show:
 
 - Percy joined in her normal one-face state,
 - Percy separated in her working state,
@@ -161,3 +161,26 @@ The next visual proof should show only:
 - no complex animation assumptions.
 
 This proof must be visually compelling as a drawing before any animation is considered.
+
+## APPROVED VISUAL TARGET — 2026-10-05
+
+The most recent illustrated proof board shown in review is **APPROVED as the visual-direction target**.
+
+What is approved from that proof:
+
+- warm off-white paper / storybook ground,
+- loose black ink-line drawing,
+- restrained selective color instead of full rendered color,
+- simple stick/wire bodies,
+- clothing and accessories used only as personality shorthand,
+- expressive faces carrying most emotion,
+- object/symbol identity remaining visually dominant,
+- backgrounds treated as reusable illustrated plates,
+- limited-motion storytelling rather than full animation,
+- Percy reading as one face when joined and splitting into the two parenthesis halves when she needs to contain related things,
+- Clipper retaining the charming old-paper-clip-grandpa personality in a simplified drawn form,
+- Hue and Mobi remaining readable first as a highlighter and phone.
+
+This approval is **directional canon**, not permission to copy incidental AI-generation mistakes. Any future character sheet, storyboard frame, animation asset, or generated visual must preserve the approved visual language while still obeying the locked character mechanics and object identities.
+
+Future visual development should move **from this approved style forward**, not back toward 3D mascot rendering.
