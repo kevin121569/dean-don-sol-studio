@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>04 Mobile Mind-Bending Shelf Placement Mockup (375x812)</title>
+<style>
+  body {
+    background: #E2E2DC;
+    margin: 0;
+    padding: 20px;
+    font-family: "Georgia", serif;
+    display: flex;
+    justify-content: center;
+  }
+
+  .mobile-viewport {
+    width: 375px;
+    height: 812px;
+    background: #FFFFFF;
+    border-radius: 36px;
+    border: 8px solid #121212;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  .mobile-header {
+    padding: 20px;
+    border-bottom: 1px solid #E2E2DC;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  .mobile-intro {
+    padding: 24px 20px 12px;
+  }
+
+  .mobile-intro h2 {
+    font-size: 22px;
+    margin: 0 0 6px;
+    font-weight: normal;
+  }
+
+  .mobile-intro p {
+    font-size: 13px;
+    color: #1A2B4C;
+    font-style: italic;
+    margin: 0;
+  }
+
+  .mobile-seam-container {
+    position: relative;
+    height: 30px;
+    margin: 10px 20px;
+    overflow: hidden;
+  }
+
+  .mobile-seam {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #C5A059;
+  }
+
+  .m-left {
+    position: absolute;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .m-right {
+    position: absolute;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .m-rule-left {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: #1A1A1A;
+  }
+
+  .m-bend-space {
+    position: absolute;
+    left: -167.5px;
+    top: 0;
+    width: 335px;
+    height: 30px;
+    transform-origin: 167.5px 15px;
+    transform: rotate(-2.5deg);
+  }
+
+  .m-rule-right {
+    position: absolute;
+    top: 15px;
+    left: 167.5px;
+    right: 0;
+    height: 1.5px;
+    background: #1A2B4C;
+  }
+
+  .mobile-card {
+    margin: 10px 20px 24px;
+    padding: 20px;
+    background: #F4F3EF;
+    border: 1px solid #E2E2DC;
+  }
+
+  .mobile-cover {
+    width: 100%;
+    height: 200px;
+    background: #0D0D0D;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #F4F3EF;
+    font-size: 16px;
+  }
+
+  .btn-mobile-buy {
+    min-width: 48px;
+    min-height: 48px;
+    width: 100%;
+    background: #121212;
+    color: #FFFFFF;
+    border: none;
+    font-family: sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-mobile-buy:focus-visible {
+    outline: 2px solid #005fcc;
+  }
+</style>
+</head>
+<body>
+
+<div class="mobile-viewport">
+  <div class="mobile-header">THE IDEA LAB</div>
+
+  <div class="mobile-intro">
+    <h2>Mind-Bending Shelf</h2>
+    <p>“Go in straight. Come out bent.”</p>
+  </div>
+
+  <div class="mobile-seam-container" aria-hidden="true">
+    <div class="mobile-seam"></div>
+    <div class="m-left"><div class="m-rule-left"></div></div>
+    <div class="m-right">
+      <div class="m-bend-space">
+        <div class="m-rule-right"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-card">
+    <div class="mobile-cover">COGNITIVE DRIFT</div>
+    <div style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">Curved Horizons</div>
+    <div style="font-size: 15px; color: #666; margin-bottom: 16px;">$32.00</div>
+    <button class="btn-mobile-buy" aria-label="Add Curved Horizons to cart for $32.00">ADD TO CART ($32.00)</button>
+  </div>
+</div>
+
+</body>
+</html>
