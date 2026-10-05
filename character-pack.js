@@ -51,7 +51,7 @@
               <path d="M26 4 C 34 18, 34 42, 26 56 C 29 40, 29 20, 26 4 Z" fill="#1A2B4C"/>
             </svg>
           </span>
-          <span>PERcy</span>
+          <span>Percy</span>
         </div>
         <div class="cp-object" role="img" aria-label="Pencil">
           <span class="cp-object-asset" aria-hidden="true"><span class="cp-pencil"></span></span>
