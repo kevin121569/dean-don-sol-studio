@@ -32,12 +32,12 @@ The world should feel warm, intelligent, playful, and visually alive without req
 - Curious, fast-thinking, skeptical, funny.
 - Simple limb design for cheap repeatable animation.
 
-### Darth
+### Luke
 - Black dog with red neckwear/scarf accent.
 - Expressive ears, eyes, tail, and posture.
 - Loyal, playful, theatrically overconfident.
 - Humor should come from behavior and timing, not constant dialogue.
-- Name remains development-only pending commercial naming review.
+- Production name locked as **Luke**.
 
 ## Approved world look
 ### The Idea Lab
@@ -76,7 +76,7 @@ Use limited animation deliberately:
 - head turns,
 - hand gestures,
 - short walk cycles,
-- tail/ear motion for Darth,
+- tail/ear motion for Luke,
 - small robot-arm motions for Tooth,
 - camera pans and push-ins,
 - foreground/background parallax,
