@@ -17,7 +17,7 @@
   .stage.active .sticky { transform:rotate(0deg) scale(1); }
   .note-label { font:800 11px/1.2 system-ui,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#6D621C; }
   .memory { margin-top:18px; font:700 22px/1.25 Georgia,serif; min-height:84px; }
-  .memory[hidden] { display:block; visibility:hidden; }
+  .memory[hidden] { display:none; }
   button { min-height:48px; margin-top:18px; border:0; border-radius:8px; padding:0 16px; background:#121212; color:#fff; font-weight:800; cursor:pointer; }
   button:focus-visible { outline:3px solid #005fcc; outline-offset:3px; }
   .status { margin-left:12px; color:#555; }
@@ -29,7 +29,7 @@
   <h1>Sticky Note — remembers</h1>
   <p>Function proof: a real sticky note holds one short, deterministic reminder. It does not invent or rewrite memory.</p>
   <div class="stage" id="stage">
-    <div class="sticky" role="img" aria-label="Sticky note">
+    <div class="sticky">
       <div class="note-label">Remember</div>
       <div class="memory" id="memory" hidden>Check the evidence before deciding.</div>
     </div>
