@@ -1,6 +1,6 @@
 # Website Character Pack v2 — Proof Branch
 
-Status: **DRAFT / NOT PRODUCTION APPROVED**
+Status: **PROOF PACKAGE PASS / NOT PRODUCTION INTEGRATED**
 
 Tracked by GitHub Issue #15.
 
@@ -32,6 +32,7 @@ See `NARRATIVE_DOCTRINE.md` for the full story rule, Percy arc, Clipper/Percy re
 - `06_V2_Placement_Mockups.html`
 - `07_Mobi_AI_Interface_Proof.html`
 - `NARRATIVE_DOCTRINE.md`
+- `QA_LOCK.md`
 
 ## Mobi constraint
 
@@ -51,4 +52,6 @@ Mobi remains visibly a mobile phone. The group may ask Mobi anything, but Mobi i
 
 ## Gate before integration
 
-No v2 production integration until the package has passed isolated identity/function review, reduced motion, desktop placement, 375×812 mobile placement, accessibility semantics, and runtime/telemetry review.
+The isolated proof package passed identity/function, reduced-motion source review, desktop placement, 375×812 mobile placement, accessibility semantics, and browser interaction review. See `QA_LOCK.md`.
+
+This does **not** authorize production integration. Any live v2 implementation requires a separate integration branch/PR and fresh page-level regression plus measured runtime-performance QA.
