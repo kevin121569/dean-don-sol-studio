@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Website Character Pack v2 — Highlighter Functional Proof</title>
+<title>Website Character Pack v2 — Hue the Highlighter Functional Proof</title>
 <style>
   :root { --paper:#F4F3EF; --ink:#121212; --yellow:#F4E35C; --yellow-deep:#D9C62A; }
   * { box-sizing:border-box; }
@@ -38,8 +38,8 @@
 </head>
 <body>
 <main class="proof">
-  <h1>Highlighter — emphasizes</h1>
-  <p>Function proof: emphasis is created by a real highlighter crossing the exact text it marks.</p>
+  <h1>Hue the Highlighter — focuses attention</h1>
+  <p>Function proof: Hue remains a real highlighter and helps the group focus on the exact thing that matters. His color can vary by meaning, but color is never decoration for its own sake.</p>
   <div class="stage" id="stage">
     <div class="sentence">Good questions start with <span class="target">evidence</span>.</div>
     <div class="highlighter" aria-hidden="true">
@@ -47,7 +47,7 @@
     </div>
   </div>
   <div class="controls">
-    <button type="button" id="apply">Emphasize evidence</button>
+    <button type="button" id="apply">Hue: focus on evidence</button>
     <span class="status" id="status" role="status" aria-live="polite">Nothing emphasized yet.</span>
   </div>
 </main>
@@ -58,7 +58,7 @@
     stage.classList.remove('active');
     requestAnimationFrame(() => {
       stage.classList.add('active');
-      status.textContent = 'Emphasis applied to evidence.';
+      status.textContent = 'Hue focused attention on evidence.';
     });
   });
 </script>
