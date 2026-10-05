@@ -17,8 +17,8 @@
 #books { position: relative; }
 .cp-bookmark {
   position: absolute;
-  top: 5.5rem;
-  left: clamp(.5rem, 2vw, 1.5rem);
+  top: 7rem;
+  left: -24px;
   width: 16px;
   height: 48px;
   background: linear-gradient(180deg, #1A2B4C 0%, #121E36 100%);
@@ -39,7 +39,7 @@
   bottom: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-bottom: 6px solid var(--paper, #fff);
+  border-bottom: 6px solid var(--bg, #12101a);
 }
 
 /* Ink Bottle — adult/literary atmosphere, decorative only. */
@@ -54,6 +54,7 @@
 }
 #studio { position: relative; }
 .cp-cork {
+  display: block;
   width: 14px;
   height: 8px;
   margin: 0 auto;
@@ -61,11 +62,13 @@
   background: linear-gradient(90deg, #8A683B, #B58E52, #8A683B);
 }
 .cp-glass {
+  display: block;
   width: 36px;
   height: 38px;
   background: linear-gradient(135deg, rgba(255,255,255,.22) 0%, rgba(13,13,13,.95) 40%, #0D0D0D 100%);
   clip-path: polygon(25% 0, 75% 0, 75% 25%, 100% 50%, 100% 100%, 0 100%, 0 50%, 25% 25%);
   border-top: 1px solid rgba(255,255,255,.4);
+  box-shadow: inset 1px 0 rgba(255,255,255,.12), 0 0 0 1px rgba(255,255,255,.08);
 }
 
 /* Living Learning Objects — contained inside Idea Lab, not the commerce zone. */
