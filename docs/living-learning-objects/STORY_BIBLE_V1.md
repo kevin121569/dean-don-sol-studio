@@ -56,9 +56,11 @@ The extraordinary moment must still make sense if described with the ordinary ve
 - Key **unlocks / grants access**.
 - Ink Bottle **records / preserves through writing**.
 - Mobi **asks / connects / interfaces with AI**.
-- Percy **groups / contains / protects relationships**.
+- Percy **groups / sets apart / contains related things**.
 
 If an action cannot be explained by the native verb, it probably does not belong to that character.
+
+For Percy specifically, the literal punctuation meaning comes first: parentheses group or set apart related material. The story extension is that, in extraordinary moments, she can physically contain and protect an already-established relationship by bracketing it. “Protecting relationships” is a narrative consequence of grouping, not a replacement definition of what parentheses mean.
 
 ## Power-discovery law
 
@@ -80,21 +82,36 @@ A story may feature many characters using ordinary skills, but a first-discovery
 ### 6. Problems must remain problems
 Mobi cannot answer away the story. Key cannot open every obstacle. Eraser cannot erase consequences. Percy cannot contain anything merely because containment would be convenient.
 
+### 7. Physical manifestation must preserve the native action
+When an ordinary function becomes visually extraordinary, the audience must still be able to see the native action happening.
+
+For Percy:
+- both parenthesis halves must visibly bracket the set,
+- the things inside must already have a story-supported relationship,
+- the set must be physically within her span when she closes around it,
+- she may keep an already-related set together, but she may not pull distant objects toward herself,
+- she may not create a relationship merely by enclosing unrelated things,
+- she may not project an invisible shield, remote force, or generic containment field.
+
+If the scene still works after replacing Percy with an invisible bubble, the scene is wrong.
+
 ## Character roster
 
 ### Percy — Parenthesis Princess
 
 **Form:** one character represented by the pair `( )`.
 
-**Native function:** grouping, relationship, containment.
+**Native function:** grouping, setting apart related material, containment.
 
 **Emotional starting point:** Percy is elegant and pretty and knows it. What she does not know is whether being parentheses matters very much.
 
 She sees Pencil make things. Eraser fixes things. Clipper physically keeps things together. Key opens things. Percy can privately wonder whether she mostly stands around other people’s work and makes it look tidy.
 
-**Deeper discovery:** Percy can hold related things together when separation would destroy the relationship between them. She can contain what must remain together long enough for meaning, safety, or understanding to survive.
+**Deeper discovery:** Percy can physically bracket things whose relationship is already established and hold that set together when separation would destroy its meaning, safety, or usefulness.
 
-**Not allowed:** generic shields, forcefields, telekinesis, wrapping anything regardless of relationship.
+This does not make her a forcefield. Her two parenthesis halves move, surround the related set, and close around it. The relationship must exist before Percy acts; her gift is preserving the grouping long enough for that relationship to matter.
+
+**Not allowed:** generic shields, forcefields, telekinesis, remote grabbing, wrapping anything regardless of relationship, or declaring unrelated things related because she enclosed them.
 
 **Signature line:** **“I’ve got you.”**
 
@@ -114,7 +131,7 @@ He never explains Percy to herself.
 
 **Percy distinction:**
 - Clipper fastens pieces.
-- Percy protects the relationship between pieces.
+- Percy brackets a related set so its grouping remains intact.
 
 Possible Grandpa humor after Percy’s first discovery:
 
@@ -215,13 +232,27 @@ Mobi may not:
 
 A good Mobi answer should often create the **next useful question** rather than close the mystery.
 
+### Child-facing AI boundary
+
+Mobi is a story character and a narrative model of responsible AI use. Nothing in this story bible, game mechanic, or transmedia hook authorizes unrestricted live-AI access for children.
+
+For the core 7–11 audience:
+- authored stories may show characters asking Mobi open-ended questions because the response is controlled by the script,
+- games and site experiences should default to authored, curated, menu-based, or otherwise constrained questions and responses,
+- no child should be required to provide personal information to make a Mobi interaction work,
+- no game should collect child free-text merely because Mobi is an AI character,
+- live generative-AI input/output, if ever proposed, requires a separate product, privacy, safety, moderation, age-appropriateness, and runtime review before implementation,
+- the existence of Mobi in canon is not approval for a specific AI service, model, data practice, or child-facing chat product.
+
+Mobi’s educational value is epistemic behavior: separate observation from inference, admit uncertainty, ask what evidence is missing, and help form the next useful question.
+
 ## Relationship engine
 
 The cast works because their functions overlap just enough to cause misunderstandings but differ enough that no character is redundant.
 
 Useful relationship contrasts:
 
-- Percy vs. Clipper: contain/protect relationship vs. fasten pieces.
+- Percy vs. Clipper: bracket/protect a grouping vs. physically fasten pieces.
 - Hue vs. Mobi: what deserves attention vs. what information is available.
 - Pencil vs. Eraser: first attempt vs. revision.
 - Ruler vs. intuition: measured difference vs. “it looks bigger.”
@@ -313,25 +344,28 @@ The group calls the pieces by relationship — not merely by location:
 - “Don’t let the question get separated from its answer.”
 - “We need the whole set.”
 
+The relationship has already been established by the story. Percy does not decide that unrelated pieces belong together.
+
 Percy reacts to the **relationship**.
 
 ### Discovery moment
 
-Her two parentheses move apart, surround what belongs together, and close around the set.
+Her two parentheses move apart, physically take position on opposite sides of the already-related set, and close around it.
+
+The pieces must be within the span she can bracket. Percy does not pull a missing or distant piece across the room. If a piece is outside her reach, the group must first recover or move it into the set.
 
 No glow.
 No energy bubble.
+No invisible tether.
 No unrelated magic.
 
 The visual should still unmistakably be parentheses doing what parentheses do.
 
-The related pieces stop scattering because they are now being held as one group.
+The related pieces stop scattering because the pair now physically contains them as one group.
 
 Percy is as surprised as everyone else.
 
-Then she sees one friend / piece still slipping away.
-
-She closes the pair just enough and says, for the first time:
+Then one piece at the edge of the grouped set begins slipping free. Percy adjusts one parenthesis inward, keeps it inside the brackets, and says, for the first time:
 
 **“I’ve got you.”**
 
@@ -375,6 +409,8 @@ Do not:
 - reveal everybody’s superpower,
 - have Mobi identify the answer from nowhere,
 - give Percy a generic shield,
+- let Percy remotely pull a missing piece into her brackets,
+- let Percy create a relationship by enclosing unrelated things,
 - let Clipper explain Percy’s ability before she discovers it,
 - turn Percy’s sadness into melodrama,
 - solve the episode with a motivational speech,
@@ -383,14 +419,29 @@ Do not:
 
 ## Season engine
 
+The series is **not** a conveyor belt of “one character discovers one power” stories. Discovery episodes are one engine among several.
+
+Before outlining an episode, choose the episode mode that best serves the story:
+
+1. **First discovery** — a character encounters the first extraordinary use of a native function.
+2. **Limitation / failure** — a character uses the right skill in the wrong situation, or learns where that function stops being useful.
+3. **Combination** — two or more ordinary functions become useful in sequence, with no new power revealed.
+4. **Misapplication** — a familiar function is overused, used too early, or aimed at the wrong target.
+5. **Mystery / evidence** — the adventure turns on observation, inference, contradiction, and better questions rather than a power reveal.
+6. **Transfer** — the group applies something learned earlier in a genuinely new context.
+7. **Ordinary adventure** — the characters solve a meaningful problem with known abilities and ordinary object functions; nobody discovers anything supernatural or new.
+
+Not every episode needs an extraordinary moment. Familiarity, humor, relationships, and competence are part of the series engine too.
+
 Each episode asks:
 
-1. What ordinary function has the group underestimated?
-2. What problem naturally makes that function essential?
+1. What is the actual problem before anyone proposes a tool?
+2. Which character functions are relevant, irrelevant, or tempting-but-wrong?
 3. What wrong approach seems reasonable first?
 4. What evidence changes the group’s understanding?
-5. Who learns something about their value or limitation?
-6. What remains true after the episode that can matter later?
+5. Does this story require a new discovery at all?
+6. Who learns something about their value, limitation, judgment, or relationship to the group?
+7. What remains true after the episode that can matter later?
 
 ### Example discovery episodes
 
@@ -415,6 +466,23 @@ The group assumes AI should know. Mobi’s meaningful act is refusing to invent 
 **Clipper — “Loose Pages”**  
 Clipper’s ordinary, old-fashioned function prevents a chain of evidence from being scattered. The episode can reveal why Percy admires him even while teasing him for being ancient.
 
+### Example non-discovery episodes
+
+**“Exactly Twelve” — limitation / failure**  
+Ruler produces a perfectly accurate measurement of the wrong thing. The group learns that precision cannot rescue a bad question.
+
+**“The Best Draft We Had” — misapplication / revision**  
+Pencil loves a clever draft and Eraser is reluctant to change it because everyone worked hard on it. New evidence forces revision without making the original effort worthless.
+
+**“Back Here” — transfer / combination**  
+Bookmark returns the group to an earlier clue; Sticky Note carries one remembered instruction forward; no one discovers a new ability.
+
+**“Three Good Guesses” — mystery / evidence**  
+The group has three plausible explanations. Hue marks what is actually observed, Mobi separates fact from inference, and Cursor chooses what test to run next. The payoff is better reasoning, not a power reveal.
+
+**“Grandpa’s Way” — ordinary adventure**  
+Clipper solves a small but consequential problem by doing exactly what paper clips already do. Percy sees competence without spectacle.
+
 ## Long-form emotional arc
 
 The deeper season idea is not “everyone learns they are secretly powerful.”
@@ -427,11 +495,13 @@ Characters can still fail. A native function can be the wrong tool for a problem
 
 Growth means learning when and how to use what you are good at.
 
+The audience should also learn that a known ability does not need to become stronger every time it returns. Growth can be better judgment, better timing, better cooperation, or knowing when *not* to use a skill.
+
 ## Game and puzzle hooks
 
 The character functions translate naturally into interactive mechanics without breaking story canon:
 
-- Percy: group related evidence into sets.
+- Percy: group evidence whose relationship the player has already established; the mechanic must not silently tell the player which unrelated clues belong together.
 - Clipper: connect pages / clues already shown to belong together.
 - Hue: highlight the sentence that actually answers a question.
 - Ruler: compare scale, order, distance, or measurable differences.
@@ -441,10 +511,12 @@ The character functions translate naturally into interactive mechanics without b
 - Key: unlock only after the correct prerequisite is met.
 - Eraser: revise an earlier answer after contradictory evidence.
 - Pencil: create a hypothesis / label / missing piece.
-- Mobi: ask a constrained question and receive observation / inference / unknown classification.
+- Mobi: ask a constrained, authored or curated question and receive observation / inference / unknown classification.
 - Ink Bottle: record the final supported account of what happened.
 
 A game should never let the character mechanic reveal information the story has not earned.
+
+For the core 7–11 audience, the Mobi mechanic is a **narrative interaction pattern**, not blanket permission for unrestricted live chat. Any future free-text generative implementation requires the separate child-facing AI review defined above.
 
 ## Reading-activity hooks
 
@@ -468,6 +540,8 @@ That is especially important for Percy:
 
 is the explanation.
 
+The image must read as visible bracketing, not as an invisible field around objects. If the parenthesis shapes could be removed from the frame without changing the action, the visual has drifted away from the rule.
+
 ## Canon hierarchy
 
 When future scripts conflict, use this priority:
@@ -475,8 +549,9 @@ When future scripts conflict, use this priority:
 1. native object/symbol function,
 2. locked character identity,
 3. established relationship rules,
-4. current story circumstance,
-5. joke / spectacle.
+4. established child-facing safety / interaction boundaries,
+5. current story circumstance,
+6. joke / spectacle.
 
 A joke or visual effect never outranks character logic.
 
@@ -484,4 +559,4 @@ A joke or visual effect never outranks character logic.
 
 The pilot direction **I’ve Got You** is approved as the first narrative architecture for development, not yet as final dialogue or screenplay pages.
 
-Next writing step after review: scene-by-scene pilot outline, then script pages only after the beats survive story/education/game red-team review.
+The red-team gates for Percy’s physical manifestation, Mobi’s child-facing AI boundary, and season-format repetition are now explicit in this document. The next writing step is a scene-by-scene pilot outline; script pages come only after that outline preserves these locks.
