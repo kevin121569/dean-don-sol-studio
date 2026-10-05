@@ -72,6 +72,18 @@ Clipper may connect physical or symbolic pieces only when the relationship is al
 
 That distinction matters: Percy **contains/group-protects a relationship**; Clipper **fastens or links pieces that already belong together**. Their abilities should complement rather than duplicate each other.
 
+### Clipper and Percy — family relationship
+
+**Working canon: Clipper is Percy's grandpa.**
+
+The relationship reinforces the theme without making their functions identical. Clipper is the older, practical connector who has spent his life fastening loose pieces together. Percy inherits the same instinct in a different form: she does not fasten pieces; she surrounds, contains, and protects the relationship between them.
+
+Clipper does not need to understand Percy's eventual ability before she does. In fact, it is stronger if he simply knows that keeping people and pieces together matters, while Percy initially thinks she is mostly decorative. Her discovery then feels like family resemblance revealed through action rather than a lesson Grandpa explained in advance.
+
+Possible emotional payoff: after Percy first uses her own ability successfully, Clipper recognizes what she did before she fully understands it. He does not name her power for her; he can simply be proud that she found her own way to keep things together.
+
+Keep the relationship warm and funny, not exposition-heavy. Clipper can be a little bent, old-school, practical, and impossible to impress with fancy presentation.
+
 ## Mobi
 
 Mobi is a mobile phone and the group's AI interface.
