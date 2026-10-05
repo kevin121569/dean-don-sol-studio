@@ -31,15 +31,28 @@ The group is preparing a four-card **Treasure Trail** for a young visitor arrivi
 
 The cards are being assembled on a worktable beside a small paper-sorting / transfer mechanism used to move finished materials across the room.
 
-A sudden air-pressure pulse from the transfer system lifts the loose cards and sends them onto different moving paths.
+The transfer system is room infrastructure, not something the learning objects operate. Once an automatic transfer cycle begins, the conveyor, air pulses, and diverter gates continue through their programmed sequence until the cycle reaches its normal end. The characters cannot simply switch it off, climb into it, or reach through moving machinery.
+
+A sudden air-pressure pulse from the active transfer cycle lifts the loose cards and sends them onto different moving paths.
+
+The cards are not in danger of being destroyed, but if they cross the final junction separately they will be routed into different outbound collection bins and the Treasure Trail will not be ready for the visitor.
 
 This gives the episode:
 - a believable non-villain disruption,
 - visible moving stakes,
+- a clear answer to “why not just turn it off?”,
 - multiple opportunities for ordinary character functions,
 - a final physical situation where the entire related set can be recovered onto one tray but still cannot stay grouped long enough to pass the sorter junction.
 
 The machine is not malicious and does not become a monster. It is simply doing what it was built to do.
+
+## World-logic lock
+
+- The learning objects do not control the room’s transfer machinery.
+- Nobody enters, blocks, or reaches into moving machinery.
+- The automatic cycle has short normal pauses between transfer stages, creating safe windows for the characters to work on accessible trays and return pockets.
+- The final junction is the last point where the four cards can remain together before separate outbound routing.
+- Percy solves a grouping problem, not a machine-control problem.
 
 ---
 
@@ -97,17 +110,19 @@ The beat is funny, not sad yet.
 
 **Purpose:** inciting disruption.
 
-The paper-transfer mechanism engages for an unrelated scheduled cycle.
+A small status light on the transfer mechanism changes: the room’s scheduled automatic cycle has begun.
 
-A pressure flap opens with a loud **WHUFF**.
+Before the group can secure the four loose Treasure Trail cards, a pressure flap opens with a loud **WHUFF**.
 
-The four loose Treasure Trail cards lift off the table.
+The cards lift off the table.
 
 One slaps against Hue.
 One sails under Ruler.
 Two land on the moving transfer surface.
 
 Before anyone can grab them, diverter gates separate the moving cards onto different tracks.
+
+The characters know they cannot stop or enter the machinery; they can only use the accessible return trays and pockets as the automatic cycle advances.
 
 No villain. No magical storm. A normal system plus loose paper equals trouble.
 
@@ -146,6 +161,8 @@ Mobi creates the next useful question rather than producing the missing card’s
 
 **Purpose:** action montage that demonstrates distinct ordinary functions.
 
+During the mechanism’s normal pauses, the team works only from accessible trays and return pockets.
+
 Hue spots the tiny printed arrow on a card that would otherwise blend into the conveyor markings.
 
 Ruler compares the gap widths at two transfer paths and rules out one route because the card physically could not have passed through it flat.
@@ -166,19 +183,19 @@ Percy follows, trying to find a useful place to stand.
 
 **Purpose:** turn Percy’s private doubt into story pressure without melodrama.
 
-The group recovers two cards and sets them temporarily on a small tray.
+The group recovers two cards and sets them temporarily on an accessible staging tray during a normal pause.
 
 Percy tries to help by standing around them as she did around the title.
 
-A moving guide arm approaches. Percy’s position would block the mechanism.
+A guide arm begins its next programmed movement.
 
-A friend gently asks her to step aside so the tray can pass.
+A friend gently asks her to step back from the tray edge before the mechanism resumes.
 
 Nobody is dismissing her worth; it is simply the wrong place and wrong moment for her function.
 
 Percy steps away.
 
-The two cards move safely through.
+The two cards move safely through the next accessible stage.
 
 Everyone celebrates the progress.
 
@@ -204,7 +221,7 @@ He shrugs:
 
 > “I can fasten pages. I can’t make every page into one page.”
 
-This is not his failure as a character. It is simply the boundary of a paper clip.
+This is not his failure as a character. It is simply the boundary of a paper clip in this arrangement.
 
 Percy watches closely.
 
@@ -212,47 +229,49 @@ Percy watches closely.
 
 **Purpose:** midpoint success that collapses for a reason.
 
-Card 4 is finally found in a return pocket after the group follows evidence rather than guesses.
+Card 4 is finally found in an accessible return pocket after the group follows evidence rather than guesses.
 
 All four Treasure Trail cards are recovered.
 
 For one second, everyone cheers.
 
-They arrange the cards correctly on a transfer tray.
+They arrange the cards correctly on the final transfer tray during the last normal pause before the outbound junction.
 
 The trail reads as a complete sequence for the first time.
 
-Then the transfer system starts its next cycle.
+A warning click announces the transfer cycle resuming.
 
-The tray tilts toward a junction.
+The tray begins to tilt toward the final junction.
 
 The four loose cards begin sliding in different directions again.
 
-Clipper can grab only two without covering the route marks.
+If they cross the junction separately, the diverter will send them to different outbound bins.
+
+Clipper can fasten only a subset without covering route information the group still needs visible.
 
 Hue can show which card matters next, but cannot stop it moving.
 
-Ruler can tell exactly how far they are separating, which is hilariously unhelpful in the moment.
+Ruler can tell exactly how far they are separating, which is hilariously unhelpful in this particular second without making Ruler foolish or wrong.
 
 Mobi cannot move physical objects.
 
 The problem is no longer **finding** the set.
 
-The problem is **keeping an already-established set together**.
+The problem is **keeping an already-established set together through the junction**.
 
 ## SCENE 9 — “EVERYBODY DOES SOMETHING.”
 
 **Purpose:** Percy emotional low point and Grandpa beat.
 
-The system pauses briefly before the next transfer pulse.
+The system pauses at its final indexed stop just before the outbound transfer pulse.
 
-Percy looks at everyone crowded around the tray.
+Percy looks at everyone crowded around the accessible tray.
 
 Quietly:
 
 > “Everybody does something.”
 
-Clipper is still wrestling with his impossible two-card compromise.
+Clipper is still wrestling with his impossible multi-card compromise.
 
 Without looking up:
 
@@ -276,9 +295,9 @@ A warning click from the transfer system ends the conversation.
 
 **Purpose:** set up Percy’s discovery using relationship language rather than location alone.
 
-The tray begins moving again.
+The final transfer pulse is about to begin.
 
-The four cards are now all physically present on the same tray and within a span Percy could bracket.
+The four cards are all physically present on the same accessible tray and within a span Percy could bracket.
 
 The group calls out what must stay together:
 
@@ -310,15 +329,19 @@ They do not glow.
 
 They do not shoot energy.
 
-They physically take position on opposite sides of the four-card set.
+They physically take position on opposite sides of the four-card set while the tray is still in its safe pause.
 
 The cards are already on the tray. Percy does not pull them toward herself.
 
 She closes inward just enough to bracket the complete sequence.
 
+The mechanism resumes.
+
 The tray tilts.
 
-The cards slide — but now their edges meet Percy’s parenthesis halves instead of scattering into separate channels.
+The cards slide — but now their edges meet Percy’s parenthesis halves instead of scattering into separate outbound channels.
+
+Percy rides with the accessible tray surface; she does not reach into gears or machinery.
 
 The visual reads instantly:
 
@@ -328,7 +351,7 @@ Percy freezes in surprise.
 
 So does everyone else.
 
-The machine keeps moving.
+The machine keeps moving through its normal cycle.
 
 ## SCENE 12 — “I’VE GOT YOU.”
 
@@ -346,7 +369,7 @@ She says it softly the first time:
 
 > **“I’ve got you.”**
 
-The set clears the junction intact.
+The set clears the junction intact and reaches the receiving tray as one grouped packet.
 
 Only after it is safe does everyone explode into celebration.
 
@@ -356,7 +379,7 @@ Do not bury the line under music or chatter. Give it room.
 
 **Purpose:** prevent Percy from becoming the sole solver.
 
-Percy holds the grouped cards long enough for the team to finish the Treasure Trail.
+At the receiving tray, Percy holds the grouped cards long enough for the team to finish the Treasure Trail.
 
 Hue focuses attention on the decisive direction word.
 
@@ -517,6 +540,8 @@ Before script pages are authorized, confirm:
 - Mobi preserves uncertainty and does not reveal unseen information.
 - The recovered cards are physically brought together before Percy contains them.
 - The machine remains a believable physical process, not a villain substitute.
+- The characters never ignore an obvious machine stop/control solution; the machinery is explicitly outside their control.
+- Nobody enters or reaches into moving machinery.
 - The lesson remains embedded in action.
 - The ending returns to humor after the emotional payoff.
 
