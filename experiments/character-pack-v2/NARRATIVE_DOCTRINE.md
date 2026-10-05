@@ -14,8 +14,8 @@ The story can call those abilities powers, but they are not arbitrary magic:
 
 - Pencil creates.
 - Eraser corrects.
-- Paper Clip connects.
-- Highlighter emphasizes.
+- **Clipper the Paper Clip connects and keeps related pieces from getting separated.**
+- **Hue the Highlighter emphasizes and helps the group focus on what matters.**
 - Ruler measures.
 - Sticky Note remembers.
 - Cursor chooses.
@@ -45,6 +45,33 @@ Her line **"I've got you."** should arrive after that discovery, not as empty br
 
 Percy is never a generic forcefield character. Her action must remain recognizably parenthetical: pairing, grouping, containment, relationship.
 
+## Hue the Highlighter
+
+Hue is still visibly a real highlighter. His gift is not "being colorful." His gift is **focus**.
+
+He notices when the group is drowning in too much information and helps them see the part that matters.
+
+Hue can change highlight color, but the color change must have a reason in the scene. Different colors may distinguish different kinds of attention — for example, an important fact, a question, a contradiction, or evidence that still needs checking.
+
+Rules for Hue:
+- color is functional, not ornamental,
+- no rainbow idle cycle,
+- no arbitrary flashing,
+- one color should have one understandable purpose within a scene,
+- the underlying text or evidence must remain readable without the color alone.
+
+His emotional discovery can be that "standing out" is not the same thing as helping. His value comes from helping **the right thing** stand out.
+
+## Clipper the Paper Clip
+
+Clipper is still visibly a real paper clip.
+
+Clipper connects related pieces and keeps them together long enough for the group to use them. His function is especially useful when clues, pages, instructions, or friends belong together but are being separated.
+
+Clipper may connect physical or symbolic pieces only when the relationship is already justified by the story. He does not invent relationships between unrelated facts.
+
+That distinction matters: Percy **contains/group-protects a relationship**; Clipper **fastens or links pieces that already belong together**. Their abilities should complement rather than duplicate each other.
+
 ## Mobi
 
 Mobi is a mobile phone and the group's AI interface.
@@ -65,6 +92,12 @@ Mobi may not:
 - replace the native functions of the other characters.
 
 This keeps Mobi powerful without turning him into a story-ending oracle.
+
+## Frozen-v1 naming note
+
+Production Character Pack v1 remains frozen. Its existing runtime label may still say "Paper Clip." **Clipper** is the story/character name going forward; renaming the v1 production asset is not required to establish the character name.
+
+Likewise, Hue is introduced in v2 and does not alter any locked v1 source.
 
 ## Writing test
 
