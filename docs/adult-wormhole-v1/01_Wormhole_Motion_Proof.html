@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>01 Wormhole Motion Proof (Final Production Lock)</title>
+<style>
+  body {
+    background: #F4F3EF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: "Georgia", serif;
+  }
+
+  .stage-card {
+    position: relative;
+    width: 640px;
+    background: #FFFFFF;
+    border: 1px solid #E2E2DC;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+
+  /* Visual Display Container (Exposed as image) */
+  .visual-display {
+    position: relative;
+    width: 640px;
+    height: 240px;
+    overflow: hidden;
+  }
+
+  .stage-header {
+    position: absolute;
+    top: 18px;
+    left: 24px;
+    font-family: monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888880;
+    z-index: 20;
+  }
+
+  /* Restrained Brass Seam at Stage x = 320px */
+  .refractive-seam {
+    position: absolute;
+    left: 320px;
+    top: 40px;
+    bottom: 40px;
+    width: 1px;
+    background: #C5A059;
+    z-index: 10;
+  }
+
+  .refractive-seam::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -8px;
+    width: 17px;
+    background: linear-gradient(90deg, rgba(197,160,89,0) 0%, rgba(197,160,89,0.12) 50%, rgba(197,160,89,0) 100%);
+    pointer-events: none;
+  }
+
+  /* Full-Stage 640px Coordinate Layers */
+  .layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 640px;
+    height: 240px;
+    pointer-events: none;
+  }
+
+  /* Left Layer: Static Full-Stage Clipping Mask (0 to 320px) */
+  .layer-left {
+    clip-path: polygon(0 0, 320px 0, 320px 100%, 0 100%);
+  }
+
+  /* Right Layer: Static Full-Stage Clipping Mask (320px to 640px) */
+  .layer-right {
+    clip-path: polygon(320px 0, 640px 0, 640px 100%, 320px 100%);
+  }
+
+  /* Static Transform Wrapper for Right Layer (Origin at Seam/Baseline: x=320px, y=120px) */
+  .bend-space {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 640px;
+    height: 240px;
+    transform-origin: 320px 120px;
+    transform: rotate(-3.5deg); /* Exactly 0px offset at seam x=320px */
+  }
+
+  /* Outer Translation Mover (Handles ONLY translateX motion) */
+  .mover {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 640px;
+    height: 40px;
+  }
+
+  .mover.play {
+    animation: singlePassRefraction 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes singlePassRefraction {
+    0% { transform: translateX(-360px); }
+    100% { transform: translateX(220px); }
+  }
+
+  /* Inner Form (Handles typography & color) */
+  .object-form {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    font-size: 16px;
+    letter-spacing: 1.5px;
+  }
+
+  .form-straight {
+    color: #1A1A1A;
+  }
+
+  .form-bent {
+    color: #1A2B4C;
+  }
+
+  .rule-line {
+    width: 80px;
+    height: 1.5px;
+    background: currentColor;
+    margin: 0 12px;
+  }
+
+  /* Separate Semantic Stage Footer (Outside role="img") */
+  .stage-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: #FFFFFF;
+    border-top: 1px solid #E2E2DC;
+  }
+
+  .copy-tagline {
+    font-size: 13px;
+    font-style: italic;
+    color: #1A2B4C;
+  }
+
+  .replay-btn {
+    background: none;
+    border: 1px solid #C5A059;
+    color: #1A1A1A;
+    padding: 6px 14px;
+    font-family: monospace;
+    font-size: 11px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .replay-btn:hover {
+    background: #F4F3EF;
+    border-color: #1A2B4C;
+  }
+
+  .replay-btn:focus-visible {
+    outline: 2px solid #005fcc;
+    outline-offset: 2px;
+  }
+
+  /* Reduced Motion: Render settled state statically across seam */
+  @media (prefers-reduced-motion: reduce) {
+    .mover.play {
+      animation: none !important;
+      transform: translateX(220px) !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage-card">
+  <!-- Semantic Visual Display Container -->
+  <div class="visual-display" role="img" aria-label="Wormhole optical refraction demonstration: a line enters straight, passes through a brass seam at center x=320, and emerges bent by 3.5 degrees with zero seam displacement.">
+    <div class="stage-header">Adult Catalog / Refraction Proof</div>
+    
+    <div class="refractive-seam" aria-hidden="true"></div>
+
+    <!-- Left Layer (Static Clip 0-320px) -->
+    <div class="layer layer-left" aria-hidden="true">
+      <div class="mover play" id="moverLeft">
+        <div class="object-form form-straight">
+          <div class="rule-line"></div>
+          <span>COGNITIVE PARADIGM</span>
+          <div class="rule-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Layer (Static Clip 320-640px + Static Bend Wrapper) -->
+    <div class="layer layer-right" aria-hidden="true">
+      <div class="bend-space">
+        <div class="mover play" id="moverRight">
+          <div class="object-form form-bent">
+            <div class="rule-line"></div>
+            <span>COGNITIVE PARADIGM</span>
+            <div class="rule-line"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Separate Semantic Footer (Outside role="img") -->
+  <div class="stage-footer">
+    <div class="copy-tagline">“Go in straight. Come out bent.”</div>
+    <button class="replay-btn" id="replayBtn" aria-label="Replay transformation animation">Replay Transformation</button>
+  </div>
+</div>
+
+<script>
+  const moverLeft = document.getElementById('moverLeft');
+  const moverRight = document.getElementById('moverRight');
+  const replayBtn = document.getElementById('replayBtn');
+
+  replayBtn.addEventListener('click', () => {
+    moverLeft.classList.remove('play');
+    moverRight.classList.remove('play');
+    void moverLeft.offsetWidth; // Force DOM reflow
+    moverLeft.classList.add('play');
+    moverRight.classList.add('play');
+  });
+</script>
+
+</body>
+</html>
