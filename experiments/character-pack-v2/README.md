@@ -12,8 +12,15 @@ v1 remains frozen and is not modified by this directory.
 - Ruler — measures
 - Sticky Note — remembers
 - Cursor — chooses
+- Mobi — asks / connects / interfaces with AI
 
 Percy retains the containment/grouping role. v2 does not introduce a competing Brackets character.
+
+## Narrative rule
+
+The characters do not begin believing they have superpowers. Their abilities are discovered when a real problem demands the deeper function of what they already are.
+
+See `NARRATIVE_DOCTRINE.md` for the full story rule, Percy arc, and Mobi constraints.
 
 ## Current proof files
 
@@ -21,6 +28,14 @@ Percy retains the containment/grouping role. v2 does not introduce a competing B
 - `02_Ruler_Function_Proof.html`
 - `03_Sticky_Note_Function_Proof.html`
 - `04_Cursor_Function_Proof.html`
+- `05_V2_Family_Board.html`
+- `06_V2_Placement_Mockups.html`
+- `07_Mobi_AI_Interface_Proof.html`
+- `NARRATIVE_DOCTRINE.md`
+
+## Mobi constraint
+
+Mobi remains visibly a mobile phone. The group may ask Mobi anything, but Mobi is not an omniscient oracle. Answers can be uncertain, incomplete, evidence-dependent, or require another observation. Mobi must not erase the need for the other characters' functions.
 
 ## Design constraints
 
