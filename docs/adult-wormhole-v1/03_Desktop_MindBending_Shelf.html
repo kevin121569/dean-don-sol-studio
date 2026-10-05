@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>03 Desktop Mind-Bending Shelf Placement Mockup</title>
+<style>
+  body {
+    background: #E2E2DC;
+    margin: 0;
+    padding: 40px;
+    font-family: "Georgia", serif;
+    display: flex;
+    justify-content: center;
+  }
+
+  .desktop-viewport {
+    width: 1280px;
+    background: #FFFFFF;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .site-header {
+    padding: 24px 60px;
+    border-bottom: 1px solid #E2E2DC;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand-logo {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: -0.5px;
+    color: #121212;
+  }
+
+  .catalog-title {
+    padding: 50px 60px 20px;
+  }
+
+  .catalog-title h1 {
+    font-size: 32px;
+    margin: 0 0 8px;
+    color: #121212;
+    font-weight: normal;
+  }
+
+  .catalog-title p {
+    font-size: 15px;
+    color: #1A2B4C;
+    font-style: italic;
+    margin: 0;
+  }
+
+  /* Section Rule Refraction Seam */
+  .shelf-divider-container {
+    position: relative;
+    height: 40px;
+    margin: 20px 60px;
+    overflow: hidden;
+  }
+
+  .seam-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #C5A059;
+  }
+
+  .viewport-left {
+    position: absolute;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .viewport-right {
+    position: absolute;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .divider-rule-left {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: #1A1A1A;
+  }
+
+  .bend-space-divider {
+    position: absolute;
+    left: -640px;
+    top: 0;
+    width: 1280px;
+    height: 40px;
+    transform-origin: 640px 20px;
+    transform: rotate(-1.5deg);
+  }
+
+  .divider-rule-right {
+    position: absolute;
+    top: 20px;
+    left: 640px;
+    right: 0;
+    height: 1.5px;
+    background: #1A2B4C;
+  }
+
+  .catalog-grid {
+    display: flex;
+    gap: 40px;
+    padding: 20px 60px 60px;
+  }
+
+  .book-card {
+    flex: 1;
+    background: #F4F3EF;
+    padding: 32px;
+    border: 1px solid #E2E2DC;
+    position: relative;
+  }
+
+  .protected-badge {
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: #FFFFFF;
+    border: 1px solid #4CAF50;
+    color: #2E7D32;
+    font-family: monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .book-cover-aspect {
+    width: 100%;
+    height: 280px;
+    background: #0D0D0D;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #F4F3EF;
+    font-size: 18px;
+    letter-spacing: 1px;
+  }
+
+  .book-title {
+    font-size: 20px;
+    margin: 0 0 6px;
+    color: #121212;
+  }
+
+  .book-price {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  .btn-buy {
+    background: #121212;
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 24px;
+    font-family: sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+
+  .btn-buy:focus-visible {
+    outline: 2px solid #005fcc;
+  }
+</style>
+</head>
+<body>
+
+<div class="desktop-viewport">
+  <div class="site-header">
+    <div class="brand-logo">THE IDEA LAB / ADULT CATALOG</div>
+    <div style="font-size: 13px; color: #666;">Mind-Bending Fiction</div>
+  </div>
+
+  <div class="catalog-title">
+    <h1>The Rabbit Hole Shelf</h1>
+    <p>“Go in straight. Come out bent.”</p>
+  </div>
+
+  <!-- Transitional Wormhole Section Rule -->
+  <div class="shelf-divider-container" aria-hidden="true">
+    <div class="seam-line"></div>
+    <div class="viewport-left"><div class="divider-rule-left"></div></div>
+    <div class="viewport-right">
+      <div class="bend-space-divider">
+        <div class="divider-rule-right"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="catalog-grid">
+    <!-- Protected Commerce Zone — no optical distortion -->
+    <div class="book-card">
+      <div class="protected-badge">Protected Commerce Zone — no optical distortion</div>
+      <div class="book-cover-aspect">DARK PROCEDURAL</div>
+      <div class="book-title">The Stardust Structure</div>
+      <div class="book-price">$28.00</div>
+      <button class="btn-buy" aria-label="Buy The Stardust Structure for $28.00">PURCHASE HARDCOVER</button>
+    </div>
+
+    <!-- Protected Commerce Zone — no optical distortion -->
+    <div class="book-card">
+      <div class="protected-badge">Protected Commerce Zone — no optical distortion</div>
+      <div class="book-cover-aspect">COGNITIVE DRIFT</div>
+      <div class="book-title">Curved Horizons</div>
+      <div class="book-price">$32.00</div>
+      <button class="btn-buy" aria-label="Buy Curved Horizons for $32.00">PURCHASE HARDCOVER</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
