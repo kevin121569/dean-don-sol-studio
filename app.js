@@ -145,3 +145,10 @@
   characterPack.async = false;
   document.head.appendChild(characterPack);
 })();
+
+(() => {
+  const wormhole = document.createElement('script');
+  wormhole.src = 'adult-wormhole.js?v=1';
+  wormhole.async = false;
+  document.head.appendChild(wormhole);
+})();

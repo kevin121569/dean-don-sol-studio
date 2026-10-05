@@ -1,0 +1,197 @@
+/* Adult Catalog Wormhole v1 — live integration styles
+   Canonical design source: docs/adult-wormhole-v1/
+   Scope: contextual Fiction-filter transition only. */
+
+.adult-wormhole {
+  margin: 1.2rem 0 2rem;
+  border: 1px solid rgba(197, 160, 89, .32);
+  border-radius: 18px;
+  background: #f4f3ef;
+  color: #161616;
+  overflow: hidden;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, .16);
+}
+
+.adult-wormhole[hidden] { display: none !important; }
+
+.aw-copy {
+  display: grid;
+  gap: .35rem;
+  padding: 1.25rem 1.35rem .85rem;
+}
+
+.aw-copy .eyebrow {
+  margin: 0;
+  color: #7a6a45;
+}
+
+.aw-copy h3 {
+  margin: 0;
+  font: 500 clamp(1.45rem, 3vw, 2.15rem)/1.08 Georgia, serif;
+  letter-spacing: -.025em;
+}
+
+.aw-copy h3 em {
+  color: #1a2b4c;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.aw-copy p:last-child {
+  margin: .15rem 0 0;
+  max-width: 60rem;
+  color: #5c5b56;
+  font-size: .92rem;
+}
+
+.aw-stage-card {
+  margin: 0 1.35rem 1.35rem;
+  background: #fff;
+  border: 1px solid #e2e2dc;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.aw-visual {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.aw-stage-label {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+  z-index: 20;
+  font: 700 10px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #888880;
+}
+
+.aw-seam {
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  bottom: 30px;
+  width: 1px;
+  background: #c5a059;
+  z-index: 10;
+}
+
+.aw-seam::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -8px;
+  width: 17px;
+  background: linear-gradient(90deg, rgba(197,160,89,0), rgba(197,160,89,.12), rgba(197,160,89,0));
+  pointer-events: none;
+}
+
+.aw-layer,
+.aw-bend-space {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.aw-layer-left { clip-path: inset(0 50% 0 0); }
+.aw-layer-right { clip-path: inset(0 0 0 50%); }
+
+.aw-bend-space {
+  transform-origin: 50% 50%;
+  transform: rotate(-3.5deg);
+}
+
+.aw-mover {
+  position: absolute;
+  top: calc(50% - 16px);
+  left: 0;
+  width: 100%;
+  height: 32px;
+  transform: translateX(-56%);
+  will-change: transform;
+}
+
+.aw-mover.play {
+  animation: awSinglePass 3.5s cubic-bezier(.16, 1, .3, 1) forwards;
+}
+
+@keyframes awSinglePass {
+  from { transform: translateX(-56%); }
+  to { transform: translateX(29%); }
+}
+
+.aw-object {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  white-space: nowrap;
+  font: 600 14px/1 Georgia, serif;
+  letter-spacing: .11em;
+}
+
+.aw-object-straight { color: #1a1a1a; }
+.aw-object-bent { color: #1a2b4c; }
+
+.aw-rule {
+  width: clamp(56px, 11vw, 96px);
+  height: 1.5px;
+  margin: 0 12px;
+  background: currentColor;
+}
+
+.aw-footer {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: .85rem 1rem;
+  border-top: 1px solid #e2e2dc;
+  background: #fff;
+}
+
+.aw-tagline {
+  color: #1a2b4c;
+  font: italic 13px/1.35 Georgia, serif;
+}
+
+.aw-replay {
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #c5a059;
+  border-radius: 6px;
+  background: transparent;
+  color: #1a1a1a;
+  font: 700 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  cursor: pointer;
+}
+
+.aw-replay:hover { background: #f4f3ef; }
+.aw-replay:focus-visible { outline: 3px solid #005fcc; outline-offset: 3px; }
+
+@media (max-width: 600px) {
+  .adult-wormhole { margin: 1rem 0 1.5rem; border-radius: 14px; }
+  .aw-copy { padding: 1rem 1rem .7rem; }
+  .aw-stage-card { margin: 0 1rem 1rem; }
+  .aw-visual { height: 158px; }
+  .aw-stage-label { left: 14px; top: 13px; font-size: 9px; }
+  .aw-seam { top: 26px; bottom: 26px; }
+  .aw-object { font-size: 11px; letter-spacing: .08em; }
+  .aw-rule { width: 38px; margin: 0 8px; }
+  .aw-footer { align-items: stretch; flex-direction: column; gap: .65rem; }
+  .aw-replay { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aw-mover,
+  .aw-mover.play {
+    animation: none !important;
+    transform: translateX(29%) !important;
+    will-change: auto;
+  }
+  .aw-replay { display: none; }
+}
