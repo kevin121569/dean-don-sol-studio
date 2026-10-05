@@ -11,7 +11,7 @@ Status: **PRODUCTION DRAFT**
 ## SCENE 1 — THE HALLWAY
 
 **SHOT 1 — WIDE / SLOW WALK**
-Johnny, Tooth, and Darth move down an ordinary hallway. Simple walk cycles. Darth sniffs along the baseboard.
+Johnny, Tooth, and Luke move down an ordinary hallway. Simple walk cycles. Luke sniffs along the baseboard.
 
 JOHNNY
 Hold up.
@@ -39,19 +39,19 @@ Exactly.
 TOOTH
 That is not the same sentence.
 
-Darth sits and stares dramatically at the wall.
+Luke sits and stares dramatically at the wall.
 
-DARTH
+LUKE
 Hidden chamber.
 
-Tooth looks at Darth.
+Tooth looks at Luke.
 
-DARTH
+LUKE
 Secret passage.
 
 Johnny starts to grin.
 
-DARTH
+LUKE
 Architecture... of destiny.
 
 TOOTH
@@ -89,9 +89,9 @@ A secret room with pipes.
 TOOTH
 That was not my point.
 
-Darth presses one ear to the wall.
+Luke presses one ear to the wall.
 
-DARTH
+LUKE
 I hear destiny.
 
 TOOTH
@@ -182,15 +182,15 @@ There could be space behind the wall.
 TOOTH
 The building could simply be shaped differently than Johnny imagines.
 
-DARTH
+LUKE
 Ancient treasure vault.
 
-Tooth turns slowly toward Darth.
+Tooth turns slowly toward Luke.
 
 TOOTH
 No.
 
-Darth's ears lower.
+Luke's ears lower.
 
 DON SOL
 Put it up.
@@ -202,7 +202,7 @@ It's what he thinks.
 
 A tiny card reading **ANCIENT TREASURE VAULT?** slides onto the board.
 
-Darth perks up proudly.
+Luke perks up proudly.
 
 ---
 
@@ -262,7 +262,7 @@ Very quick return to the hallway.
 Johnny has a tape measure.
 Tooth has a tablet.
 Don watches.
-Darth wears a toy construction helmet that nobody gave him.
+Luke wears a toy construction helmet that nobody gave him.
 
 TOOTH
 First: measure the outside wall.
@@ -270,13 +270,13 @@ First: measure the outside wall.
 JOHNNY
 Then the inside hallway.
 
-DARTH
+LUKE
 Then destiny.
 
 TOOTH
 No destiny.
 
-DARTH
+LUKE
 Small destiny?
 
 CUT TO TITLE / MUSIC STING.
@@ -293,16 +293,16 @@ CUT TO TITLE / MUSIC STING.
 - Johnny: walking, neutral, excited, thinking, sheepish, pointing.
 - Don Sol: neutral, questioning, slight smile, pointing.
 - Tooth: neutral, skeptical, annoyed, thinking, speaking.
-- Darth: neutral sit, dramatic sit, ear-to-wall, proud, disappointed, construction-helmet gag.
+- Luke: neutral sit, dramatic sit, ear-to-wall, proud, disappointed, construction-helmet gag.
 - Fact Wall cards and slide-in animation.
 - Tape measure, tablet, construction helmet.
 
 ## Animation emphasis
 Spend motion where it creates comedy or thought:
 - Tooth almost bumping into Johnny.
-- Darth's ear against the wall.
+- Luke's ear against the wall.
 - Don's tiny smile on "Yet."
-- Darth's helmet in the tag.
+- Luke's helmet in the tag.
 
 Everything else can rely on pose changes, mouth swaps, camera movement, and timing.
 
