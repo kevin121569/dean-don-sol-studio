@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Episode 001 Canon Visual Proof Board v1</title>
+<style>
+*{box-sizing:border-box}
+:root{--ink:#121212;--navy:#1A2B4C;--paper:#F4F3EF;--line:#D8D8D1;--yellow:#F4E35C;--gold:#D6B37A;--pink:#E88395;--metal:#B8C0C8;--green:#2A6B3B;--screen:#F8FAFD}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif;padding:28px}
+.board{max-width:1180px;margin:auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;box-shadow:0 12px 35px rgba(0,0,0,.06)}
+h1{font-size:28px;margin:0 0 6px}.sub{margin:0 0 24px;color:#666}.lock{display:inline-block;padding:5px 9px;border-radius:999px;background:var(--navy);color:#fff;font-size:12px;font-weight:800;letter-spacing:.04em}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.card{border:1px solid var(--line);border-radius:10px;padding:18px;min-height:250px;background:#fff}.card h2{font-size:16px;margin:0 0 12px}.asset{height:140px;display:grid;place-items:center;margin-bottom:12px;background:#fafaf7;border-radius:8px}.note{font-size:13px;color:#555;line-height:1.45}
+/* Percy — exact locked production SVG geometry. */
+.percy{display:flex;align-items:center;justify-content:center;gap:30px}.percy svg{width:36px;height:108px;fill:var(--navy);flex:0 0 auto}.percy .left path{d:path('M14 4 C 6 18, 6 42, 14 56 C 11 40, 11 20, 14 4 Z')}.percy .right path{d:path('M6 4 C 14 18, 14 42, 6 56 C 9 40, 9 20, 6 4 Z')}
+/* Clipper — production v1 paper-clip geometry. */
+.clipper{width:48px;height:120px;position:relative;border:8px solid var(--metal);border-radius:26px;transform:rotate(4deg)}.clipper:after{content:"";position:absolute;top:22px;left:8px;width:15px;height:74px;border:8px solid var(--metal);border-bottom:0;border-radius:14px 14px 0 0}
+/* Hue — Character Pack v2 proof form. */
+.hue{position:relative;width:150px;height:42px;transform:rotate(-7deg)}.hue .body{position:absolute;left:0;top:0;width:112px;height:42px;border:2px solid #CDBB2F;border-radius:8px 4px 4px 8px;background:linear-gradient(#FFF37A,var(--yellow))}.hue .cap{position:absolute;right:0;top:2px;width:42px;height:38px;border-radius:4px 10px 10px 4px;background:#3B3B38}.hue .tip{position:absolute;right:-13px;top:12px;width:18px;height:18px;background:#D9C62A;clip-path:polygon(0 15%,100% 0,100% 100%,0 85%)}
+/* Mobi — Character Pack v2 phone form. */
+.mobi{width:76px;height:130px;border:7px solid #1A1A1A;border-radius:16px;background:#202020;padding:8px;box-shadow:0 5px 12px rgba(0,0,0,.14)}.mobi:before{content:"";display:block;width:24px;height:4px;background:#555;border-radius:99px;margin:0 auto 7px}.mobi .screen{height:98px;border-radius:8px;background:var(--screen);display:grid;place-items:center;color:var(--navy);font-size:14px;font-weight:900;text-align:center}
+.section{margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}.section h2{margin:0 0 12px;font-size:20px}.proofs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.proof{border:1px solid var(--line);border-radius:10px;padding:16px;background:#fafaf7}.proof h3{font-size:15px;margin:0 0 12px}.stage{height:230px;position:relative;overflow:hidden;border:1px solid #ddd8cf;border-radius:8px;background:linear-gradient(#f7f5ef,#ece8df)}
+.track{position:absolute;left:8%;right:8%;top:110px;height:72px;background:#c9c3b8;border:3px solid #8c877f;border-radius:8px}.guard{position:absolute;right:8%;top:40px;width:30%;height:56px;border:5px solid #777;border-bottom-width:8px;border-radius:8px;background:repeating-linear-gradient(90deg,#999 0 10px,#777 10px 14px);opacity:.85}.split{position:absolute;right:12%;top:118px;width:24%;height:56px;clip-path:polygon(0 0,100% 0,65% 100%,50% 100%);background:#777;opacity:.35}
+.cards{position:absolute;left:31%;top:125px;display:flex;gap:5px}.tcard{width:54px;height:40px;border-radius:5px;border:2px solid #a9a399;background:#fff;display:grid;place-items:center;font-size:12px;font-weight:900}.t1{background:#ffe0d7}.t2{background:#e1efd9}.t3{background:#dbe6ff}.t4{background:#fff0c2}
+.proof-percy{position:absolute;left:25%;top:87px;display:flex;gap:245px;align-items:center}.proof-percy svg{width:28px;height:84px;fill:var(--navy)}.proof-percy .left path{d:path('M14 4 C 6 18, 6 42, 14 56 C 11 40, 11 20, 14 4 Z')}.proof-percy .right path{d:path('M6 4 C 14 18, 14 42, 6 56 C 9 40, 9 20, 6 4 Z')}
+.fail-left{left:8%;top:98px;gap:34px}.distant{left:54%;top:115px;gap:16px}.contact-left{left:25%;top:87px;gap:245px}.slip .t4{transform:translateX(11px)}.adjust{left:25%;top:87px;gap:230px}
+.caption{font-size:12px;color:#555;margin-top:10px;line-height:1.4}.pass{font-weight:900;color:var(--green)}.reject{font-weight:900;color:#9b2d2d}
+.footer{margin-top:24px;padding:16px;background:#f6f6f2;border-radius:8px;font-size:13px;line-height:1.5}
+@media(max-width:850px){.grid,.proofs{grid-template-columns:1fr 1fr}}@media(max-width:560px){.grid,.proofs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="board">
+  <span class="lock">DETERMINISTIC CANON PROOF</span>
+  <h1>Living Learning Objects — Episode 001 Visual Proof Board v1</h1>
+  <p class="sub">No generative reinterpretation. Shapes below are derived from the production-locked site / Character Pack proof geometry.</p>
+
+  <section class="grid">
+    <article class="card"><h2>Percy — Parentheses</h2><div class="asset"><div class="percy"><svg class="left" viewBox="0 0 20 60"><path d="M14 4 C 6 18, 6 42, 14 56 C 11 40, 11 20, 14 4 Z"/></svg><svg class="right" viewBox="0 0 20 60"><path d="M6 4 C 14 18, 14 42, 6 56 C 9 40, 9 20, 6 4 Z"/></svg></div></div><div class="note"><b>Lock:</b> one paired character, navy punctuation silhouette, fixed dimensions. Two halves may separate/rejoin; they never stretch or become a mascot body.</div></article>
+    <article class="card"><h2>Clipper — Paper Clip / Grandpa</h2><div class="asset"><div class="clipper"></div></div><div class="note"><b>Lock:</b> visibly a paper clip with slight permanent bend. “Grandpa” is relationship/personality, not human anatomy.</div></article>
+    <article class="card"><h2>Hue — Highlighter</h2><div class="asset"><div class="hue"><span class="body"></span><span class="cap"></span><span class="tip"></span></div></div><div class="note"><b>Lock:</b> marker-plastic body, dark cap, physical chisel tip. Expressiveness may enrich the object but must not disguise it.</div></article>
+    <article class="card"><h2>Mobi — Mobile AI Interface</h2><div class="asset"><div class="mobi"><div class="screen">ASK<br>AI</div></div></div><div class="note"><b>Lock:</b> visibly a mobile phone. No robot torso, holographic body, omniscient map, or machine-control identity.</div></article>
+  </section>
+
+  <section class="section">
+    <h2>Percy reveal — deterministic proof sequence</h2>
+    <div class="proofs">
+      <article class="proof"><h3>Proof A — early reach fails</h3><div class="stage"><div class="track"></div><div class="guard"></div><div class="proof-percy fail-left"><svg class="left" viewBox="0 0 20 60"><path d="M14 4 C 6 18,6 42,14 56 C11 40,11 20,14 4Z"/></svg><svg class="right" viewBox="0 0 20 60"><path d="M6 4 C14 18,14 42,6 56 C9 40,9 20,6 4Z"/></svg></div><div class="cards distant"><div class="tcard t1">1</div><div class="tcard t3">3</div></div></div><p class="caption"><span class="pass">PASS:</span> empty physical gap remains; cards do not move toward Percy.</p></article>
+      <article class="proof"><h3>Proof B — all four already fit</h3><div class="stage"><div class="track"></div><div class="guard"></div><div class="split"></div><div class="cards"><div class="tcard t1">1</div><div class="tcard t2">2</div><div class="tcard t3">3</div><div class="tcard t4">4</div></div><div class="proof-percy contact-left"><svg class="left" viewBox="0 0 20 60"><path d="M14 4 C 6 18,6 42,14 56 C11 40,11 20,14 4Z"/></svg><svg class="right" viewBox="0 0 20 60"><path d="M6 4 C14 18,14 42,6 56 C9 40,9 20,6 4Z"/></svg></div></div><p class="caption"><span class="pass">PASS:</span> normal-size halves bracket an already-related set on the exposed carrier; guarded split remains visible.</p></article>
+      <article class="proof"><h3>Proof C — contact stops separation</h3><div class="stage"><div class="track"></div><div class="guard"></div><div class="split"></div><div class="cards slip"><div class="tcard t1">1</div><div class="tcard t2">2</div><div class="tcard t3">3</div><div class="tcard t4">4</div></div><div class="proof-percy contact-left"><svg class="left" viewBox="0 0 20 60"><path d="M14 4 C 6 18,6 42,14 56 C11 40,11 20,14 4Z"/></svg><svg class="right" viewBox="0 0 20 60"><path d="M6 4 C14 18,14 42,6 56 C9 40,9 20,6 4Z"/></svg></div></div><p class="caption"><span class="pass">PASS:</span> outer card edges meet the punctuation curves. No field, tether, or remote attraction.</p></article>
+      <article class="proof"><h3>Proof D — “I’ve got you” adjustment</h3><div class="stage"><div class="track"></div><div class="guard"></div><div class="split"></div><div class="cards"><div class="tcard t1">1</div><div class="tcard t2">2</div><div class="tcard t3">3</div><div class="tcard t4">4</div></div><div class="proof-percy adjust"><svg class="left" viewBox="0 0 20 60"><path d="M14 4 C 6 18,6 42,14 56 C11 40,11 20,14 4Z"/></svg><svg class="right" viewBox="0 0 20 60"><path d="M6 4 C14 18,14 42,6 56 C9 40,9 20,6 4Z"/></svg></div></div><p class="caption"><span class="pass">PASS:</span> right half moves inward without resizing. This is the physical beat immediately before/under “I’ve got you.”</p></article>
+    </div>
+  </section>
+
+  <div class="footer"><b>Production gate:</b> any cinematic 3D treatment must remain traceable to these silhouettes and mechanics. If a prettier image turns Percy into a mascot body, Clipper into a human, Hue into a symbol-creature, or Mobi into a robot, it is <span class="reject">REJECTED</span>.</div>
+</main>
+</body>
+</html>
