@@ -42,12 +42,12 @@ Deadpan skeptic. His challenge should be funny, not mean:
 
 **"Walking past a wall does not prove there is a room behind it."**
 
-### Darth
+### Luke
 Confidently ridiculous comic escalation. He treats Johnny's theory as if it is already legendary and declares something in the spirit of:
 
 **"The architecture of destiny."**
 
-This character name remains development-only until commercial naming review.
+Production name locked as **Luke**.
 
 ## 8-beat proof structure
 ### 1. The hallway
@@ -65,10 +65,10 @@ JOHNNY: "Exactly."
 
 TOOTH: "That is not the same sentence."
 
-### 3. Darth escalation
-Darth studies the wall dramatically.
+### 3. Luke escalation
+Luke studies the wall dramatically.
 
-DARTH: "Hidden chamber. Secret passage. Architecture of destiny."
+LUKE: "Hidden chamber. Secret passage. Architecture of destiny."
 
 Tooth stares at him.
 
@@ -140,7 +140,7 @@ Build only:
 - Johnny: neutral / excited / thinking / sheepish,
 - Don: neutral / questioning / slight smile,
 - Tooth: neutral / skeptical / deadpan,
-- Darth: neutral / grand proclamation,
+- Luke: neutral / grand proclamation,
 - basic mouth set for each,
 - one simple walk cycle shared where possible,
 - Fact Wall cards / marker writing effect.
@@ -150,7 +150,7 @@ The same character art can later support site-guide interactions:
 - Johnny: curiosity / "Want to investigate?"
 - Don Sol: guidance / "What do we actually know?"
 - Tooth: claim-checking / "Evidence?"
-- Darth: comic wrong-answer / overconfidence moments.
+- Luke: comic wrong-answer / overconfidence moments.
 
 ## Acceptance test
 The proof passes if:
