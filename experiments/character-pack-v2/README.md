@@ -8,19 +8,19 @@ v1 remains frozen and is not modified by this directory.
 
 ## Candidate objects
 
-- Highlighter — emphasizes
+- Hue the Highlighter — emphasizes / focuses attention
 - Ruler — measures
 - Sticky Note — remembers
 - Cursor — chooses
 - Mobi — asks / connects / interfaces with AI
 
-Percy retains the containment/grouping role. v2 does not introduce a competing Brackets character.
+Percy retains the containment/grouping role. v2 does not introduce a competing Brackets character. Clipper is the story name for the frozen-v1 Paper Clip character; working canon makes Clipper Percy's grandpa.
 
 ## Narrative rule
 
 The characters do not begin believing they have superpowers. Their abilities are discovered when a real problem demands the deeper function of what they already are.
 
-See `NARRATIVE_DOCTRINE.md` for the full story rule, Percy arc, and Mobi constraints.
+See `NARRATIVE_DOCTRINE.md` for the full story rule, Percy arc, Clipper/Percy relationship, Hue rules, and Mobi constraints.
 
 ## Current proof files
 
