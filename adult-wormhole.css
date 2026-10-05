@@ -193,4 +193,5 @@
     transform: translateX(29%) !important;
     will-change: auto;
   }
+  .aw-replay { display: none; }
 }
