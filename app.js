@@ -138,3 +138,10 @@
   };
   $('#year').textContent = new Date().getFullYear();
 })();
+
+(() => {
+  const characterPack = document.createElement('script');
+  characterPack.src = 'character-pack.js?v=1';
+  characterPack.async = false;
+  document.head.appendChild(characterPack);
+})();
