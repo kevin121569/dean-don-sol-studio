@@ -17,6 +17,7 @@
   .screen strong{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:10px}
   .question{font-weight:800;margin:0 0 10px}
   .answer{margin:0;font-size:13px;color:#333;opacity:0;transform:translateY(5px);transition:opacity .28s ease,transform .28s ease}
+  .answer[hidden]{display:none}
   .phone.answered .answer{opacity:1;transform:none}
   .rules{display:grid;gap:12px}.rule{padding:12px 14px;border:1px solid #D8D8D0;border-radius:8px;background:#fff}.rule b{display:block;margin-bottom:3px}
   .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px}
@@ -36,7 +37,7 @@
       <div class="screen">
         <strong>Mobi / AI</strong>
         <p class="question">What do we know?</p>
-        <p class="answer" id="answer">The red card moved after the bell. I have two observations, but I cannot tell who moved it yet.</p>
+        <p class="answer" id="answer" hidden>The red card moved after the bell. I have two observations, but I cannot tell who moved it yet.</p>
       </div>
     </div>
     <div class="rules">
@@ -52,9 +53,11 @@
 </main>
 <script>
   const phone=document.getElementById('phone');
+  const answer=document.getElementById('answer');
   const status=document.getElementById('status');
   document.getElementById('ask').addEventListener('click',()=>{
-    phone.classList.add('answered');
+    answer.hidden=false;
+    requestAnimationFrame(()=>phone.classList.add('answered'));
     status.textContent='Mobi answered with evidence and uncertainty.';
   });
 </script>
