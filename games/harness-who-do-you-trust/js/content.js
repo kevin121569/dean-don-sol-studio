@@ -9,6 +9,19 @@ export const RATINGS = Object.freeze(['strong', 'weak', 'mixed']);
 // ignored at runtime, turning a typo into an advice line that always fires.
 const WHEN_KEYS = Object.freeze(['inspected', 'hybridUnlocked', 'consultedFewerThan']);
 
+/**
+ * Content complexity limits (r4). Restore cost = feasible-history search size (≤ 930 states, ≤ 120 memoized
+ * selectAdvice calls; js/state.js) × the cost of each call, which scans an adviser's variants and each
+ * variant's when.inspected list. These limits bound that per-call factor, and the decision count that
+ * restore indexes. They are checked BEFORE any per-item work, so oversized content is rejected without being
+ * scanned. Content is never truncated: a violation is a validation error and the episode does not load.
+ */
+export const CONTENT_LIMITS = Object.freeze({
+  maxAdviceVariantsPerAdviser: 8, // shipped maximum: 3
+  maxWhenInspected: 5,            // = the packet's evidence maximum; entries must also be unique (shipped maximum: 3)
+  maxDecisions: 8,                // shipped: 4
+});
+
 export async function loadEpisode(path = 'data/episode-001.json') {
   const response = await fetch(path);
   if (!response.ok) throw new Error(`Could not load ${path} (${response.status})`);
@@ -88,9 +101,15 @@ export function validateEpisode(ep) {
   need(isObj(ep.advice) && sameSet(Object.keys(ep.advice), REQUIRED_ADVISORS), 'advice must have exactly the four required blocks');
   const adviceIds = [];
   const revealable = new Set();
+  let adviceOversized = false;
   for (const id of REQUIRED_ADVISORS) {
     const variants = ep.advice?.[id];
     if (!Array.isArray(variants) || !variants.length) { problems.push(`advice.${id}: must be a non-empty array`); continue; }
+    if (variants.length > CONTENT_LIMITS.maxAdviceVariantsPerAdviser) {
+      adviceOversized = true;
+      problems.push(`advice.${id}: ${variants.length} variants exceeds the limit of ${CONTENT_LIMITS.maxAdviceVariantsPerAdviser} (CONTENT_LIMITS.maxAdviceVariantsPerAdviser) — merge or remove variants; content is not truncated`);
+      continue; // fail fast: do not scan an oversized list
+    }
     variants.forEach((v, i) => {
       const at = `advice.${id}[${i}]${isStr(v?.id) ? ` (${v.id})` : ''}`;
       if (!isObj(v)) { problems.push(`${at}: must be an object`); return; }
@@ -102,7 +121,13 @@ export function validateEpisode(ep) {
       for (const k of Object.keys(when)) need(WHEN_KEYS.includes(k), `${at}: unknown condition "${k}" (engine would ignore it)`);
       if (when.inspected !== undefined) {
         need(Array.isArray(when.inspected) && when.inspected.length > 0, `${at}: when.inspected must be a non-empty array`);
-        for (const e of [].concat(when.inspected)) need(knownEvidence(e), `${at}: when.inspected references unknown evidence "${e}"`);
+        if (Array.isArray(when.inspected) && when.inspected.length > CONTENT_LIMITS.maxWhenInspected) {
+          problems.push(`${at}: when.inspected has ${when.inspected.length} entries; the limit is ${CONTENT_LIMITS.maxWhenInspected} (CONTENT_LIMITS.maxWhenInspected) — list each required evidence id once`);
+        } else {
+          // Repeats never change meaning (every(includes)), so requiring uniqueness rejects no distinct condition.
+          need(!Array.isArray(when.inspected) || new Set(when.inspected).size === when.inspected.length, `${at}: when.inspected must not repeat ids — list each required evidence id once`);
+          for (const e of [].concat(when.inspected)) need(knownEvidence(e), `${at}: when.inspected references unknown evidence "${e}"`);
+        }
       }
       need(when.hybridUnlocked === undefined || typeof when.hybridUnlocked === 'boolean', `${at}: when.hybridUnlocked must be boolean`);
       need(when.consultedFewerThan === undefined || (Number.isInteger(when.consultedFewerThan) && when.consultedFewerThan > 0 && when.consultedFewerThan < REQUIRED_ADVISORS.length),
@@ -121,7 +146,8 @@ export function validateEpisode(ep) {
     need(isObj(last) && (last.when === undefined || (isObj(last.when) && Object.keys(last.when).length === 0)), `advice.${id}: last variant must be unconditional so selectAdvice() always returns one`);
   }
   need(new Set(adviceIds).size === adviceIds.length, 'advice ids must be unique across all advisers');
-  for (const h of hiddenIds) need(revealable.has(h), `hidden evidence "${h}" is never revealed by any advice (unreachable)`);
+  // An oversized advice block was not scanned, so reachability cannot be judged; its own error stands.
+  if (!adviceOversized) for (const h of hiddenIds) need(revealable.has(h), `hidden evidence "${h}" is never revealed by any advice (unreachable)`);
 
   // -- hybrid unlock
   const hu = ep.hybridUnlock;
@@ -135,6 +161,11 @@ export function validateEpisode(ep) {
   // -- decisions
   const decisions = Array.isArray(ep.decisions) ? ep.decisions : [];
   need(decisions.length >= 2, 'at least two decisions required');
+  if (decisions.length > CONTENT_LIMITS.maxDecisions) {
+    // Fail fast: every remaining check (postmortem, DOM ids, reachability) iterates the decision list.
+    problems.push(`decisions: ${decisions.length} exceeds the limit of ${CONTENT_LIMITS.maxDecisions} (CONTENT_LIMITS.maxDecisions) — remove decisions; content is not truncated`);
+    return problems;
+  }
   const decisionIds = decisions.map(d => d?.id);
   need(new Set(decisionIds).size === decisionIds.length, 'decision ids must be unique');
   decisions.forEach((d, i) => {

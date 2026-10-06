@@ -1,4 +1,137 @@
-# Harness Episode 001 — Issue #7 remediation r3 regression report
+# Harness Episode 001 — r4 remediation regression report (LOW: content-size restore performance)
+
+**Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
+
+Astra's r3 result was PASS WITH RESIDUAL RISKS, with one LOW finding: restore execution time was not bounded by r3's documented state bounds, because each `selectAdvice()` call scans schema-valid advice and condition arrays of unbounded size.
+
+r4 bounds content complexity at **validation time**, with explicit limits and actionable errors. It does **not** touch the engine, `selectAdvice()`, `feasibleHistory()`, or any restore semantics:
+- the 84 existing tests pass **unmodified**;
+- the 29 existing audit groups pass;
+- the r3 exact differentials still show 0 false accepts and 0 false rejects.
+
+No merge or deployment.
+
+| Identity | Value |
+|---|---|
+| Exact base / sole parent | `fix/harness-wdyt-redteam-r3` @ `0e89c929d0bb527890ba3e9fe07908c623603388` |
+| Branch | `fix/harness-wdyt-redteam-r4` |
+| Product change | `js/content.js` only (validation). `engine.js`, `advice.js`, `state.js`, `app.js`: unchanged. |
+| Scope | `games/harness-who-do-you-trust/` only; this patch does not touch `main` |
+| `main` (observed, not changed here) | advanced independently to `0b64ea440798d6434164a1fc57ffc6e25bf55eea`. Its game folder is **byte-identical to r3** (tree `4f3592aa…`), so r3 is on `main` (unlinked from the homepage). **r4 is not.** `/missing-page/` 5/5 identical to this `main`. |
+| Runtime | Node.js `v24.18.0`, LF checkout, no dependencies |
+| Date | 2026-10-06 UTC |
+
+## Exact totals
+
+| Run | Total | Pass | Fail |
+|---|---:|---:|---:|
+| Node suite | **94** | **94** | 0 |
+| ↳ existing 84 (`engine` 17, `episode-001` 14, `redteam` 24, `redteam-r2` 16, `redteam-r3` 13), unmodified | 84 | 84 | 0 |
+| ↳ new `redteam-r4.test.js` | 10 | 10 | 0 |
+| Audit groups (29 existing + 1 r4) | **30** | **30** | 0 |
+| **Before:** r4 tests on r3 `0e89c92` | 10 | 3 controls | 7 expected |
+
+Skipped / cancelled / todo: 0 / 0 / 0. Evidence: [node-test.tap](tests/results/node-test.tap), [astra-audit.json](tests/results/astra-audit.json), [r4-on-r3.tap](tests/results/r4-on-r3.tap).
+
+The 3 r4 tests that pass on r3 are deliberate **controls**, which must pass on both commits:
+- every evidence condition stays expressible;
+- at-limit content plays and restores;
+- the within-limits restore cost is identical, because restore code is unchanged.
+
+## Defect → fix → regression
+
+| Defect (Astra, LOW) | Fix (`js/content.js`) | Regressions (`tests/redteam-r4.test.js`; audit `r4 content limits`) |
+|---|---|---|
+| **1.** `when.inspected` of any length (100,000 entries) accepted; satisfied conditions scan it on every selection | `when.inspected` must have **≤ `CONTENT_LIMITS.maxWhenInspected` = 5** entries **and no repeated id**. Repeats never change meaning under `every(includes)`, so uniqueness rejects no distinct condition. The length is checked first, before any per-entry work. | Below/at/above: 4 and 5 unique accepted, 6 rejected (exact message); any repeat rejected; all 31 non-empty evidence sets still expressible; Astra case 1 rejected in 0.2–0.3 ms |
+| **2.** Any number of variants per adviser (100,000) accepted; every selection scans them; validation took ~15–16 s | **≤ `CONTENT_LIMITS.maxAdviceVariantsPerAdviser` = 8** per adviser. Checked before scanning; an oversized block is not iterated, and its unscanned reveals do not produce a spurious "never revealed" error. | Below/at/above for **each** of the 4 advisers: 7 and 8 accepted, 9 rejected (exact message); Astra case 2 rejected in 0.2–0.3 ms with one error per adviser |
+| **Same root cause, third array on the restore path:** decisions (restore indexes them; the postmortem key comparison is quadratic in them) | **≤ `CONTENT_LIMITS.maxDecisions` = 8.** Checked before the decision/postmortem/DOM-id/reachability checks, which then return early. | 7 and 8 accepted, 9 rejected (exact message) |
+| **Runtime path** | Unchanged: `app.js` boot validates through `loadEpisode()` **before** `createStore()`, so `restoreState()` is reachable only with validated content | App-boot test: over-limit content shows *Episode could not load* with the `CONTENT_LIMITS` message, the save key is **never read**, and the app does not start. Control: at-limit content boots normally. |
+
+**Completeness of the limit set.** The restore path (`state.js`, `advice.js`) reads these content arrays:
+- `evidence` (already ≤ 5);
+- `advisorOrder` (exactly 4);
+- `advice[a]` (now ≤ 8);
+- each `when.inspected` (now ≤ 5, unique);
+- each `reveals` (already unique known ids, ≤ hidden count);
+- `hybridUnlock.inspected` (already unique known ids, ≤ 5);
+- `decisions` (now ≤ 8).
+
+No other content array is read by restore. Text fields are never scanned.
+
+**No truncation and no divergence.** Content outside a limit is a validation error, so the episode does not load. Nothing is clipped, and engine selection semantics are identical for every accepted episode.
+
+## Shipped content
+
+| | Limit | Shipped |
+|---|---:|---:|
+| Variants per adviser (boy / tooth / darth / donsol) | 8 | 1 / 3 / 2 / 3 |
+| `when.inspected` entries (max) | 5 | 3 (all unique) |
+| Decisions | 8 | 4 |
+
+`validateEpisode(shipped) = []`, and all r1–r3 fixtures remain valid.
+
+## Before / after performance (same script on both commits, Node 24, medians)
+
+| Content | r3 validate | r3 restore | r4 validate | r4 runtime |
+|---|---:|---:|---:|---|
+| Shipped | accepted, 2.1 ms | 0.24 ms | accepted, 2.4 ms | 0.28 ms (same code; noise) |
+| Astra case 1 (100k `when.inspected`, satisfied) | **accepted**, 105 ms | **10.5 ms** | **rejected, 0.2 ms** | never reached |
+| Astra case 2 (100k variants × 4 advisers) | **accepted, 14.6 s** | **908 ms** | **rejected, 0.2 ms** | never reached |
+
+**Honest note:** `restoreState()` is unchanged. Called **directly** with rejected content (bypassing the loader), it is still slow: 15.7 ms and 962 ms in the same run. Protection is the single load gate, which keeps validator and runtime semantics in one place. The app-boot regression proves the app cannot reach restore without passing that gate. Astra's environment measured 86 ms / 301 ms on r3; the absolute numbers differ with environment and save shape, but the scaling defect reproduces.
+
+## Restore cost bound for accepted content (search vs execution)
+
+**Search-state complexity** (r3, unchanged):
+- ≤ (I+1)(H+1)·Σ2^k = 6·5·31 = **930** states;
+- ≤ 4·6·5 = **120** memoized `selectAdvice()` calls.
+
+**Total execution complexity** (r4 bounds the per-call factor):
+
+| Term | Bound |
+|---|---|
+| One `selectAdvice()` call | ≤ 8 variants × (`when.inspected` 5 × prefix 5 + hybrid 5 × prefix 5 + consulted 4) ≈ **432** comparisons |
+| Feasible-history search | ≤ 120 × 432 ≈ 52k (selections) + 930 states × 5 successors × 4 reveals ≈ 19k (transitions) |
+| r1 per-advice selectability check | ≤ 4 advisers × 6 prefixes × 5 counts × 432 ≈ 52k |
+| Remaining reference/invariant checks | O(E·V·R) ≤ 5·4·8·4 |
+| **Per restore** | **≲ 1.3 × 10⁵ elementary comparisons**, independent of content size within the limits |
+
+**Measured, adversarial worst case within the limits:**
+- every limit at maximum, every `when` key used, every `when.inspected` listing all 5 ids;
+- 8 decisions, 1 visible and 4 hidden evidence;
+- 14,400 restores: real random-walk saves plus forged-order versions that force exhaustive search.
+
+Results:
+- search states max **105 / 930**; `selectAdvice` max **78 / 120**;
+- restore **p50 0.05–0.07 ms, p99 0.31–0.53 ms**, p99.9 ≤ 1.0 ms;
+- isolated maxima of a few ms (up to 20 ms under full-suite load) are garbage-collection pauses, not search growth.
+
+The test asserts the state and selection bounds, plus a generous p99 < 5 ms ceiling, so it doesn't flake in CI.
+
+**Validation cost** for accepted content is bounded by the same limits (r1 reachability ≤ 3⁵·2⁴ states). Over-limit content is rejected in < 1 ms.
+
+## Preserved (re-run)
+
+| Check | Result |
+|---|---|
+| r3 feasible-history differentials | tiny1 104,720 / tiny2 50,640 candidates: 0 false accepts, 0 false rejects; 10,000 mutations; 194,852 reachable Astra saves restored |
+| Stale / re-entrant advice; overlapping and multi-item reveals; all three condition types | r3 cases 1–6 and controls, r2/r1 suites: pass, unmodified |
+| Gameplay, telemetry/reset, persistence, ID/asset defenses, reduced motion, local hosting | existing suites + 29 audit groups: pass |
+| `/missing-page/` | 5/5 byte-identical to `main` |
+
+## Residual (not in scope; reported, not changed)
+
+- A **tampered local save** is parsed and shape-checked in time linear in its own size before rejection. It is device-local data, not content, and is unchanged from r3.
+- Render cost of very long text fields is unaffected by these limits; it is not on the restore path.
+- Follow-ups unchanged: the CRLF harness import stripping; native keyboard / touch / screen-reader / Android checks.
+
+Ready for Don Sol's review. No merge, deployment, publishing or canon change.
+
+---
+
+# History — r3, r2 and r1 reports, unchanged
+
+## Harness Episode 001 — Issue #7 remediation r3 regression report
 
 **Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
 
@@ -106,7 +239,7 @@ Ready for Don Sol's review. No Astra re-test requested; no merge, deployment, pu
 
 ---
 
-# History — Issue #5 (r2) and Issue #3 (r1) reports, unchanged
+## History — Issue #5 (r2) and Issue #3 (r1) reports, unchanged
 
 ## Harness Episode 001 — Issue #5 remediation r2 regression report
 

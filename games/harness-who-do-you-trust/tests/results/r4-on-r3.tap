@@ -1,0 +1,236 @@
+TAP version 13
+# Subtest: r4 limits are the documented values and the shipped episode is within them and valid
+not ok 1 - r4 limits are the documented values and the shipped episode is within them and valid
+  ---
+  duration_ms: 4.1847
+  type: 'test'
+  location: 'C:\\dds-r3\\games\\harness-who-do-you-trust\\tests\\redteam-r4.test.js:23:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + {}
+    - {
+    -   maxAdviceVariantsPerAdviser: 8,
+    -   maxDecisions: 8,
+    -   maxWhenInspected: 5
+    - }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    maxAdviceVariantsPerAdviser: 8
+    maxWhenInspected: 5
+    maxDecisions: 8
+  actual:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r3/games/harness-who-do-you-trust/tests/redteam-r4.test.js:24:10)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.start (node:internal/test_runner/test:1191:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)
+  ...
+# Subtest: r4 boundary: advice variants per adviser — 7 and 8 accepted, 9 rejected with an actionable error (every adviser)
+not ok 2 - r4 boundary: advice variants per adviser — 7 and 8 accepted, 9 rejected with an actionable error (every adviser)
+  ---
+  duration_ms: 15.6175
+  type: 'test'
+  location: 'C:\\dds-r3\\games\\harness-who-do-you-trust\\tests\\redteam-r4.test.js:43:1'
+  failureType: 'testCodeFailure'
+  error: ''
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r3/games/harness-who-do-you-trust/tests/redteam-r4.test.js:48:5)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: r4 boundary: when.inspected — 4 and 5 unique ids accepted, 6 rejected; any repeat rejected
+not ok 3 - r4 boundary: when.inspected — 4 and 5 unique ids accepted, 6 rejected; any repeat rejected
+  ---
+  duration_ms: 7.1174
+  type: 'test'
+  location: 'C:\\dds-r3\\games\\harness-who-do-you-trust\\tests\\redteam-r4.test.js:56:1'
+  failureType: 'testCodeFailure'
+  error: ''
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r3/games/harness-who-do-you-trust/tests/redteam-r4.test.js:60:3)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r4 uniqueness rejects no distinct condition: every non-empty set of evidence ids is expressible within the limit
+ok 4 - r4 uniqueness rejects no distinct condition: every non-empty set of evidence ids is expressible within the limit
+  ---
+  duration_ms: 65.9595
+  type: 'test'
+  ...
+# Subtest: r4 boundary: decisions — 7 and 8 accepted, 9 rejected with an actionable error
+not ok 5 - r4 boundary: decisions — 7 and 8 accepted, 9 rejected with an actionable error
+  ---
+  duration_ms: 8.0692
+  type: 'test'
+  location: 'C:\\dds-r3\\games\\harness-who-do-you-trust\\tests\\redteam-r4.test.js:86:1'
+  failureType: 'testCodeFailure'
+  error: ''
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r3/games/harness-who-do-you-trust/tests/redteam-r4.test.js:90:3)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r4 at-limit content still plays and restores exactly (no false rejection at the boundary)
+ok 6 - r4 at-limit content still plays and restores exactly (no false rejection at the boundary)
+  ---
+  duration_ms: 10.2447
+  type: 'test'
+  ...
+# Subtest: r4 Astra case 1: 100,000-entry when.inspected is rejected, fast, with an actionable error
+not ok 7 - r4 Astra case 1: 100,000-entry when.inspected is rejected, fast, with an actionable error
+  ---
+  duration_ms: 112.219
+  type: 'test'
+  location: 'C:\\dds-r3\\games\\harness-who-do-you-trust\\tests\\redteam-r4.test.js:119:1'
+  failureType: 'testCodeFailure'
+  error: ''
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r3/games/harness-who-do-you-trust/tests/redteam-r4.test.js:122:3)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r4 Astra case 2: 100,000 variants per adviser are rejected, fast, with an actionable error per adviser
+not ok 8 - r4 Astra case 2: 100,000 variants per adviser are rejected, fast, with an actionable error per adviser
+  ---
+  duration_ms: 12599.2469
+  type: 'test'
+  location: 'C:\\dds-r3\\games\\harness-who-do-you-trust\\tests\\redteam-r4.test.js:127:1'
+  failureType: 'testCodeFailure'
+  error: 'boy'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r3/games/harness-who-do-you-trust/tests/redteam-r4.test.js:130:36)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r4 adversarial restore cost within limits: bounded search, bounded per-call work, measured timings
+ok 9 - r4 adversarial restore cost within limits: bounded search, bounded per-call work, measured timings
+  ---
+  duration_ms: 1963.1445
+  type: 'test'
+  ...
+# within-limits worst shape: restores=14400 searchStates max=105/930 selectAdvice max=78/120 restoreMs p50=0.0522 p99=0.3980 p99.9=0.6637 max=17.218
+# Subtest: r4 app boot: over-limit content is refused before the store is created, so restore never runs on it
+not ok 10 - r4 app boot: over-limit content is refused before the store is created, so restore never runs on it
+  ---
+  duration_ms: 185.7917
+  type: 'test'
+  location: 'C:\\dds-r3\\games\\harness-who-do-you-trust\\tests\\redteam-r4.test.js:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    app did not start
+    + actual - expected
+    
+    + {
+    +   completed: false,
+    +   consultations: [],
+    +   discoveredEvidence: [
+    +     'e_monitor',
+    +     'e_controller',
+    +     'e_technician',
+    +     'e_protocol'
+    +   ],
+    +   episodeId: 'episode-001',
+    +   inspectedSources: [],
+    +   outcomeId: null,
+    +   playerDecisions: [],
+    +   sceneId: 'briefing',
+    +   trustWeights: {
+    +     boy: 0,
+    +     darth: 0,
+    +     donsol: 0,
+    +     tooth: 0
+    +   },
+    +   uncertaintyAcknowledged: false,
+    +   version: 1
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+    version: 1
+    episodeId: 'episode-001'
+    sceneId: 'briefing'
+    discoveredEvidence:
+      0: 'e_monitor'
+      1: 'e_controller'
+      2: 'e_technician'
+      3: 'e_protocol'
+    inspectedSources:
+    consultations:
+    trustWeights:
+      boy: 0
+      tooth: 0
+      darth: 0
+      donsol: 0
+    playerDecisions:
+    uncertaintyAcknowledged: false
+    outcomeId: ~
+    completed: false
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r3/games/harness-who-do-you-trust/tests/redteam-r4.test.js:198:12)
+    async Test.run (node:internal/test_runner/test:1332:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 3
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15180.6

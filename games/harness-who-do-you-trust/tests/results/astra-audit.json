@@ -1,7 +1,7 @@
 {
   "target": {
-    "branch": "fix/harness-wdyt-redteam-r3",
-    "baseCommit": "1babcff446b7cb49630474df9d8b43857d9d135c"
+    "branch": "fix/harness-wdyt-redteam-r4",
+    "baseCommit": "0e89c929d0bb527890ba3e9fe07908c623603388"
   },
   "method": "Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.",
   "results": [
@@ -172,6 +172,16 @@
       "name": "r3 feasible history: Astra conditional-reveal forgery rejected; every engine-reachable shipped save restores",
       "result": "PASS",
       "details": 87142
+    },
+    {
+      "name": "r4 content limits: Astra size cases rejected fast; boundaries exact; shipped valid",
+      "result": "PASS",
+      "details": {
+        "maxAdviceVariantsPerAdviser": 8,
+        "maxWhenInspected": 5,
+        "maxDecisions": 8,
+        "rejectMs": 30.2
+      }
     }
   ],
   "counts": {
@@ -206,7 +216,13 @@
       "accepted": 2
     },
     "r2OrderReachableStates": 15000,
-    "r3ReachableShippedSaves": 87142
+    "r3ReachableShippedSaves": 87142,
+    "r4Limits": {
+      "maxAdviceVariantsPerAdviser": 8,
+      "maxWhenInspected": 5,
+      "maxDecisions": 8,
+      "rejectMs": 30.2
+    }
   },
   "diagnostics": {
     "missingMandatoryReveal": {
@@ -385,7 +401,7 @@
       {
         "path": "js/content.js",
         "status": 200,
-        "bytes": 12799
+        "bytes": 15192
       },
       {
         "path": "js/telemetry.js",
