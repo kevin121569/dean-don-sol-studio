@@ -64,7 +64,9 @@ async function flush() {
           if (!dirty.has(key)) dirty.set(key, value);
         }
       });
-      if (dirty.size) flushRequested = true;
+      // Retry failures on a later debounce/lifecycle flush; never spin forever while the
+      // native store is unavailable. Newer writes schedule their own flush.
+      if (dirty.size && flushTimer === null) scheduleFlush();
     }
   });
   return writeChain;
