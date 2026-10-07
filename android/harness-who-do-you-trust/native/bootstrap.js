@@ -5,6 +5,7 @@ const PREFIX = 'harness-wdyt:';
 const cache = new Map();
 let dirty = new Map();
 let writeChain = Promise.resolve();
+let flushRequested = false;
 
 async function hydrate() {
   const { keys } = await Preferences.keys();
@@ -32,19 +33,26 @@ function installStorageBridge() {
 }
 
 async function flush() {
-  const pending = [...dirty.entries()];
-  if (!pending.length) return writeChain;
-  for (const [key] of pending) dirty.delete(key);
+  flushRequested = true;
   writeChain = writeChain.then(async () => {
-    const results = await Promise.allSettled(pending.map(([key, value]) =>
-      value === null ? Preferences.remove({ key }) : Preferences.set({ key, value })
-    ));
-    results.forEach((result, i) => {
-      if (result.status === 'rejected') {
-        const [key, value] = pending[i];
-        if (!dirty.has(key)) dirty.set(key, value);
+    while (flushRequested) {
+      flushRequested = false;
+      const pending = [...dirty.entries()];
+      if (!pending.length) continue;
+      for (const [key, value] of pending) {
+        if (dirty.get(key) === value) dirty.delete(key);
       }
-    });
+      const results = await Promise.allSettled(pending.map(([key, value]) =>
+        value === null ? Preferences.remove({ key }) : Preferences.set({ key, value })
+      ));
+      results.forEach((result, i) => {
+        if (result.status === 'rejected') {
+          const [key, value] = pending[i];
+          if (!dirty.has(key)) dirty.set(key, value);
+        }
+      });
+      if (dirty.size) flushRequested = true;
+    }
   });
   return writeChain;
 }
@@ -58,7 +66,9 @@ function installLifecycle() {
     if (openDialog) { openDialog.close(); return; }
     const back = document.querySelector('[data-action="back"]:not([disabled])');
     if (back) { back.click(); return; }
-    if (canGoBack) history.back();
+    if (canGoBack) { history.back(); return; }
+    // At the root screen, Android Back should behave like a normal app exit/background action.
+    void flush().finally(() => App.minimizeApp());
   });
 }
 
