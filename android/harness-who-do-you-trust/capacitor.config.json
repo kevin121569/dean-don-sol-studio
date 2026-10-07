@@ -1,7 +1,7 @@
 {
   "appId": "com.theidealabstudio.harnesswhodoyoutrust",
   "appName": "Who Do You Trust?",
-  "webDir": "www",
+  "webDir": "dist",
   "server": {
     "androidScheme": "https"
   }
