@@ -9,6 +9,65 @@ export const RATINGS = Object.freeze(['strong', 'weak', 'mixed']);
 // ignored at runtime, turning a typo into an advice line that always fires.
 const WHEN_KEYS = Object.freeze(['inspected', 'hybridUnlocked', 'consultedFewerThan']);
 
+/**
+ * Content complexity limits (r4). Restore cost = feasible-history search size (≤ 930 states, ≤ 120 memoized
+ * selectAdvice calls; js/state.js) × the cost of each call, which scans an adviser's variants and each
+ * variant's when.inspected list. These limits bound that per-call factor, and the decision count that
+ * restore indexes. They are checked BEFORE any per-item work, so oversized content is rejected without being
+ * scanned. Content is never truncated: a violation is a validation error and the episode does not load.
+ */
+export const CONTENT_LIMITS = Object.freeze({
+  maxAdviceVariantsPerAdviser: 8, // shipped maximum: 3
+  maxWhenInspected: 5,            // = the packet's evidence maximum; entries must also be unique (shipped maximum: 3)
+  maxDecisions: 8,                // shipped: 4
+});
+/**
+ * r5: maximum length of every content-chosen identifier and every reference to one. Restore hashes, compares
+ * and serializes them, so its cost scales with their length. Shipped maximum: 16 ("tooth_reconciled").
+ * A separate export (not a CONTENT_LIMITS key) so the r4 limits object, and the test that pins it, are unchanged.
+ */
+export const MAX_IDENTIFIER_LENGTH = 64;
+const MAX_EVIDENCE = 5; // packet range 3–5, enforced below; bounds reveals / hybridUnlock lists (unique known ids)
+
+/**
+ * r5 identifier pre-pass. Runs FIRST, before any lookup, comparison, DOM-id generation or reachability work,
+ * so an over-long identifier costs one .length read. Visits every free-form identifier (episode, evidence,
+ * advice variant, decision ids) and every reference to one (when.inspected, reveals, hybridUnlock.inspected,
+ * postmortem keys). It iterates only collections whose size is already capped (r4 limits / the evidence
+ * range); oversized collections are skipped here and rejected by their own rule. Non-strings and empty
+ * strings are left to the existing safe-identifier and reference rules. Nothing is truncated or normalized.
+ */
+function identifierLengthProblems(ep) {
+  const max = MAX_IDENTIFIER_LENGTH;
+  const out = [];
+  const check = (value, field, kind) => {
+    if (typeof value === 'string' && value.length > max) {
+      out.push(`${field}: ${kind} is ${value.length} characters; the limit is ${max} (MAX_IDENTIFIER_LENGTH) — shorten it; identifiers are never truncated`);
+    }
+  };
+  const capped = (list, cap) => Array.isArray(list) && list.length <= cap ? list : [];
+  check(ep.id, 'id', 'identifier');
+  capped(ep.evidence, MAX_EVIDENCE).forEach((e, i) => check(e?.id, `evidence[${i}].id`, 'identifier'));
+  if (isObj(ep.advice)) {
+    for (const a of REQUIRED_ADVISORS) {
+      if (!Object.hasOwn(ep.advice, a)) continue;
+      capped(ep.advice[a], CONTENT_LIMITS.maxAdviceVariantsPerAdviser).forEach((v, i) => {
+        if (!isObj(v)) return;
+        check(v.id, `advice.${a}[${i}].id`, 'identifier');
+        capped(v.when?.inspected, CONTENT_LIMITS.maxWhenInspected).forEach((r, j) => check(r, `advice.${a}[${i}].when.inspected[${j}]`, 'reference'));
+        capped(v.reveals, MAX_EVIDENCE).forEach((r, j) => check(r, `advice.${a}[${i}].reveals[${j}]`, 'reference'));
+      });
+    }
+  }
+  capped(ep.hybridUnlock?.inspected, MAX_EVIDENCE).forEach((r, j) => check(r, `hybridUnlock.inspected[${j}]`, 'reference'));
+  capped(ep.decisions, CONTENT_LIMITS.maxDecisions).forEach((d, i) => check(d?.id, `decisions[${i}].id`, 'identifier'));
+  if (isObj(ep.postmortem)) {
+    const keys = Object.keys(ep.postmortem);
+    if (keys.length <= CONTENT_LIMITS.maxDecisions) keys.forEach(k => check(k, `postmortem key "${k.slice(0, 16)}…"`, 'reference'));
+  }
+  return out;
+}
+
 export async function loadEpisode(path = 'data/episode-001.json') {
   const response = await fetch(path);
   if (!response.ok) throw new Error(`Could not load ${path} (${response.status})`);
@@ -21,7 +80,8 @@ export async function loadEpisode(path = 'data/episode-001.json') {
 const isObj = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const isStr = v => typeof v === 'string' && v.trim().length > 0;
 // IDs are used in HTML attributes, ARIA references, and delegated controls.
-const isId = v => typeof v === 'string' && /^[A-Za-z][A-Za-z0-9_-]*$/.test(v);
+// The length bound is part of the definition, so every isId() use (including the DOM-id gate) implies it.
+const isId = v => typeof v === 'string' && v.length <= MAX_IDENTIFIER_LENGTH && /^[A-Za-z][A-Za-z0-9_-]*$/.test(v);
 const isStrList = v => Array.isArray(v) && v.length > 0 && v.every(isStr);
 // Icons must be plain local asset paths: assets/<segment>/.../<name>.(svg|png|webp). An allowlist, not a
 // denylist: it excludes every whitespace/control character (which WHATWG URL parsing strips, turning
@@ -46,6 +106,10 @@ export function validateEpisode(ep) {
   const problems = [];
   const need = (cond, msg) => { if (!cond) problems.push(msg); };
   if (!isObj(ep)) return ['episode is not an object'];
+
+  // -- r5: identifier/reference length first; fail fast before any downstream work
+  const tooLong = identifierLengthProblems(ep);
+  if (tooLong.length) return tooLong;
 
   // -- identity + briefing
   need(isId(ep.id), 'id must be a safe identifier (letter followed by letters, digits, _ or -)');
@@ -88,9 +152,15 @@ export function validateEpisode(ep) {
   need(isObj(ep.advice) && sameSet(Object.keys(ep.advice), REQUIRED_ADVISORS), 'advice must have exactly the four required blocks');
   const adviceIds = [];
   const revealable = new Set();
+  let adviceOversized = false;
   for (const id of REQUIRED_ADVISORS) {
     const variants = ep.advice?.[id];
     if (!Array.isArray(variants) || !variants.length) { problems.push(`advice.${id}: must be a non-empty array`); continue; }
+    if (variants.length > CONTENT_LIMITS.maxAdviceVariantsPerAdviser) {
+      adviceOversized = true;
+      problems.push(`advice.${id}: ${variants.length} variants exceeds the limit of ${CONTENT_LIMITS.maxAdviceVariantsPerAdviser} (CONTENT_LIMITS.maxAdviceVariantsPerAdviser) — merge or remove variants; content is not truncated`);
+      continue; // fail fast: do not scan an oversized list
+    }
     variants.forEach((v, i) => {
       const at = `advice.${id}[${i}]${isStr(v?.id) ? ` (${v.id})` : ''}`;
       if (!isObj(v)) { problems.push(`${at}: must be an object`); return; }
@@ -102,7 +172,13 @@ export function validateEpisode(ep) {
       for (const k of Object.keys(when)) need(WHEN_KEYS.includes(k), `${at}: unknown condition "${k}" (engine would ignore it)`);
       if (when.inspected !== undefined) {
         need(Array.isArray(when.inspected) && when.inspected.length > 0, `${at}: when.inspected must be a non-empty array`);
-        for (const e of [].concat(when.inspected)) need(knownEvidence(e), `${at}: when.inspected references unknown evidence "${e}"`);
+        if (Array.isArray(when.inspected) && when.inspected.length > CONTENT_LIMITS.maxWhenInspected) {
+          problems.push(`${at}: when.inspected has ${when.inspected.length} entries; the limit is ${CONTENT_LIMITS.maxWhenInspected} (CONTENT_LIMITS.maxWhenInspected) — list each required evidence id once`);
+        } else {
+          // Repeats never change meaning (every(includes)), so requiring uniqueness rejects no distinct condition.
+          need(!Array.isArray(when.inspected) || new Set(when.inspected).size === when.inspected.length, `${at}: when.inspected must not repeat ids — list each required evidence id once`);
+          for (const e of [].concat(when.inspected)) need(knownEvidence(e), `${at}: when.inspected references unknown evidence "${e}"`);
+        }
       }
       need(when.hybridUnlocked === undefined || typeof when.hybridUnlocked === 'boolean', `${at}: when.hybridUnlocked must be boolean`);
       need(when.consultedFewerThan === undefined || (Number.isInteger(when.consultedFewerThan) && when.consultedFewerThan > 0 && when.consultedFewerThan < REQUIRED_ADVISORS.length),
@@ -121,7 +197,8 @@ export function validateEpisode(ep) {
     need(isObj(last) && (last.when === undefined || (isObj(last.when) && Object.keys(last.when).length === 0)), `advice.${id}: last variant must be unconditional so selectAdvice() always returns one`);
   }
   need(new Set(adviceIds).size === adviceIds.length, 'advice ids must be unique across all advisers');
-  for (const h of hiddenIds) need(revealable.has(h), `hidden evidence "${h}" is never revealed by any advice (unreachable)`);
+  // An oversized advice block was not scanned, so reachability cannot be judged; its own error stands.
+  if (!adviceOversized) for (const h of hiddenIds) need(revealable.has(h), `hidden evidence "${h}" is never revealed by any advice (unreachable)`);
 
   // -- hybrid unlock
   const hu = ep.hybridUnlock;
@@ -135,6 +212,11 @@ export function validateEpisode(ep) {
   // -- decisions
   const decisions = Array.isArray(ep.decisions) ? ep.decisions : [];
   need(decisions.length >= 2, 'at least two decisions required');
+  if (decisions.length > CONTENT_LIMITS.maxDecisions) {
+    // Fail fast: every remaining check (postmortem, DOM ids, reachability) iterates the decision list.
+    problems.push(`decisions: ${decisions.length} exceeds the limit of ${CONTENT_LIMITS.maxDecisions} (CONTENT_LIMITS.maxDecisions) — remove decisions; content is not truncated`);
+    return problems;
+  }
   const decisionIds = decisions.map(d => d?.id);
   need(new Set(decisionIds).size === decisionIds.length, 'decision ids must be unique');
   decisions.forEach((d, i) => {

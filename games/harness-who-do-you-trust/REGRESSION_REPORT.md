@@ -1,4 +1,274 @@
-# Harness Episode 001 — Issue #7 remediation r3 regression report
+# Harness Episode 001 — r5 remediation regression report (LOW: identifier length)
+
+**Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
+
+Astra's r4 result was FAIL for one LOW finding: identifier lengths were unbounded, so content satisfying every r4 cardinality limit could still make restore materially slower.
+
+r5 adds one validation bound, `MAX_IDENTIFIER_LENGTH = 64`. It covers every content-chosen identifier and every reference to one, and it is checked **first**, before any downstream work.
+
+Unchanged:
+- engine, advice selection, restore, `feasibleHistory()` and the r4 `CONTENT_LIMITS`;
+- identifiers are never truncated or normalized;
+- the 94 existing tests pass **unmodified**;
+- the 30 existing audit groups pass.
+
+No merge or deployment.
+
+| Identity | Value |
+|---|---|
+| Exact base / sole parent | `fix/harness-wdyt-redteam-r4` @ `3b9a5d9ca707795e03a5d0dc57a77cf254b9d225` |
+| Branch | `fix/harness-wdyt-redteam-r5` |
+| Product change | `js/content.js` only (validation) |
+| Scope | `games/harness-who-do-you-trust/` only; `main`, r4 and r3 not modified |
+| Runtime | Node.js `v24.18.0`, LF checkout, no dependencies |
+| Date | 2026-10-06 UTC |
+
+## Why a separate constant, not `CONTENT_LIMITS.maxIdentifierLength`
+
+The preferred shape was tried first. The existing r4 test pins `CONTENT_LIMITS` to exactly its three keys, so adding a fourth key **failed an existing test** (93/94). Since the existing tests and r4's limits must stay unchanged, the bound is the single shared export `MAX_IDENTIFIER_LENGTH`. It is used by:
+- the pre-pass;
+- `isId()`, so every safe-identifier check, including the DOM-id gate, implies the bound;
+- every error message.
+
+## Exact totals
+
+| Run | Total | Pass | Fail |
+|---|---:|---:|---:|
+| Node suite | **107** | **107** | 0 |
+| ↳ existing 94 (`engine` 17, `episode-001` 14, `redteam` 24, `-r2` 16, `-r3` 13, `-r4` 10), unmodified | 94 | 94 | 0 |
+| ↳ new `redteam-r5.test.js` | 13 | 13 | 0 |
+| Audit groups (30 existing + 1 r5) | **31** | **31** | 0 |
+| **Before:** r5 tests on r4 `3b9a5d9` | 13 | 2 controls | 11 expected |
+
+The 2 controls (distinct 64-character ids stay distinct; at-limit content is bounded) hold on both commits.
+
+Evidence: [node-test.tap](tests/results/node-test.tap), [astra-audit.json](tests/results/astra-audit.json), [r5-on-r4.tap](tests/results/r5-on-r4.tap).
+
+## Complete identifier namespace audit
+
+Established by reading every use in `content.js`, `state.js`, `advice.js`, `engine.js`, `dom-ids.js`, `telemetry.js` and `app.js`.
+
+| Namespace | Content-controlled? | Where it flows | r5 bound |
+|---|---|---|---|
+| Episode `id` | yes | save `episodeId`, restore equality, storage key `harness-wdyt:<id>:v1`, telemetry `episode` | **≤ 64**, identifier |
+| Evidence `id` | yes | saves (discovered / inspected), restore Maps and `includes`, feasible-history position map, DOM ids (5 namespaces), `data-id`, telemetry | **≤ 64**, identifier |
+| Advice variant `id` | yes | saves (consultations), restore lookup and comparison, feasible-history match mask, telemetry | **≤ 64**, identifier |
+| Decision `id` | yes | saves (decisions / outcome), restore Map, DOM ids (`dec-`, `lock-`), radio `value`, telemetry | **≤ 64**, identifier |
+| `when.inspected[]` | yes (references) | `selectAdvice()` `includes`, restore conditions | **≤ 64**, reference; also ≤ 5 entries (r4) |
+| `reveals[]` | yes (references) | engine append, restore reveal checks, feasible-history positions | **≤ 64**, reference; ≤ 5 (unique known ids) |
+| `hybridUnlock.inspected[]` | yes (references) | `isHybridUnlocked()` in selection and restore | **≤ 64**, reference; ≤ 5 (unique known ids) |
+| Postmortem keys | yes (references) | must equal the decision-id set; looked up by decision id | **≤ 64**, reference (stray keys too) |
+| Adviser ids; `advisorOrder`; `advisors` / `advice` / `postmortem[].advisors` keys | **no**: exactly `boy, tooth, darth, donsol` | trust keys, `trust-` / `adv-` / `consult-` DOM ids | fixed enum (≤ 6 chars) |
+| `when` keys | **no**: ⊆ {inspected, hybridUnlocked, consultedFewerThan} | selection | fixed enum |
+| `rating` | **no**: strong / weak / mixed | render only | fixed enum |
+| `version` | integer | save equality | positive integer |
+| Advisor `icon` | yes (asset path, not an identifier) | `<img src>` and validation regex / URL only; **not** on restore, persistence or comparison | allowlist regex (r2); length category 4 below |
+| Text (titles, bodies, advice text, outcomes, postmortem text, hints) | yes | render only | category 4 below |
+
+**Derived identifiers** are all bounded once their source is:
+- DOM ids: fixed prefix + id ≤ 64;
+- the storage key;
+- save fields;
+- telemetry fields.
+
+## Defect → fix → regression
+
+| Defect (Astra, LOW) | Fix (`js/content.js`) | Regressions (`tests/redteam-r5.test.js`; audit `r5 identifier length`) |
+|---|---|---|
+| Identifier length unbounded; restore grows with it (Astra fixture: 10k / 100k / 300k-char evidence ids, all r4 limits satisfied) | `MAX_IDENTIFIER_LENGTH = 64`. The `identifierLengthProblems()` pre-pass runs **first** and returns early, before any lookup, comparison, DOM-id generation or reachability. It visits all 8 content namespaces above, iterating only collections already capped by r4 or the evidence range. `isId()` includes the bound. | **Identifiers** (episode, evidence, advice variant, decision): 63 and 64 accepted; 65 rejected with the exact field and limit, and only length errors returned; empty / non-string / null rejected |
+| | | **References** (`when.inspected`, `reveals`, `hybridUnlock.inspected`): 65 rejected with the exact field first; an at-limit dangling reference is still judged "unknown" |
+| | | **Postmortem key:** a stray 65-char key rejected |
+| | | **1,000,000-char repeated-prefix ids** in 5 namespaces: only length errors, **0.02 ms** |
+| | | **Distinct 64-char ids differing only in the last character:** accepted, DOM ids unique, played, saved and restored exactly, and a swap is not equivalent |
+| | | **Astra reproducer via the real `loadEpisode()`:** 10k / 100k / 300k refused with the exact message |
+| | | **At-limit worst case** (below) |
+| **No truncation or normalization** | Over-length is an error; the episode does not load | Error text states "identifiers are never truncated"; the near-identical-ids test proves no equivalence |
+
+## Before / after timings
+
+Astra's fixture: 5 evidence, 4 advisers, 8 variants per adviser, 5-entry `when.inspected`, 8 decisions, evidence ids at the given length with all references updated. Path: real `loadEpisode()` over HTTP → reducer-produced saves → `createStore().load()`.
+
+| Evidence id length | r4: load | r4 `store.load()` p50 / p99 / max | save size | r5 |
+|---:|---|---|---:|---|
+| short | accepted | 0.076 / 0.49 / 1.1 ms | 0.5 KB | accepted, 0.071 / 0.42 / 0.85 ms |
+| 63 | accepted | — | 0.8 KB | accepted, 0.075 / 0.60 / 0.70 ms |
+| **64** | accepted | — | 0.8 KB | **accepted, 0.057 / 0.37 / 0.60 ms** |
+| 65 | accepted | — | — | **rejected** (exact message) |
+| 10,000 | accepted | 0.26 / 1.18 / 1.9 ms | 60 KB | **rejected** |
+| 100,000 | accepted | 1.49 / 8.32 / 8.3 ms | 900 KB | **rejected** |
+| 300,000 | accepted | **7.69 / 28.6 / 28.6 ms** | **2.7 MB** | **rejected** |
+
+At 300k-character ids, r4's save size (2.7 MB) also approached typical localStorage quotas, a persistence risk that is now removed.
+
+**At the limit, every content identifier at 64** (evidence, advice variants, decisions, episode), same shape, 10,800 loads of real and forged-order saves:
+- `store.load()`, isolated run: **p50 0.032 ms, p99 0.29 ms, max 1.3–4.4 ms** (isolated garbage-collection pauses);
+- the same test during the concurrent full suite: p50 0.072 ms, p99 0.66 ms, max 5.5 ms;
+- largest save 1,391 bytes;
+- search states ≤ 108 / 930; `selectAdvice` ≤ 78 / 120.
+
+**Honest note:** the real `loadEpisode()` still takes 55 / 160 / 464 ms isolated (240 / 480 / 1,251 ms under full-suite load) to *reject* the 10k / 100k / 300k fixtures. That time is spent in `fetch` and `JSON.parse` of the multi-megabyte file **before** validation runs. Validation itself is 0.02 ms, and no restore runs. Raw episode file size is not something content validation can bound (category 4).
+
+## Performance claim, by category
+
+| # | Category | Status |
+|---|---|---|
+| 1 | **Search-state count** (r3) | ≤ (I+1)(H+1)·Σ2^k = **930** states; ≤ **120** memoized `selectAdvice()` calls |
+| 2 | **Array cardinality** (r4) | variants ≤ 8 per adviser; `when.inspected` ≤ 5 unique; decisions ≤ 8; evidence ≤ 5; reveals / hybrid ≤ 5 unique known ids; advisers = 4 |
+| 3 | **Identifier / string size on restore** (r5) | every identifier and reference ≤ **64** characters. Fixed enums ≤ 18 chars. Restore reads no other content strings. So each comparison / hash on the restore path is O(64), and per-restore work is ≲ 1.3 × 10⁵ comparisons × O(64) character operations |
+| 4 | **Still unbounded, not on restore** | text fields (titles, bodies, advice text, outcomes, postmortem text, hints) and the `icon` path length: they affect episode file size, `fetch` + `JSON.parse` time and render time, never restore, persistence or comparisons. A tampered local save is parsed and shape-checked in time linear in its own size (unchanged from r3/r4; device-local data, not content). |
+
+## Preserved (re-run)
+
+| Check | Result |
+|---|---|
+| r3 exact differential | tiny1 104,720 / tiny2 50,640 candidates: 0 false accepts, 0 false rejects; 10,000 mutations; 194,852 reachable saves restored |
+| Reachable-save controls | r2 60,000; r3 194,852; r4 14,400 within-limit; r5 10,800 at the id limit; no genuine save rejected |
+| r4 reproducers | 100k-condition and 100k-variant cases rejected (< 1 ms); boundaries unchanged |
+| Stale / re-entrant advice; overlapping and multi-item reveals; all three condition types; gameplay, telemetry / reset, persistence, id / asset defenses, reduced motion, local hosting | existing 94 tests + 30 audit groups: pass, unmodified |
+| `/missing-page/` | 5/5 byte-identical to current `main` |
+
+**Not touched, as instructed:** the CRLF harness issue; native keyboard / touch / screen-reader / Android checks; homepage linking; deployment; the r3 content already on `main`.
+
+Ready for Don Sol's review. No merge, deployment, publishing or canon change.
+
+---
+
+# History — r4, r3, r2 and r1 reports, unchanged
+
+## Harness Episode 001 — r4 remediation regression report (LOW: content-size restore performance)
+
+**Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
+
+Astra's r3 result was PASS WITH RESIDUAL RISKS, with one LOW finding: restore execution time was not bounded by r3's documented state bounds, because each `selectAdvice()` call scans schema-valid advice and condition arrays of unbounded size.
+
+r4 bounds content complexity at **validation time**, with explicit limits and actionable errors. It does **not** touch the engine, `selectAdvice()`, `feasibleHistory()`, or any restore semantics:
+- the 84 existing tests pass **unmodified**;
+- the 29 existing audit groups pass;
+- the r3 exact differentials still show 0 false accepts and 0 false rejects.
+
+No merge or deployment.
+
+| Identity | Value |
+|---|---|
+| Exact base / sole parent | `fix/harness-wdyt-redteam-r3` @ `0e89c929d0bb527890ba3e9fe07908c623603388` |
+| Branch | `fix/harness-wdyt-redteam-r4` |
+| Product change | `js/content.js` only (validation). `engine.js`, `advice.js`, `state.js`, `app.js`: unchanged. |
+| Scope | `games/harness-who-do-you-trust/` only; this patch does not touch `main` |
+| `main` (observed, not changed here) | advanced independently to `0b64ea440798d6434164a1fc57ffc6e25bf55eea`. Its game folder is **byte-identical to r3** (tree `4f3592aa…`), so r3 is on `main` (unlinked from the homepage). **r4 is not.** `/missing-page/` 5/5 identical to this `main`. |
+| Runtime | Node.js `v24.18.0`, LF checkout, no dependencies |
+| Date | 2026-10-06 UTC |
+
+## Exact totals
+
+| Run | Total | Pass | Fail |
+|---|---:|---:|---:|
+| Node suite | **94** | **94** | 0 |
+| ↳ existing 84 (`engine` 17, `episode-001` 14, `redteam` 24, `redteam-r2` 16, `redteam-r3` 13), unmodified | 84 | 84 | 0 |
+| ↳ new `redteam-r4.test.js` | 10 | 10 | 0 |
+| Audit groups (29 existing + 1 r4) | **30** | **30** | 0 |
+| **Before:** r4 tests on r3 `0e89c92` | 10 | 3 controls | 7 expected |
+
+Skipped / cancelled / todo: 0 / 0 / 0. Evidence: [node-test.tap](tests/results/node-test.tap), [astra-audit.json](tests/results/astra-audit.json), [r4-on-r3.tap](tests/results/r4-on-r3.tap).
+
+The 3 r4 tests that pass on r3 are deliberate **controls**, which must pass on both commits:
+- every evidence condition stays expressible;
+- at-limit content plays and restores;
+- the within-limits restore cost is identical, because restore code is unchanged.
+
+## Defect → fix → regression
+
+| Defect (Astra, LOW) | Fix (`js/content.js`) | Regressions (`tests/redteam-r4.test.js`; audit `r4 content limits`) |
+|---|---|---|
+| **1.** `when.inspected` of any length (100,000 entries) accepted; satisfied conditions scan it on every selection | `when.inspected` must have **≤ `CONTENT_LIMITS.maxWhenInspected` = 5** entries **and no repeated id**. Repeats never change meaning under `every(includes)`, so uniqueness rejects no distinct condition. The length is checked first, before any per-entry work. | Below/at/above: 4 and 5 unique accepted, 6 rejected (exact message); any repeat rejected; all 31 non-empty evidence sets still expressible; Astra case 1 rejected in 0.2–0.3 ms |
+| **2.** Any number of variants per adviser (100,000) accepted; every selection scans them; validation took ~15–16 s | **≤ `CONTENT_LIMITS.maxAdviceVariantsPerAdviser` = 8** per adviser. Checked before scanning; an oversized block is not iterated, and its unscanned reveals do not produce a spurious "never revealed" error. | Below/at/above for **each** of the 4 advisers: 7 and 8 accepted, 9 rejected (exact message); Astra case 2 rejected in 0.2–0.3 ms with one error per adviser |
+| **Same root cause, third array on the restore path:** decisions (restore indexes them; the postmortem key comparison is quadratic in them) | **≤ `CONTENT_LIMITS.maxDecisions` = 8.** Checked before the decision/postmortem/DOM-id/reachability checks, which then return early. | 7 and 8 accepted, 9 rejected (exact message) |
+| **Runtime path** | Unchanged: `app.js` boot validates through `loadEpisode()` **before** `createStore()`, so `restoreState()` is reachable only with validated content | App-boot test: over-limit content shows *Episode could not load* with the `CONTENT_LIMITS` message, the save key is **never read**, and the app does not start. Control: at-limit content boots normally. |
+
+**Completeness of the limit set.** The restore path (`state.js`, `advice.js`) reads these content arrays:
+- `evidence` (already ≤ 5);
+- `advisorOrder` (exactly 4);
+- `advice[a]` (now ≤ 8);
+- each `when.inspected` (now ≤ 5, unique);
+- each `reveals` (already unique known ids, ≤ hidden count);
+- `hybridUnlock.inspected` (already unique known ids, ≤ 5);
+- `decisions` (now ≤ 8).
+
+No other content array is read by restore. Text fields are never scanned.
+
+**No truncation and no divergence.** Content outside a limit is a validation error, so the episode does not load. Nothing is clipped, and engine selection semantics are identical for every accepted episode.
+
+## Shipped content
+
+| | Limit | Shipped |
+|---|---:|---:|
+| Variants per adviser (boy / tooth / darth / donsol) | 8 | 1 / 3 / 2 / 3 |
+| `when.inspected` entries (max) | 5 | 3 (all unique) |
+| Decisions | 8 | 4 |
+
+`validateEpisode(shipped) = []`, and all r1–r3 fixtures remain valid.
+
+## Before / after performance (same script on both commits, Node 24, medians)
+
+| Content | r3 validate | r3 restore | r4 validate | r4 runtime |
+|---|---:|---:|---:|---|
+| Shipped | accepted, 2.1 ms | 0.24 ms | accepted, 2.4 ms | 0.28 ms (same code; noise) |
+| Astra case 1 (100k `when.inspected`, satisfied) | **accepted**, 105 ms | **10.5 ms** | **rejected, 0.2 ms** | never reached |
+| Astra case 2 (100k variants × 4 advisers) | **accepted, 14.6 s** | **908 ms** | **rejected, 0.2 ms** | never reached |
+
+**Honest note:** `restoreState()` is unchanged. Called **directly** with rejected content (bypassing the loader), it is still slow: 15.7 ms and 962 ms in the same run. Protection is the single load gate, which keeps validator and runtime semantics in one place. The app-boot regression proves the app cannot reach restore without passing that gate. Astra's environment measured 86 ms / 301 ms on r3; the absolute numbers differ with environment and save shape, but the scaling defect reproduces.
+
+## Restore cost bound for accepted content (search vs execution)
+
+**Search-state complexity** (r3, unchanged):
+- ≤ (I+1)(H+1)·Σ2^k = 6·5·31 = **930** states;
+- ≤ 4·6·5 = **120** memoized `selectAdvice()` calls.
+
+**Total execution complexity** (r4 bounds the per-call factor):
+
+| Term | Bound |
+|---|---|
+| One `selectAdvice()` call | ≤ 8 variants × (`when.inspected` 5 × prefix 5 + hybrid 5 × prefix 5 + consulted 4) ≈ **432** comparisons |
+| Feasible-history search | ≤ 120 × 432 ≈ 52k (selections) + 930 states × 5 successors × 4 reveals ≈ 19k (transitions) |
+| r1 per-advice selectability check | ≤ 4 advisers × 6 prefixes × 5 counts × 432 ≈ 52k |
+| Remaining reference/invariant checks | O(E·V·R) ≤ 5·4·8·4 |
+| **Per restore** | **≲ 1.3 × 10⁵ elementary comparisons**, independent of content size within the limits |
+
+**Measured, adversarial worst case within the limits:**
+- every limit at maximum, every `when` key used, every `when.inspected` listing all 5 ids;
+- 8 decisions, 1 visible and 4 hidden evidence;
+- 14,400 restores: real random-walk saves plus forged-order versions that force exhaustive search.
+
+Results:
+- search states max **105 / 930**; `selectAdvice` max **78 / 120**;
+- restore **p50 0.05–0.07 ms, p99 0.31–0.53 ms**, p99.9 ≤ 1.0 ms;
+- isolated maxima of a few ms (up to 20 ms under full-suite load) are garbage-collection pauses, not search growth.
+
+The test asserts the state and selection bounds, plus a generous p99 < 5 ms ceiling, so it doesn't flake in CI.
+
+**Validation cost** for accepted content is bounded by the same limits (r1 reachability ≤ 3⁵·2⁴ states). Over-limit content is rejected in < 1 ms.
+
+## Preserved (re-run)
+
+| Check | Result |
+|---|---|
+| r3 feasible-history differentials | tiny1 104,720 / tiny2 50,640 candidates: 0 false accepts, 0 false rejects; 10,000 mutations; 194,852 reachable Astra saves restored |
+| Stale / re-entrant advice; overlapping and multi-item reveals; all three condition types | r3 cases 1–6 and controls, r2/r1 suites: pass, unmodified |
+| Gameplay, telemetry/reset, persistence, ID/asset defenses, reduced motion, local hosting | existing suites + 29 audit groups: pass |
+| `/missing-page/` | 5/5 byte-identical to `main` |
+
+## Residual (not in scope; reported, not changed)
+
+- A **tampered local save** is parsed and shape-checked in time linear in its own size before rejection. It is device-local data, not content, and is unchanged from r3.
+- Render cost of very long text fields is unaffected by these limits; it is not on the restore path.
+- Follow-ups unchanged: the CRLF harness import stripping; native keyboard / touch / screen-reader / Android checks.
+
+Ready for Don Sol's review. No merge, deployment, publishing or canon change.
+
+---
+
+## History — r3, r2 and r1 reports, unchanged
+
+## Harness Episode 001 — Issue #7 remediation r3 regression report
 
 **Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
 
@@ -106,7 +376,7 @@ Ready for Don Sol's review. No Astra re-test requested; no merge, deployment, pu
 
 ---
 
-# History — Issue #5 (r2) and Issue #3 (r1) reports, unchanged
+## History — Issue #5 (r2) and Issue #3 (r1) reports, unchanged
 
 ## Harness Episode 001 — Issue #5 remediation r2 regression report
 

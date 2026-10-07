@@ -394,7 +394,41 @@ await check('r3 feasible history: Astra conditional-reveal forgery rejected; eve
  return counts.r3ReachableShippedSaves=seen.size;
 });
 
-const auditResult={target:{branch:'fix/harness-wdyt-redteam-r3',baseCommit:'1babcff446b7cb49630474df9d8b43857d9d135c'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
+// ---- r4 content limits. Independent of tests/redteam-r4.test.js. ----
+await check('r4 content limits: Astra size cases rejected fast; boundaries exact; shipped valid',async()=>{
+ const L=(await import('../js/content.js')).CONTENT_LIMITS;
+ assert.deepEqual(validateEpisode(ep),[]);
+ const t0=performance.now();
+ const c1=clone(ep);c1.advice.tooth[0].when.inspected=Array.from({length:100000},()=>'e_monitor');
+ const c2=clone(ep);c2.advice.darth=[...Array.from({length:100000},(_,i)=>({id:'u'+i,when:{hybridUnlocked:true},text:'.'})),...c2.advice.darth];
+ assert(validateEpisode(c1).some(p=>/when\.inspected has 100000 entries/.test(p)));
+ assert(validateEpisode(c2).some(p=>/advice\.darth: 100002 variants exceeds the limit/.test(p)));
+ const ms=performance.now()-t0;assert(ms<1000,'rejection took '+ms+'ms');
+ const variants=n=>{const e=clone(ep);e.advice.boy=[...Array.from({length:n-1},(_,i)=>({id:'p'+i,when:{inspected:['e_protocol']},text:'.'})),...e.advice.boy];return validateEpisode(e).length===0;};
+ assert.deepEqual([variants(L.maxAdviceVariantsPerAdviser),variants(L.maxAdviceVariantsPerAdviser+1)],[true,false]);
+ const when=n=>{const e=clone(ep);e.advice.tooth[0].when={inspected:ids.slice(0,n).concat(n>ids.length?['e_monitor']:[])};return validateEpisode(e).length===0;};
+ assert.deepEqual([when(L.maxWhenInspected),when(L.maxWhenInspected+1)],[true,false]);
+ return counts.r4Limits={...L,rejectMs:Number(ms.toFixed(1))};
+});
+
+// ---- r5 identifier length. Independent of tests/redteam-r5.test.js. ----
+await check('r5 identifier length: every namespace bounded at MAX_IDENTIFIER_LENGTH; 300k-char ids rejected fast; shipped valid',async()=>{
+ const M=(await import('../js/content.js')).MAX_IDENTIFIER_LENGTH;assert.equal(M,64);
+ assert.deepEqual(validateEpisode(ep),[]);
+ const rn=(v,o,n)=>typeof v==='string'?(v===o?n:v):Array.isArray(v)?v.map(x=>rn(x,o,n)):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).map(([k,x])=>[k===o?n:k,rn(x,o,n)])):v;
+ const at=n=>'q'+'x'.repeat(n-1);let checked=0;
+ for(const old of [...ids,'tooth_unread','d_verify']){
+  assert.deepEqual(validateEpisode(rn(clone(ep),old,at(M))),[],old+' at limit');
+  const p=validateEpisode(rn(clone(ep),old,at(M+1)));
+  assert(p.length&&p.every(x=>x.includes('characters; the limit is 64 (MAX_IDENTIFIER_LENGTH)')),old+' over limit');checked++;
+ }
+ const e=clone(ep);e.id=at(M+1);assert(validateEpisode(e)[0].startsWith('id: identifier is 65'));
+ const t0=performance.now();const big=rn(clone(ep),'e_monitor',at(300000));const p=validateEpisode(big);const ms=performance.now()-t0;
+ assert(p.every(x=>x.includes('the limit is 64')));assert(ms<1000);
+ return counts.r5Identifiers={limit:M,namespacesChecked:checked+1,reject300kMs:Number(ms.toFixed(1))};
+});
+
+const auditResult={target:{branch:'fix/harness-wdyt-redteam-r5',baseCommit:'3b9a5d9ca707795e03a5d0dc57a77cf254b9d225'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
 if(process.argv[2])fs.writeFileSync(path.resolve(process.argv[2]),JSON.stringify(auditResult,null,2)+'\n');
 for(const r of results)console.log(r.result+' '+r.name+(r.error?' — '+r.error.split('\n')[0]:''));
 console.log(JSON.stringify({groups:results.length,passed:results.filter(r=>r.result==='PASS').length,failed:results.filter(r=>r.result==='FAIL').length,counts}));
