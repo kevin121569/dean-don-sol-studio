@@ -1,4 +1,142 @@
-# Harness Episode 001 — r5 remediation regression report (LOW: identifier length)
+# Harness Episode 001 — r6 remediation regression report (LOW ×2: validation fail-fast ordering)
+
+**Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
+
+Astra's r5 result was FAIL with two LOW validation-path findings; the accepted-content restore fix itself passed. r6 restructures `validateEpisode()` into four stages so cheap container checks run before any traversal.
+
+Unchanged:
+- `feasibleHistory()`, restore semantics and advice selection;
+- `MAX_IDENTIFIER_LENGTH = 64` and the r4 `CONTENT_LIMITS`;
+- every existing error message;
+- all valid-content behavior.
+
+The 107 existing tests pass **unmodified**, and the 31 existing audit groups pass. No merge or deployment.
+
+| Identity | Value |
+|---|---|
+| Exact base / sole parent | `fix/harness-wdyt-redteam-r5` @ `16a272037bfaf2d70da99497b365f84e7505cceb` |
+| Branch | `fix/harness-wdyt-redteam-r6` |
+| Product change | `js/content.js` only (validation) |
+| Scope | `games/harness-who-do-you-trust/` only; r5 and `main` not modified |
+| Runtime | Node.js `v24.18.0`, LF checkout, no dependencies |
+| Date | 2026-10-06 UTC |
+
+## The staged validator
+
+| Stage | Does | Never does |
+|---|---|---|
+| **1** | episode is an object | — |
+| **2 — shape / cardinality** (`shapeProblems`) | container **types** and **lengths** for evidence, `advisorOrder`, `advisors`, `advice` (4 blocks, each a 1–8 list; per variant: `when` is an object, `when.inspected` 1–5, `reveals` 1–5), `hybridUnlock.inspected` 1–5, decisions 2–8; **then, only if decisions are bounded**, `postmortem` is an object with ≤ 8 keys | read an element of an unproven list; echo content; enumerate `postmortem` while decisions are over the limit |
+| **3 — identifier length** (r5, `identifierLengthProblems`) | every id and reference ≤ 64, over collections stage 2 has **proven** bounded (`capped()` removed) | — |
+| **4 — semantics** (unchanged rules) | safe ids, uniqueness, references, conditions, DOM ids, reachability | re-check cardinality (the duplicated r4 checks were removed: unreachable after stage 2) |
+
+Each stage returns its problems and stops if there are any.
+
+Error wording that moved into stage 2 is **verbatim**, which is why the existing message assertions pass unchanged. Content values interpolated into messages go through `show()`: strings over 64 characters print as `first16…(N characters)`, and non-strings print as `<type>`. Labels such as `advice.tooth[0] (tooth_reconciled)` include the id only when it is a short string. **Content is never altered.** Only message text is bounded.
+
+**Why `postmortem` is enumerated at all.** When decisions are within the limit, stray keys must still be rejected (existing behavior). JavaScript has no early-exit own-key count. Measured: an early-break `for…in` over 300k keys costs the same as `Object.keys`, because V8 collects every key first. So stage 2 does one `Object.keys`, only after the decision count passes. Its cost is the same order as the `JSON.parse` that created those keys (table below).
+
+## Exact totals
+
+| Run | Total | Pass | Fail |
+|---|---:|---:|---:|
+| Node suite | **121** | **121** | 0 |
+| ↳ existing 107 (`engine` 17, `episode-001` 14, `redteam` 24, `-r2` 16, `-r3` 13, `-r4` 10, `-r5` 13), unmodified | 107 | 107 | 0 |
+| ↳ new `redteam-r6.test.js` | 14 | 14 | 0 |
+| Audit groups (31 existing + 1 r6) | **32** | **32** | 0 |
+| **Before:** r6 tests on r5 `16a2720` | 14 | 5 | 9 expected |
+
+Evidence: [node-test.tap](tests/results/node-test.tap), [astra-audit.json](tests/results/astra-audit.json), [r6-on-r5.tap](tests/results/r6-on-r5.tap).
+
+**What the 5 passes on r5 mean:**
+- Three containers were already handled without traversal by r4's early exits: 9 variants, 6-entry `when.inspected`, 9 decisions.
+- 5 × 300k `reveals` already stopped at the r5 length pass.
+- Accepted max-boundary content was already valid.
+
+They stay as regressions. The **9 r5 failures** are the genuine defects:
+- oversized evidence / `reveals` / `hybridUnlock` traversed and echoed;
+- scalar lists echoed;
+- the shape-before-length ordering;
+- postmortem enumerated while decisions > 8 (100k and 300k);
+- the 100k-stray-key count message.
+
+## Defect → fix → regression
+
+| Defect | Fix (`js/content.js`) | Regressions (`tests/redteam-r6.test.js`; audit `r6 fail-fast`) |
+|---|---|---|
+| **A. Oversized / malformed collections bypassed the cheap guard** (`capped()` skipped them in the pre-pass; stage 4 then traversed and interpolated their contents) | Stage 2 rejects wrong-type and over-cardinality containers **before** any traversal. Stage 3 runs only on proven-bounded collections. Stage-4 message values are bounded by `show()`. | **Proxy-instrumented, zero element reads:** evidence ×6, advice ×9, `when.inspected` ×6, `reveals` ×6, `hybridUnlock.inspected` ×6, decisions ×9, each holding 300k-character ids/refs |
+| | | **Boundaries:** evidence 5/6, variants 8/9, decisions 8/9, `reveals` 5/6, `hybridUnlock` 5/6 |
+| | | `reveals` 5 × 300k refs → length errors only (bounded) |
+| | | **13 malformed scalar / non-array forms** (`when.inspected` string/object/number, `reveals` string/array-like object, `hybridUnlock` and its list, evidence, decisions, an advice block, advice, `advisorOrder`, `when`) → exact existing message, content never echoed |
+| | | **Ordering:** an over-limit container plus 300k ids elsewhere → only the shape error |
+| | | Every rejection's error text < 2,000 chars |
+| **B. `Object.keys(ep.postmortem)` ran before the decision-count check** | `postmortem` is read only after decisions are proven within 2–8; its key count ≤ 8 is stage 2, and exact equality with the decision ids stays in stage 4 | 9 decisions + **100k** and **300k** postmortem keys → rejected in ~0.05 ms with **0** `ownKeys` calls (Proxy); stray keys with decisions in range → still rejected (exact-set rule, **1** enumeration); 100k stray keys → count error, no keys echoed |
+| Accepted content must not change | — | All limits at maximum at once (5 evidence, 8 variants × 4, 5-entry conditions, 5-entry hybrid, 8 decisions, ids at 64) → valid, plays, restores exactly; shipped episode valid |
+
+## Before / after validation timings (same script, isolated runs)
+
+| Invalid content | r5 validate | r5 error text | r6 validate | r6 error text |
+|---|---:|---:|---:|---:|
+| evidence ×100,000 | **949 ms** | 853 chars | **1.4 ms** | 46 chars |
+| evidence ×6, ids 300k | 2.2 ms | **1,801,124 chars** | 0.1 ms | 41 chars |
+| advice.boy ×9, ids 300k | 0.7 ms | 143 | 0.0 ms | 143 |
+| `when.inspected` ×6 of 300k | 0.4 ms | 152 | 0.1 ms | 152 |
+| `when.inspected` scalar 300k | 0.3 ms | **300,158** | 0.1 ms | 76 |
+| `reveals` ×6 of 300k | 2.4 ms | **1,800,405** | 0.1 ms | 124 |
+| `reveals` scalar 300k | 0.5 ms | **300,243** | 0.1 ms | 59 |
+| `hybridUnlock.inspected` ×6 of 300k | 1.7 ms | **1,800,329** | 0.0 ms | 113 |
+| decisions ×9 + 100k postmortem keys | **152 ms** (enumerated) | 110 | **0.0 ms** (0 enumerations) | 110 |
+| decisions ×9 + 300k postmortem keys | **634 ms** (enumerated) | 110 | **0.0 ms** (0 enumerations) | 110 |
+| stray postmortem key, decisions OK | 0.2 ms (1 enumeration) | 54 | 2.5 ms (1 enumeration) | 54 |
+
+## Performance, separated
+
+**1. Valid accepted-content restore bound** (r3 / r4 / r5, unchanged):
+- ≤ 930 search states and ≤ 120 `selectAdvice` calls;
+- ≤ 8 variants × ≤ 5-entry conditions, ≤ 8 decisions;
+- ids ≤ 64;
+- ≲ 1.3 × 10⁵ comparisons of ≤ 64-char strings per restore.
+
+Re-measured in this suite, at the id limit: `store.load()` p50 0.10 ms, p99 1.05 ms under full-suite load (r5 isolated: 0.032 / 0.29 ms).
+
+**2. Invalid-content validation bound** (r6):
+- Stage 2 reads only container types and lengths. It visits at most 4 adviser blocks × ≤ 8 variants (proven bounded first), plus at most one `Object.keys(postmortem)`, and only once decisions ≤ 8.
+- Stages 3–4 run only on proven-bounded collections; message text is bounded per value.
+- Measured: over-limit containers and over-long ids are rejected in **≤ 1.4 ms**, with **≤ 674 characters** of error text across every case here.
+- **Exception, stated plainly:** with decisions in range, a `postmortem` holding N stray keys costs one O(N) enumeration (106 ms at N = 300k). That's the same order as the parse below.
+
+**3. Unavoidable `fetch` / `JSON.parse` before validation** (validation cannot run on bytes it hasn't parsed):
+
+| Payload | File size | `JSON.parse` | Validation after parse |
+|---|---:|---:|---:|
+| shipped episode | 0.01 MB | 0.2 ms | ~4–9 ms (full semantic + reachability) |
+| evidence ids 300k | 1.5 MB | 9.9 ms | 0.08 ms |
+| evidence ×100,000 | 29.6 MB | 245 ms | 0.06 ms |
+| decisions ×9 + 300k postmortem keys | 3.5 MB | 174 ms | 0.03 ms |
+| decisions OK + 300k stray postmortem keys | 3.5 MB | 171 ms | 106 ms (one enumeration) |
+
+The real `loadEpisode()` timings in the suite (10k / 100k / 300k ids: 391 / 844 / 2,324 ms under load) are dominated by `fetch` + parse. Episode file size is outside what content validation can bound.
+
+## Preserved (re-run)
+
+| Check | Result |
+|---|---|
+| r3 exact differential | tiny1 104,720 / tiny2 50,640: 0 false accepts, 0 false rejects; 10,000 mutations; 194,852 reachable saves |
+| Reachable-save controls | r2 60,000; r3 194,852; r4 14,400; r5 10,800 at the id limit; none rejected |
+| r4 pathological arrays | 100k-condition and 100k-variant cases rejected in ≤ 0.1 ms |
+| r5 identifier reproducers / boundaries | 10k / 100k / 300k refused via the real `loadEpisode()`; 63 / 64 / 65 per namespace; 1e6-char ids; near-identical 64-char ids |
+| Accepted max-boundary content | all limits at maximum at once: valid, plays, restores |
+| `/missing-page/` | 5/5 byte-identical to current `main` (`c3a5868`) |
+
+**Not touched, as instructed:** native accessibility / device follow-ups, deployment, homepage linking, the CRLF harness issue, repository governance.
+
+Ready for Don Sol's review. No merge, deployment, publishing or canon change.
+
+---
+
+# History — r5, r4, r3, r2 and r1 reports, unchanged
+
+## Harness Episode 001 — r5 remediation regression report (LOW: identifier length)
 
 **Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
 
@@ -133,7 +271,7 @@ Ready for Don Sol's review. No merge, deployment, publishing or canon change.
 
 ---
 
-# History — r4, r3, r2 and r1 reports, unchanged
+## History — r4, r3, r2 and r1 reports, unchanged
 
 ## Harness Episode 001 — r4 remediation regression report (LOW: content-size restore performance)
 

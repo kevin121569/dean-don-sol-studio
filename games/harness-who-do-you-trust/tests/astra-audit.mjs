@@ -428,7 +428,23 @@ await check('r5 identifier length: every namespace bounded at MAX_IDENTIFIER_LEN
  return counts.r5Identifiers={limit:M,namespacesChecked:checked+1,reject300kMs:Number(ms.toFixed(1))};
 });
 
-const auditResult={target:{branch:'fix/harness-wdyt-redteam-r5',baseCommit:'3b9a5d9ca707795e03a5d0dc57a77cf254b9d225'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
+// ---- r6 fail-fast ordering. Independent of tests/redteam-r6.test.js. ----
+await check('r6 fail-fast: over-limit containers rejected without element reads; postmortem not enumerated while decisions > 8',async()=>{
+ const big='z'+'y'.repeat(299999);let reads=0,enums=0;
+ const spy=a=>new Proxy(a,{get(t,k,r){if(typeof k==='string'&&/^\d+$/.test(k))reads++;return Reflect.get(t,k,r);}});
+ const cases=[e=>{e.evidence=spy(Array.from({length:6},(_,i)=>({id:big+i})));},e=>{e.advice.boy[0].reveals=spy(Array(6).fill(big));},e=>{e.hybridUnlock.inspected=spy(Array(6).fill(big));},e=>{e.advice.tooth[0].when.inspected=big;},e=>{e.advice.boy[0].reveals=big;}];
+ let maxText=0;
+ for(const mk of cases){const e=clone(ep);mk(e);const p=validateEpisode(e);assert(p.length>0);maxText=Math.max(maxText,p.join('\n').length);}
+ assert.equal(reads,0,'oversized container contents were read');assert(maxText<2000,'error text '+maxText);
+ const e=clone(ep);while(e.decisions.length<9)e.decisions.push({...e.decisions[1],id:'dz'+e.decisions.length});
+ for(let i=0;i<3e5;i++)e.postmortem['q'+i]=1;e.postmortem=new Proxy(e.postmortem,{ownKeys(t){enums++;return Reflect.ownKeys(t);}});
+ const t0=performance.now();assert(validateEpisode(e).some(p=>/decisions: 9 exceeds/.test(p)));const ms=performance.now()-t0;
+ assert.equal(enums,0,'postmortem enumerated');assert(ms<50);
+ assert.deepEqual(validateEpisode(ep),[]);
+ return counts.r6FailFast={oversizedElementReads:reads,maxErrorText:maxText,postmortemEnumerations:enums,reject300kKeysMs:Number(ms.toFixed(2))};
+});
+
+const auditResult={target:{branch:'fix/harness-wdyt-redteam-r6',baseCommit:'16a272037bfaf2d70da99497b365f84e7505cceb'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
 if(process.argv[2])fs.writeFileSync(path.resolve(process.argv[2]),JSON.stringify(auditResult,null,2)+'\n');
 for(const r of results)console.log(r.result+' '+r.name+(r.error?' — '+r.error.split('\n')[0]:''));
 console.log(JSON.stringify({groups:results.length,passed:results.filter(r=>r.result==='PASS').length,failed:results.filter(r=>r.result==='FAIL').length,counts}));
