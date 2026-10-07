@@ -4,6 +4,7 @@ import { App } from '@capacitor/app';
 const PREFIX = 'harness-wdyt:';
 const cache = new Map();
 let dirty = new Map();
+let writeChain = Promise.resolve();
 
 async function hydrate() {
   const { keys } = await Preferences.keys();
@@ -21,12 +22,10 @@ function installStorageBridge() {
       const v = String(value);
       cache.set(key, v);
       dirty.set(key, v);
-      void Preferences.set({ key, value: v }).catch(() => {});
     },
     removeItem(key) {
       cache.delete(key);
       dirty.set(key, null);
-      void Preferences.remove({ key }).catch(() => {});
     },
   };
   Object.defineProperty(globalThis, '__HARNESS_NATIVE_STORAGE__', { value: backend, configurable: false });
@@ -34,10 +33,20 @@ function installStorageBridge() {
 
 async function flush() {
   const pending = [...dirty.entries()];
-  dirty = new Map();
-  await Promise.allSettled(pending.map(([key, value]) =>
-    value === null ? Preferences.remove({ key }) : Preferences.set({ key, value })
-  ));
+  if (!pending.length) return writeChain;
+  for (const [key] of pending) dirty.delete(key);
+  writeChain = writeChain.then(async () => {
+    const results = await Promise.allSettled(pending.map(([key, value]) =>
+      value === null ? Preferences.remove({ key }) : Preferences.set({ key, value })
+    ));
+    results.forEach((result, i) => {
+      if (result.status === 'rejected') {
+        const [key, value] = pending[i];
+        if (!dirty.has(key)) dirty.set(key, value);
+      }
+    });
+  });
+  return writeChain;
 }
 
 function installLifecycle() {
