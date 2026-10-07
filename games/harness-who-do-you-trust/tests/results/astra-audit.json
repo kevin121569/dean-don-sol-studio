@@ -1,7 +1,7 @@
 {
   "target": {
-    "branch": "fix/harness-wdyt-redteam-r5",
-    "baseCommit": "3b9a5d9ca707795e03a5d0dc57a77cf254b9d225"
+    "branch": "fix/harness-wdyt-redteam-r7",
+    "baseCommit": "246fa7ebba2d29d2a4164a70406f5a368a6a0b6d"
   },
   "method": "Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.",
   "results": [
@@ -180,7 +180,7 @@
         "maxAdviceVariantsPerAdviser": 8,
         "maxWhenInspected": 5,
         "maxDecisions": 8,
-        "rejectMs": 23.5
+        "rejectMs": 38.6
       }
     },
     {
@@ -189,7 +189,26 @@
       "details": {
         "limit": 64,
         "namespacesChecked": 8,
-        "reject300kMs": 0.2
+        "reject300kMs": 0.4
+      }
+    },
+    {
+      "name": "r6 fail-fast: over-limit containers rejected without element reads; postmortem not enumerated while decisions > 8",
+      "result": "PASS",
+      "details": {
+        "oversizedElementReads": 0,
+        "maxErrorText": 124,
+        "postmortemEnumerations": 0,
+        "reject300kKeysMs": 0.14
+      }
+    },
+    {
+      "name": "r7: missing required advice block returns problems (no throw, stage 3 unreached); labels never trim over-limit ids",
+      "result": "PASS",
+      "details": {
+        "missingBlocksRejected": 4,
+        "overLimitTrims": 0,
+        "reject32x1MWhitespaceMs": 0.06
       }
     }
   ],
@@ -230,12 +249,23 @@
       "maxAdviceVariantsPerAdviser": 8,
       "maxWhenInspected": 5,
       "maxDecisions": 8,
-      "rejectMs": 23.5
+      "rejectMs": 38.6
     },
     "r5Identifiers": {
       "limit": 64,
       "namespacesChecked": 8,
-      "reject300kMs": 0.2
+      "reject300kMs": 0.4
+    },
+    "r6FailFast": {
+      "oversizedElementReads": 0,
+      "maxErrorText": 124,
+      "postmortemEnumerations": 0,
+      "reject300kKeysMs": 0.14
+    },
+    "r7": {
+      "missingBlocksRejected": 4,
+      "overLimitTrims": 0,
+      "reject32x1MWhitespaceMs": 0.06
     }
   },
   "diagnostics": {
@@ -311,8 +341,7 @@
     },
     "nullWhen": {
       "problems": [
-        "advice.boy[0] (boy_find): when must be an object if present",
-        "advice.boy: last variant must be unconditional so selectAdvice() always returns one"
+        "advice.boy[0] (boy_find): when must be an object if present"
       ],
       "runtimeError": "TypeError: Cannot read properties of null (reading 'inspected')"
     },
@@ -415,7 +444,7 @@
       {
         "path": "js/content.js",
         "status": 200,
-        "bytes": 18314
+        "bytes": 22209
       },
       {
         "path": "js/telemetry.js",

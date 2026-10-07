@@ -428,7 +428,37 @@ await check('r5 identifier length: every namespace bounded at MAX_IDENTIFIER_LEN
  return counts.r5Identifiers={limit:M,namespacesChecked:checked+1,reject300kMs:Number(ms.toFixed(1))};
 });
 
-const auditResult={target:{branch:'fix/harness-wdyt-redteam-r5',baseCommit:'3b9a5d9ca707795e03a5d0dc57a77cf254b9d225'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
+// ---- r6 fail-fast ordering. Independent of tests/redteam-r6.test.js. ----
+await check('r6 fail-fast: over-limit containers rejected without element reads; postmortem not enumerated while decisions > 8',async()=>{
+ const big='z'+'y'.repeat(299999);let reads=0,enums=0;
+ const spy=a=>new Proxy(a,{get(t,k,r){if(typeof k==='string'&&/^\d+$/.test(k))reads++;return Reflect.get(t,k,r);}});
+ const cases=[e=>{e.evidence=spy(Array.from({length:6},(_,i)=>({id:big+i})));},e=>{e.advice.boy[0].reveals=spy(Array(6).fill(big));},e=>{e.hybridUnlock.inspected=spy(Array(6).fill(big));},e=>{e.advice.tooth[0].when.inspected=big;},e=>{e.advice.boy[0].reveals=big;}];
+ let maxText=0;
+ for(const mk of cases){const e=clone(ep);mk(e);const p=validateEpisode(e);assert(p.length>0);maxText=Math.max(maxText,p.join('\n').length);}
+ assert.equal(reads,0,'oversized container contents were read');assert(maxText<2000,'error text '+maxText);
+ const e=clone(ep);while(e.decisions.length<9)e.decisions.push({...e.decisions[1],id:'dz'+e.decisions.length});
+ for(let i=0;i<3e5;i++)e.postmortem['q'+i]=1;e.postmortem=new Proxy(e.postmortem,{ownKeys(t){enums++;return Reflect.ownKeys(t);}});
+ const t0=performance.now();assert(validateEpisode(e).some(p=>/decisions: 9 exceeds/.test(p)));const ms=performance.now()-t0;
+ assert.equal(enums,0,'postmortem enumerated');assert(ms<50);
+ assert.deepEqual(validateEpisode(ep),[]);
+ return counts.r6FailFast={oversizedElementReads:reads,maxErrorText:maxText,postmortemEnumerations:enums,reject300kKeysMs:Number(ms.toFixed(2))};
+});
+
+// ---- r7. Independent of tests/redteam-r7.test.js. ----
+await check('r7: missing required advice block returns problems (no throw, stage 3 unreached); labels never trim over-limit ids',async()=>{
+ let missing=0;
+ for(const a of ep.advisorOrder){const e=clone(ep);e.advice.zz=e.advice[a];delete e.advice[a];e.decisions[0].id='d'+'x'.repeat(100000);
+  let p;assert.doesNotThrow(()=>{p=validateEpisode(e);},a);
+  assert(p.some(x=>x.startsWith(`advice.${a}: required block is missing`)),a);
+  assert(!p.some(x=>/identifier is 100000 characters/.test(x)),'stage 3 reached');missing++;}
+ const trim=String.prototype.trim;let long=0;String.prototype.trim=function(){if(this.length>64)long++;return trim.call(this);};
+ let ms;try{const e=clone(ep);for(const a of e.advisorOrder)e.advice[a]=Array.from({length:8},(_,i)=>({id:' '.repeat(1e6)+i,when:{inspected:['e_monitor']},text:'.'}));
+  const t0=performance.now();const p=validateEpisode(e);ms=performance.now()-t0;assert.equal(p.length,32);}finally{String.prototype.trim=trim;}
+ assert.equal(long,0,'trim() ran on over-limit ids');assert.deepEqual(validateEpisode(ep),[]);
+ return counts.r7={missingBlocksRejected:missing,overLimitTrims:long,reject32x1MWhitespaceMs:Number(ms.toFixed(2))};
+});
+
+const auditResult={target:{branch:'fix/harness-wdyt-redteam-r7',baseCommit:'246fa7ebba2d29d2a4164a70406f5a368a6a0b6d'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
 if(process.argv[2])fs.writeFileSync(path.resolve(process.argv[2]),JSON.stringify(auditResult,null,2)+'\n');
 for(const r of results)console.log(r.result+' '+r.name+(r.error?' — '+r.error.split('\n')[0]:''));
 console.log(JSON.stringify({groups:results.length,passed:results.filter(r=>r.result==='PASS').length,failed:results.filter(r=>r.result==='FAIL').length,counts}));

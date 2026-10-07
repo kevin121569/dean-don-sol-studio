@@ -30,14 +30,103 @@ export const MAX_IDENTIFIER_LENGTH = 64;
 const MAX_EVIDENCE = 5; // packet range 3–5, enforced below; bounds reveals / hybridUnlock lists (unique known ids)
 
 /**
- * r5 identifier pre-pass. Runs FIRST, before any lookup, comparison, DOM-id generation or reachability work,
- * so an over-long identifier costs one .length read. Visits every free-form identifier (episode, evidence,
- * advice variant, decision ids) and every reference to one (when.inspected, reveals, hybridUnlock.inspected,
- * postmortem keys). It iterates only collections whose size is already capped (r4 limits / the evidence
- * range); oversized collections are skipped here and rejected by their own rule. Non-strings and empty
- * strings are left to the existing safe-identifier and reference rules. Nothing is truncated or normalized.
+ * Content values echoed in error messages are capped, so an error never reproduces megabytes of content.
+ * The value itself is never altered: this affects only the message text.
  */
-function identifierLengthProblems(ep) {
+const show = v => typeof v === 'string'
+  ? (v.length <= MAX_IDENTIFIER_LENGTH ? v : `${v.slice(0, 16)}…(${v.length} characters)`)
+  : `<${Array.isArray(v) ? 'array' : v === null ? 'null' : typeof v}>`;
+// "advice.boy[0] (boy_find)" — the id suffix only when it is a short string, so labels stay bounded.
+// r7: the length test comes FIRST, so trim() (a whole-string scan) only ever runs on ≤ 64 characters.
+const label = (base, id) => `${base}${typeof id === 'string' && id.length <= MAX_IDENTIFIER_LENGTH && id.trim() ? ` (${id})` : ''}`;
+const listShape = (value, field, max, overMessage) => {
+  if (!Array.isArray(value) || value.length === 0) return `${field} must be a non-empty array`;
+  if (value.length > max) return overMessage(value.length);
+  return null;
+};
+
+/**
+ * r6 stage 2: container types and cardinality ONLY. Reads .length and container types; never traverses an
+ * element's contents beyond classifying it as an object. It visits only fixed-size structures (4 advisers) or
+ * lists it has just proven bounded, so every later stage runs on bounded collections. `postmortem` keys are
+ * read only after the decision count is known to be within its limit (one Object.keys; JavaScript has no
+ * cheaper own-key count, and its cost is of the same order as the JSON.parse that created those keys).
+ * Error wording matches the existing rules it moved from, so existing messages are unchanged.
+ */
+function shapeProblems(ep) {
+  const out = [];
+  const shapeOf = {postmortemKeys: []};
+  // -- evidence
+  if (!Array.isArray(ep.evidence)) out.push('evidence must be an array');
+  else if (ep.evidence.length < 3 || ep.evidence.length > MAX_EVIDENCE) out.push(`evidence count ${ep.evidence.length} outside packet range 3–5`);
+  // -- advisers (fixed set of 4)
+  if (!Array.isArray(ep.advisorOrder) || ep.advisorOrder.length !== REQUIRED_ADVISORS.length) out.push(`advisorOrder must be exactly ${REQUIRED_ADVISORS.join(', ')}`);
+  if (!isObj(ep.advisors) || Object.keys(ep.advisors).length !== REQUIRED_ADVISORS.length) out.push('advisors must have exactly the four required profiles');
+  // -- advice: 4 blocks; each a bounded list of variants; each variant's lists bounded
+  // r7: count AND membership. Stage 3 reads ep.advice[a] for every required adviser, so stage 2 must prove
+  // each one present; four keys alone is not enough (e.g. `boy` replaced by an unexpected `other`).
+  const adviceKeysOk = isObj(ep.advice) && Object.keys(ep.advice).length === REQUIRED_ADVISORS.length
+    && REQUIRED_ADVISORS.every(a => Object.hasOwn(ep.advice, a));
+  if (!adviceKeysOk) out.push('advice must have exactly the four required blocks');
+  if (isObj(ep.advice)) {
+    for (const a of REQUIRED_ADVISORS) {
+      if (!Object.hasOwn(ep.advice, a)) { out.push(`advice.${a}: required block is missing — the advice blocks must be exactly ${REQUIRED_ADVISORS.join(', ')}`); continue; }
+      const variants = ep.advice[a];
+      if (!Array.isArray(variants) || !variants.length) { out.push(`advice.${a}: must be a non-empty array`); continue; }
+      if (variants.length > CONTENT_LIMITS.maxAdviceVariantsPerAdviser) {
+        out.push(`advice.${a}: ${variants.length} variants exceeds the limit of ${CONTENT_LIMITS.maxAdviceVariantsPerAdviser} (CONTENT_LIMITS.maxAdviceVariantsPerAdviser) — merge or remove variants; content is not truncated`);
+        continue; // never traverse an oversized list
+      }
+      variants.forEach((v, i) => {
+        if (!isObj(v)) return; // judged by the semantic stage ("must be an object")
+        const at = label(`advice.${a}[${i}]`, v.id);
+        if (v.when !== undefined && !isObj(v.when)) { out.push(`${at}: when must be an object if present`); return; }
+        if (v.when?.inspected !== undefined) {
+          const bad = listShape(v.when.inspected, `${at}: when.inspected`, CONTENT_LIMITS.maxWhenInspected,
+            n => `${at}: when.inspected has ${n} entries; the limit is ${CONTENT_LIMITS.maxWhenInspected} (CONTENT_LIMITS.maxWhenInspected) — list each required evidence id once`);
+          if (bad) out.push(bad);
+        }
+        if (v.reveals !== undefined) {
+          const bad = listShape(v.reveals, `${at}: reveals`, MAX_EVIDENCE,
+            n => `${at}: reveals has ${n} entries; the limit is ${MAX_EVIDENCE} (the evidence maximum) — list each revealed evidence id once`);
+          if (bad) out.push(bad);
+        }
+      });
+    }
+  }
+  // -- hybrid unlock
+  if (!isObj(ep.hybridUnlock)) out.push('hybridUnlock must be an object');
+  else {
+    const bad = listShape(ep.hybridUnlock.inspected, 'hybridUnlock.inspected', MAX_EVIDENCE,
+      n => `hybridUnlock.inspected has ${n} entries; the limit is ${MAX_EVIDENCE} (the evidence maximum) — list each required evidence id once`);
+    if (bad) out.push(bad);
+  }
+  // -- decisions, then postmortem ONLY once the decision count is known to be bounded
+  const decisionsBounded = Array.isArray(ep.decisions) && ep.decisions.length <= CONTENT_LIMITS.maxDecisions;
+  if (!Array.isArray(ep.decisions) || ep.decisions.length < 2) out.push('at least two decisions required');
+  else if (ep.decisions.length > CONTENT_LIMITS.maxDecisions) {
+    out.push(`decisions: ${ep.decisions.length} exceeds the limit of ${CONTENT_LIMITS.maxDecisions} (CONTENT_LIMITS.maxDecisions) — remove decisions; content is not truncated`);
+  }
+  if (decisionsBounded) {
+    if (!isObj(ep.postmortem)) out.push('postmortem must have exactly one entry per decision id');
+    else {
+      const keys = Object.keys(ep.postmortem);
+      if (keys.length > CONTENT_LIMITS.maxDecisions) {
+        out.push(`postmortem has ${keys.length} entries; the limit is ${CONTENT_LIMITS.maxDecisions} (CONTENT_LIMITS.maxDecisions, one per decision) — remove the extra entries`);
+      } else shapeOf.postmortemKeys = keys;
+    }
+  }
+  return {problems: out, postmortemKeys: shapeOf.postmortemKeys};
+}
+
+/**
+ * r5 identifier pass (r6: stage 3). Runs after stage 2 has proven every collection it visits is an array of
+ * bounded size, so there is no capping here. Visits every free-form identifier (episode, evidence, advice
+ * variant, decision ids) and every reference to one (when.inspected, reveals, hybridUnlock.inspected,
+ * postmortem keys); an over-long identifier costs one .length read. Non-strings and empty strings are left
+ * to the safe-identifier and reference rules of stage 4. Nothing is truncated or normalized.
+ */
+function identifierLengthProblems(ep, postmortemKeys) {
   const max = MAX_IDENTIFIER_LENGTH;
   const out = [];
   const check = (value, field, kind) => {
@@ -45,26 +134,19 @@ function identifierLengthProblems(ep) {
       out.push(`${field}: ${kind} is ${value.length} characters; the limit is ${max} (MAX_IDENTIFIER_LENGTH) — shorten it; identifiers are never truncated`);
     }
   };
-  const capped = (list, cap) => Array.isArray(list) && list.length <= cap ? list : [];
   check(ep.id, 'id', 'identifier');
-  capped(ep.evidence, MAX_EVIDENCE).forEach((e, i) => check(e?.id, `evidence[${i}].id`, 'identifier'));
-  if (isObj(ep.advice)) {
-    for (const a of REQUIRED_ADVISORS) {
-      if (!Object.hasOwn(ep.advice, a)) continue;
-      capped(ep.advice[a], CONTENT_LIMITS.maxAdviceVariantsPerAdviser).forEach((v, i) => {
-        if (!isObj(v)) return;
-        check(v.id, `advice.${a}[${i}].id`, 'identifier');
-        capped(v.when?.inspected, CONTENT_LIMITS.maxWhenInspected).forEach((r, j) => check(r, `advice.${a}[${i}].when.inspected[${j}]`, 'reference'));
-        capped(v.reveals, MAX_EVIDENCE).forEach((r, j) => check(r, `advice.${a}[${i}].reveals[${j}]`, 'reference'));
-      });
-    }
+  ep.evidence.forEach((e, i) => check(e?.id, `evidence[${i}].id`, 'identifier'));
+  for (const a of REQUIRED_ADVISORS) {
+    ep.advice[a].forEach((v, i) => {
+      if (!isObj(v)) return;
+      check(v.id, `advice.${a}[${i}].id`, 'identifier');
+      (v.when?.inspected ?? []).forEach((r, j) => check(r, `advice.${a}[${i}].when.inspected[${j}]`, 'reference'));
+      (v.reveals ?? []).forEach((r, j) => check(r, `advice.${a}[${i}].reveals[${j}]`, 'reference'));
+    });
   }
-  capped(ep.hybridUnlock?.inspected, MAX_EVIDENCE).forEach((r, j) => check(r, `hybridUnlock.inspected[${j}]`, 'reference'));
-  capped(ep.decisions, CONTENT_LIMITS.maxDecisions).forEach((d, i) => check(d?.id, `decisions[${i}].id`, 'identifier'));
-  if (isObj(ep.postmortem)) {
-    const keys = Object.keys(ep.postmortem);
-    if (keys.length <= CONTENT_LIMITS.maxDecisions) keys.forEach(k => check(k, `postmortem key "${k.slice(0, 16)}…"`, 'reference'));
-  }
+  ep.hybridUnlock.inspected.forEach((r, j) => check(r, `hybridUnlock.inspected[${j}]`, 'reference'));
+  ep.decisions.forEach((d, i) => check(d?.id, `decisions[${i}].id`, 'identifier'));
+  postmortemKeys.forEach(k => check(k, `postmortem key "${k.slice(0, 16)}…"`, 'reference'));
   return out;
 }
 
@@ -105,12 +187,18 @@ const sameSet = (a, b) => a.length === b.length && new Set(a).size === a.length 
 export function validateEpisode(ep) {
   const problems = [];
   const need = (cond, msg) => { if (!cond) problems.push(msg); };
+  // Stage 1: the episode is an object.
   if (!isObj(ep)) return ['episode is not an object'];
 
-  // -- r5: identifier/reference length first; fail fast before any downstream work
-  const tooLong = identifierLengthProblems(ep);
+  // Stage 2 (r6): container types and cardinality only — no content traversal of unproven collections.
+  const shape = shapeProblems(ep);
+  if (shape.problems.length) return shape.problems;
+
+  // Stage 3 (r5): identifier/reference length over collections now proven bounded.
+  const tooLong = identifierLengthProblems(ep, shape.postmortemKeys);
   if (tooLong.length) return tooLong;
 
+  // Stage 4: semantic, reference, DOM-id and reachability validation (unchanged rules) on bounded content.
   // -- identity + briefing
   need(isId(ep.id), 'id must be a safe identifier (letter followed by letters, digits, _ or -)');
   need(Number.isInteger(ep.version) && ep.version > 0, 'version must be a positive integer');
@@ -119,15 +207,13 @@ export function validateEpisode(ep) {
   need(isObj(b) && isStr(b.heading) && isStrList(b.paragraphs) && isStr(b.clock) && isStr(b.clockNote),
     'briefing needs heading, paragraphs[], clock, clockNote');
 
-  // -- evidence
-  const evidence = Array.isArray(ep.evidence) ? ep.evidence : [];
-  need(Array.isArray(ep.evidence), 'evidence must be an array');
-  need(evidence.length >= 3 && evidence.length <= 5, `evidence count ${evidence.length} outside packet range 3–5`);
+  // -- evidence (stage 2 proved: an array of 3–5)
+  const evidence = ep.evidence;
   const evidenceIds = evidence.map(e => e?.id);
   need(new Set(evidenceIds).size === evidenceIds.length, 'evidence ids must be unique');
   const hiddenIds = new Set();
   evidence.forEach((e, i) => {
-    const at = `evidence[${i}]${isStr(e?.id) ? ` (${e.id})` : ''}`;
+    const at = label(`evidence[${i}]`, e?.id);
     need(isObj(e) && isId(e.id), `${at}: id must be a safe identifier`);
     if (!isObj(e)) return;
     for (const k of ['title', 'source', 'clock', 'summary']) need(isStr(e[k]), `${at}: ${k} must be a non-empty string`);
@@ -139,9 +225,9 @@ export function validateEpisode(ep) {
   const knownEvidence = id => evidenceIds.includes(id);
 
   // -- advisers: exactly the four Harness collaborators
-  const order = Array.isArray(ep.advisorOrder) ? ep.advisorOrder : [];
-  need(sameSet(order, REQUIRED_ADVISORS), `advisorOrder must be exactly ${REQUIRED_ADVISORS.join(', ')}`);
-  need(isObj(ep.advisors) && sameSet(Object.keys(ep.advisors), REQUIRED_ADVISORS), 'advisors must have exactly the four required profiles');
+  // (stage 2 proved: advisorOrder has 4 entries; advisors and advice are objects with 4 keys)
+  need(sameSet(ep.advisorOrder, REQUIRED_ADVISORS), `advisorOrder must be exactly ${REQUIRED_ADVISORS.join(', ')}`);
+  need(sameSet(Object.keys(ep.advisors), REQUIRED_ADVISORS), 'advisors must have exactly the four required profiles');
   for (const id of REQUIRED_ADVISORS) {
     const a = ep.advisors?.[id];
     need(isObj(a) && ['name', 'verb', 'strength', 'weakness'].every(k => isStr(a[k])), `advisors.${id}: name, verb, strength, weakness required`);
@@ -149,46 +235,32 @@ export function validateEpisode(ep) {
   }
 
   // -- advice: four blocks, unique ids, only known conditions, only known evidence
-  need(isObj(ep.advice) && sameSet(Object.keys(ep.advice), REQUIRED_ADVISORS), 'advice must have exactly the four required blocks');
+  need(sameSet(Object.keys(ep.advice), REQUIRED_ADVISORS), 'advice must have exactly the four required blocks');
   const adviceIds = [];
   const revealable = new Set();
-  let adviceOversized = false;
   for (const id of REQUIRED_ADVISORS) {
-    const variants = ep.advice?.[id];
-    if (!Array.isArray(variants) || !variants.length) { problems.push(`advice.${id}: must be a non-empty array`); continue; }
-    if (variants.length > CONTENT_LIMITS.maxAdviceVariantsPerAdviser) {
-      adviceOversized = true;
-      problems.push(`advice.${id}: ${variants.length} variants exceeds the limit of ${CONTENT_LIMITS.maxAdviceVariantsPerAdviser} (CONTENT_LIMITS.maxAdviceVariantsPerAdviser) — merge or remove variants; content is not truncated`);
-      continue; // fail fast: do not scan an oversized list
-    }
+    const variants = ep.advice[id]; // stage 2 proved: a non-empty array of at most 8
     variants.forEach((v, i) => {
-      const at = `advice.${id}[${i}]${isStr(v?.id) ? ` (${v.id})` : ''}`;
+      const at = label(`advice.${id}[${i}]`, v?.id);
       if (!isObj(v)) { problems.push(`${at}: must be an object`); return; }
       need(isId(v.id), `${at}: id must be a safe identifier`);
       adviceIds.push(v.id);
       need(isStr(v.text), `${at}: text required`);
-      need(v.when === undefined || isObj(v.when), `${at}: when must be an object if present`);
-      const when = isObj(v.when) ? v.when : {};
-      for (const k of Object.keys(when)) need(WHEN_KEYS.includes(k), `${at}: unknown condition "${k}" (engine would ignore it)`);
-      if (when.inspected !== undefined) {
-        need(Array.isArray(when.inspected) && when.inspected.length > 0, `${at}: when.inspected must be a non-empty array`);
-        if (Array.isArray(when.inspected) && when.inspected.length > CONTENT_LIMITS.maxWhenInspected) {
-          problems.push(`${at}: when.inspected has ${when.inspected.length} entries; the limit is ${CONTENT_LIMITS.maxWhenInspected} (CONTENT_LIMITS.maxWhenInspected) — list each required evidence id once`);
-        } else {
-          // Repeats never change meaning (every(includes)), so requiring uniqueness rejects no distinct condition.
-          need(!Array.isArray(when.inspected) || new Set(when.inspected).size === when.inspected.length, `${at}: when.inspected must not repeat ids — list each required evidence id once`);
-          for (const e of [].concat(when.inspected)) need(knownEvidence(e), `${at}: when.inspected references unknown evidence "${e}"`);
-        }
+      const when = v.when ?? {}; // stage 2 proved: an object if present
+      for (const k of Object.keys(when)) need(WHEN_KEYS.includes(k), `${at}: unknown condition "${show(k)}" (engine would ignore it)`);
+      if (when.inspected !== undefined) { // stage 2 proved: a non-empty array of at most 5
+        // Repeats never change meaning (every(includes)), so requiring uniqueness rejects no distinct condition.
+        need(new Set(when.inspected).size === when.inspected.length, `${at}: when.inspected must not repeat ids — list each required evidence id once`);
+        for (const e of when.inspected) need(knownEvidence(e), `${at}: when.inspected references unknown evidence "${show(e)}"`);
       }
       need(when.hybridUnlocked === undefined || typeof when.hybridUnlocked === 'boolean', `${at}: when.hybridUnlocked must be boolean`);
       need(when.consultedFewerThan === undefined || (Number.isInteger(when.consultedFewerThan) && when.consultedFewerThan > 0 && when.consultedFewerThan < REQUIRED_ADVISORS.length),
         `${at}: when.consultedFewerThan must be an integer 1–${REQUIRED_ADVISORS.length - 1}`);
-      if (v.reveals !== undefined) {
-        need(Array.isArray(v.reveals) && v.reveals.length > 0, `${at}: reveals must be a non-empty array`);
-        need(Array.isArray(v.reveals) && new Set(v.reveals).size === v.reveals.length, `${at}: reveals must not repeat ids`);
-        for (const e of [].concat(v.reveals)) {
-          need(knownEvidence(e), `${at}: reveals unknown evidence "${e}"`);
-          need(!knownEvidence(e) || hiddenIds.has(e), `${at}: reveals "${e}", which is already visible`);
+      if (v.reveals !== undefined) { // stage 2 proved: a non-empty array of at most 5
+        need(new Set(v.reveals).size === v.reveals.length, `${at}: reveals must not repeat ids`);
+        for (const e of v.reveals) {
+          need(knownEvidence(e), `${at}: reveals unknown evidence "${show(e)}"`);
+          need(!knownEvidence(e) || hiddenIds.has(e), `${at}: reveals "${show(e)}", which is already visible`);
           revealable.add(e);
         }
       }
@@ -197,30 +269,21 @@ export function validateEpisode(ep) {
     need(isObj(last) && (last.when === undefined || (isObj(last.when) && Object.keys(last.when).length === 0)), `advice.${id}: last variant must be unconditional so selectAdvice() always returns one`);
   }
   need(new Set(adviceIds).size === adviceIds.length, 'advice ids must be unique across all advisers');
-  // An oversized advice block was not scanned, so reachability cannot be judged; its own error stands.
-  if (!adviceOversized) for (const h of hiddenIds) need(revealable.has(h), `hidden evidence "${h}" is never revealed by any advice (unreachable)`);
+  for (const h of hiddenIds) need(revealable.has(h), `hidden evidence "${h}" is never revealed by any advice (unreachable)`);
 
-  // -- hybrid unlock
+  // -- hybrid unlock (stage 2 proved: an object whose inspected is a non-empty array of at most 5)
   const hu = ep.hybridUnlock;
-  need(isObj(hu), 'hybridUnlock must be an object');
-  const huList = Array.isArray(hu?.inspected) ? hu.inspected : [];
-  need(huList.length > 0, 'hybridUnlock.inspected must be a non-empty array');
+  const huList = hu.inspected;
   need(new Set(huList).size === huList.length, 'hybridUnlock.inspected must not repeat ids');
-  for (const e of huList) need(knownEvidence(e), `hybridUnlock.inspected references unknown evidence "${e}"`);
+  for (const e of huList) need(knownEvidence(e), `hybridUnlock.inspected references unknown evidence "${show(e)}"`);
   need(isStr(hu?.lockedHint), 'hybridUnlock.lockedHint required');
 
-  // -- decisions
-  const decisions = Array.isArray(ep.decisions) ? ep.decisions : [];
-  need(decisions.length >= 2, 'at least two decisions required');
-  if (decisions.length > CONTENT_LIMITS.maxDecisions) {
-    // Fail fast: every remaining check (postmortem, DOM ids, reachability) iterates the decision list.
-    problems.push(`decisions: ${decisions.length} exceeds the limit of ${CONTENT_LIMITS.maxDecisions} (CONTENT_LIMITS.maxDecisions) — remove decisions; content is not truncated`);
-    return problems;
-  }
+  // -- decisions (stage 2 proved: an array of 2–8)
+  const decisions = ep.decisions;
   const decisionIds = decisions.map(d => d?.id);
   need(new Set(decisionIds).size === decisionIds.length, 'decision ids must be unique');
   decisions.forEach((d, i) => {
-    const at = `decisions[${i}]${isStr(d?.id) ? ` (${d.id})` : ''}`;
+    const at = label(`decisions[${i}]`, d?.id);
     if (!isObj(d)) { problems.push(`${at}: must be an object`); return; }
     for (const k of ['id', 'label', 'description', 'risk']) need(isStr(d[k]), `${at}: ${k} required`);
     need(isId(d.id), `${at}: id must be a safe identifier`);
@@ -231,7 +294,8 @@ export function validateEpisode(ep) {
   need(decisions.some(d => isObj(d) && !d.requiresHybrid), 'at least one decision must be available without the hybrid unlock');
 
   // -- postmortem: one per decision, every adviser rated
-  need(isObj(ep.postmortem) && sameSet(Object.keys(ep.postmortem), decisionIds), 'postmortem must have exactly one entry per decision id');
+  // (stage 2 proved: an object with at most 8 keys, which it already enumerated once)
+  need(sameSet(shape.postmortemKeys, decisionIds), 'postmortem must have exactly one entry per decision id');
   for (const id of decisionIds) {
     const pm = ep.postmortem?.[id];
     need(isObj(pm) && isStrList(pm.unknown), `postmortem.${id}: unknown must be a non-empty string array`);

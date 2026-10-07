@@ -1,0 +1,275 @@
+TAP version 13
+# Subtest: r7-1 advice.boy replaced by an unexpected key: problems returned, no exception, stage 3 never reached
+not ok 1 - r7-1 advice.boy replaced by an unexpected key: problems returned, no exception, stage 3 never reached
+  ---
+  duration_ms: 4.9492
+  type: 'test'
+  location: 'C:\\dds-r6\\games\\harness-who-do-you-trust\\tests\\redteam-r7.test.js:27:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception.
+    Actual message: "Cannot read properties of undefined (reading 'forEach')"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: "Cannot read properties of undefined (reading 'forEach')"
+  name: 'TypeError'
+  stack: |-
+    identifierLengthProblems (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:135:18)
+    validateEpisode (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:193:19)
+    file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:44
+    getActual (node:assert:611:5)
+    strict.doesNotThrow (node:assert:779:32)
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.start (node:internal/test_runner/test:1191:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)
+  operator: 'doesNotThrow'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.start (node:internal/test_runner/test:1191:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:385:17)
+  ...
+# Subtest: r7-1 advice.tooth replaced by an unexpected key: problems returned, no exception, stage 3 never reached
+not ok 2 - r7-1 advice.tooth replaced by an unexpected key: problems returned, no exception, stage 3 never reached
+  ---
+  duration_ms: 0.9525
+  type: 'test'
+  location: 'C:\\dds-r6\\games\\harness-who-do-you-trust\\tests\\redteam-r7.test.js:27:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception.
+    Actual message: "Cannot read properties of undefined (reading 'forEach')"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: "Cannot read properties of undefined (reading 'forEach')"
+  name: 'TypeError'
+  stack: |-
+    identifierLengthProblems (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:135:18)
+    validateEpisode (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:193:19)
+    file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:44
+    getActual (node:assert:611:5)
+    strict.doesNotThrow (node:assert:779:32)
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+  operator: 'doesNotThrow'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)
+  ...
+# Subtest: r7-1 advice.darth replaced by an unexpected key: problems returned, no exception, stage 3 never reached
+not ok 3 - r7-1 advice.darth replaced by an unexpected key: problems returned, no exception, stage 3 never reached
+  ---
+  duration_ms: 0.7691
+  type: 'test'
+  location: 'C:\\dds-r6\\games\\harness-who-do-you-trust\\tests\\redteam-r7.test.js:27:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception.
+    Actual message: "Cannot read properties of undefined (reading 'forEach')"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: "Cannot read properties of undefined (reading 'forEach')"
+  name: 'TypeError'
+  stack: |-
+    identifierLengthProblems (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:135:18)
+    validateEpisode (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:193:19)
+    file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:44
+    getActual (node:assert:611:5)
+    strict.doesNotThrow (node:assert:779:32)
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+  operator: 'doesNotThrow'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r7-1 advice.donsol replaced by an unexpected key: problems returned, no exception, stage 3 never reached
+not ok 4 - r7-1 advice.donsol replaced by an unexpected key: problems returned, no exception, stage 3 never reached
+  ---
+  duration_ms: 0.7987
+  type: 'test'
+  location: 'C:\\dds-r6\\games\\harness-who-do-you-trust\\tests\\redteam-r7.test.js:27:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception.
+    Actual message: "Cannot read properties of undefined (reading 'forEach')"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: "Cannot read properties of undefined (reading 'forEach')"
+  name: 'TypeError'
+  stack: |-
+    identifierLengthProblems (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:135:18)
+    validateEpisode (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:193:19)
+    file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:44
+    getActual (node:assert:611:5)
+    strict.doesNotThrow (node:assert:779:32)
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+  operator: 'doesNotThrow'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:34:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r7-1 stage-2 invariant: 476 malformed shapes plus every required-key replacement return problems and never throw
+not ok 5 - r7-1 stage-2 invariant: 476 malformed shapes plus every required-key replacement return problems and never throw
+  ---
+  duration_ms: 163.7717
+  type: 'test'
+  location: 'C:\\dds-r6\\games\\harness-who-do-you-trust\\tests\\redteam-r7.test.js:43:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Got unwanted exception: advice.boy replaced
+    Actual message: "Cannot read properties of undefined (reading 'forEach')"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+  error: "Cannot read properties of undefined (reading 'forEach')"
+  name: 'TypeError'
+  stack: |-
+    identifierLengthProblems (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:135:18)
+    validateEpisode (file:///C:/dds-r6/games/harness-who-do-you-trust/js/content.js:193:19)
+    file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:58:58
+    getActual (node:assert:611:5)
+    strict.doesNotThrow (node:assert:779:32)
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:58:26)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+  operator: 'doesNotThrow'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:58:26)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# Subtest: r7-2 300k-character whitespace ids × 32 max-cardinality variants: zero over-limit string scans; rejected by the length stage
+not ok 6 - r7-2 300k-character whitespace ids × 32 max-cardinality variants: zero over-limit string scans; rejected by the length stage
+  ---
+  duration_ms: 15.7077
+  type: 'test'
+  location: 'C:\\dds-r6\\games\\harness-who-do-you-trust\\tests\\redteam-r7.test.js:99:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    scanned 9600054 characters of over-limit ids
+    
+    32 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 32
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:106:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# 300k-character whitespace ids: 32 problems in 14.03ms; over-limit scans=32 (9600054 chars)
+# Subtest: r7-2 1M-character whitespace ids × 32 max-cardinality variants: zero over-limit string scans; rejected by the length stage
+not ok 7 - r7-2 1M-character whitespace ids × 32 max-cardinality variants: zero over-limit string scans; rejected by the length stage
+  ---
+  duration_ms: 48.4223
+  type: 'test'
+  location: 'C:\\dds-r6\\games\\harness-who-do-you-trust\\tests\\redteam-r7.test.js:99:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    scanned 32000054 characters of over-limit ids
+    
+    32 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 32
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:106:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# 1M-character whitespace ids: 32 problems in 47.61ms; over-limit scans=32 (32000054 chars)
+# Subtest: r7-2 overlong non-whitespace ids (300k) × 32 max-cardinality variants: zero over-limit string scans; rejected by the length stage
+not ok 8 - r7-2 overlong non-whitespace ids (300k) × 32 max-cardinality variants: zero over-limit string scans; rejected by the length stage
+  ---
+  duration_ms: 5.0374
+  type: 'test'
+  location: 'C:\\dds-r6\\games\\harness-who-do-you-trust\\tests\\redteam-r7.test.js:99:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    scanned 9599766 characters of over-limit ids
+    
+    32 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 32
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/dds-r6/games/harness-who-do-you-trust/tests/redteam-r7.test.js:106:12)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1325:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:911:18)
+    Test.postRun (node:internal/test_runner/test:1465:19)
+    Test.run (node:internal/test_runner/test:1390:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:911:7)
+  ...
+# overlong non-whitespace ids (300k): 32 problems in 4.31ms; over-limit scans=32 (9599766 chars)
+# Subtest: r7-2 short ids: whitespace ids get no label suffix (and fail the safe-id rule); valid ids keep their label
+ok 9 - r7-2 short ids: whitespace ids get no label suffix (and fail the safe-id rule); valid ids keep their label
+  ---
+  duration_ms: 10.3784
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 1
+# fail 8
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 592.8353
