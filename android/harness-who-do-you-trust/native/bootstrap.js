@@ -6,6 +6,8 @@ const cache = new Map();
 let dirty = new Map();
 let writeChain = Promise.resolve();
 let flushRequested = false;
+let flushTimer = null;
+const FLUSH_DEBOUNCE_MS = 250;
 
 async function hydrate() {
   const { keys } = await Preferences.keys();
@@ -23,16 +25,27 @@ function installStorageBridge() {
       const v = String(value);
       cache.set(key, v);
       dirty.set(key, v);
+      scheduleFlush();
     },
     removeItem(key) {
       cache.delete(key);
       dirty.set(key, null);
+      scheduleFlush();
     },
   };
   Object.defineProperty(globalThis, '__HARNESS_NATIVE_STORAGE__', { value: backend, configurable: false });
 }
 
+function scheduleFlush() {
+  if (flushTimer !== null) clearTimeout(flushTimer);
+  flushTimer = setTimeout(() => {
+    flushTimer = null;
+    void flush();
+  }, FLUSH_DEBOUNCE_MS);
+}
+
 async function flush() {
+  if (flushTimer !== null) { clearTimeout(flushTimer); flushTimer = null; }
   flushRequested = true;
   writeChain = writeChain.then(async () => {
     while (flushRequested) {
