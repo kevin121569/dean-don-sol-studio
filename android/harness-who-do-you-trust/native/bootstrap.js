@@ -99,4 +99,4 @@ try {
   // Native persistence must never prevent play. app.js will fall back to web storage.
 }
 
-await import('../www/js/app.js');
+await import('../js/app.js');
