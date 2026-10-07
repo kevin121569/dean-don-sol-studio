@@ -21,6 +21,52 @@ export const CONTENT_LIMITS = Object.freeze({
   maxWhenInspected: 5,            // = the packet's evidence maximum; entries must also be unique (shipped maximum: 3)
   maxDecisions: 8,                // shipped: 4
 });
+/**
+ * r5: maximum length of every content-chosen identifier and every reference to one. Restore hashes, compares
+ * and serializes them, so its cost scales with their length. Shipped maximum: 16 ("tooth_reconciled").
+ * A separate export (not a CONTENT_LIMITS key) so the r4 limits object, and the test that pins it, are unchanged.
+ */
+export const MAX_IDENTIFIER_LENGTH = 64;
+const MAX_EVIDENCE = 5; // packet range 3–5, enforced below; bounds reveals / hybridUnlock lists (unique known ids)
+
+/**
+ * r5 identifier pre-pass. Runs FIRST, before any lookup, comparison, DOM-id generation or reachability work,
+ * so an over-long identifier costs one .length read. Visits every free-form identifier (episode, evidence,
+ * advice variant, decision ids) and every reference to one (when.inspected, reveals, hybridUnlock.inspected,
+ * postmortem keys). It iterates only collections whose size is already capped (r4 limits / the evidence
+ * range); oversized collections are skipped here and rejected by their own rule. Non-strings and empty
+ * strings are left to the existing safe-identifier and reference rules. Nothing is truncated or normalized.
+ */
+function identifierLengthProblems(ep) {
+  const max = MAX_IDENTIFIER_LENGTH;
+  const out = [];
+  const check = (value, field, kind) => {
+    if (typeof value === 'string' && value.length > max) {
+      out.push(`${field}: ${kind} is ${value.length} characters; the limit is ${max} (MAX_IDENTIFIER_LENGTH) — shorten it; identifiers are never truncated`);
+    }
+  };
+  const capped = (list, cap) => Array.isArray(list) && list.length <= cap ? list : [];
+  check(ep.id, 'id', 'identifier');
+  capped(ep.evidence, MAX_EVIDENCE).forEach((e, i) => check(e?.id, `evidence[${i}].id`, 'identifier'));
+  if (isObj(ep.advice)) {
+    for (const a of REQUIRED_ADVISORS) {
+      if (!Object.hasOwn(ep.advice, a)) continue;
+      capped(ep.advice[a], CONTENT_LIMITS.maxAdviceVariantsPerAdviser).forEach((v, i) => {
+        if (!isObj(v)) return;
+        check(v.id, `advice.${a}[${i}].id`, 'identifier');
+        capped(v.when?.inspected, CONTENT_LIMITS.maxWhenInspected).forEach((r, j) => check(r, `advice.${a}[${i}].when.inspected[${j}]`, 'reference'));
+        capped(v.reveals, MAX_EVIDENCE).forEach((r, j) => check(r, `advice.${a}[${i}].reveals[${j}]`, 'reference'));
+      });
+    }
+  }
+  capped(ep.hybridUnlock?.inspected, MAX_EVIDENCE).forEach((r, j) => check(r, `hybridUnlock.inspected[${j}]`, 'reference'));
+  capped(ep.decisions, CONTENT_LIMITS.maxDecisions).forEach((d, i) => check(d?.id, `decisions[${i}].id`, 'identifier'));
+  if (isObj(ep.postmortem)) {
+    const keys = Object.keys(ep.postmortem);
+    if (keys.length <= CONTENT_LIMITS.maxDecisions) keys.forEach(k => check(k, `postmortem key "${k.slice(0, 16)}…"`, 'reference'));
+  }
+  return out;
+}
 
 export async function loadEpisode(path = 'data/episode-001.json') {
   const response = await fetch(path);
@@ -34,7 +80,8 @@ export async function loadEpisode(path = 'data/episode-001.json') {
 const isObj = v => v !== null && typeof v === 'object' && !Array.isArray(v);
 const isStr = v => typeof v === 'string' && v.trim().length > 0;
 // IDs are used in HTML attributes, ARIA references, and delegated controls.
-const isId = v => typeof v === 'string' && /^[A-Za-z][A-Za-z0-9_-]*$/.test(v);
+// The length bound is part of the definition, so every isId() use (including the DOM-id gate) implies it.
+const isId = v => typeof v === 'string' && v.length <= MAX_IDENTIFIER_LENGTH && /^[A-Za-z][A-Za-z0-9_-]*$/.test(v);
 const isStrList = v => Array.isArray(v) && v.length > 0 && v.every(isStr);
 // Icons must be plain local asset paths: assets/<segment>/.../<name>.(svg|png|webp). An allowlist, not a
 // denylist: it excludes every whitespace/control character (which WHATWG URL parsing strips, turning
@@ -59,6 +106,10 @@ export function validateEpisode(ep) {
   const problems = [];
   const need = (cond, msg) => { if (!cond) problems.push(msg); };
   if (!isObj(ep)) return ['episode is not an object'];
+
+  // -- r5: identifier/reference length first; fail fast before any downstream work
+  const tooLong = identifierLengthProblems(ep);
+  if (tooLong.length) return tooLong;
 
   // -- identity + briefing
   need(isId(ep.id), 'id must be a safe identifier (letter followed by letters, digits, _ or -)');
