@@ -444,7 +444,21 @@ await check('r6 fail-fast: over-limit containers rejected without element reads;
  return counts.r6FailFast={oversizedElementReads:reads,maxErrorText:maxText,postmortemEnumerations:enums,reject300kKeysMs:Number(ms.toFixed(2))};
 });
 
-const auditResult={target:{branch:'fix/harness-wdyt-redteam-r6',baseCommit:'16a272037bfaf2d70da99497b365f84e7505cceb'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
+// ---- r7. Independent of tests/redteam-r7.test.js. ----
+await check('r7: missing required advice block returns problems (no throw, stage 3 unreached); labels never trim over-limit ids',async()=>{
+ let missing=0;
+ for(const a of ep.advisorOrder){const e=clone(ep);e.advice.zz=e.advice[a];delete e.advice[a];e.decisions[0].id='d'+'x'.repeat(100000);
+  let p;assert.doesNotThrow(()=>{p=validateEpisode(e);},a);
+  assert(p.some(x=>x.startsWith(`advice.${a}: required block is missing`)),a);
+  assert(!p.some(x=>/identifier is 100000 characters/.test(x)),'stage 3 reached');missing++;}
+ const trim=String.prototype.trim;let long=0;String.prototype.trim=function(){if(this.length>64)long++;return trim.call(this);};
+ let ms;try{const e=clone(ep);for(const a of e.advisorOrder)e.advice[a]=Array.from({length:8},(_,i)=>({id:' '.repeat(1e6)+i,when:{inspected:['e_monitor']},text:'.'}));
+  const t0=performance.now();const p=validateEpisode(e);ms=performance.now()-t0;assert.equal(p.length,32);}finally{String.prototype.trim=trim;}
+ assert.equal(long,0,'trim() ran on over-limit ids');assert.deepEqual(validateEpisode(ep),[]);
+ return counts.r7={missingBlocksRejected:missing,overLimitTrims:long,reject32x1MWhitespaceMs:Number(ms.toFixed(2))};
+});
+
+const auditResult={target:{branch:'fix/harness-wdyt-redteam-r7',baseCommit:'246fa7ebba2d29d2a4164a70406f5a368a6a0b6d'},method:'Remediated modules plus actual app functions in deterministic DOM-interface harness; no native Chromium execution.',results,counts,diagnostics};
 if(process.argv[2])fs.writeFileSync(path.resolve(process.argv[2]),JSON.stringify(auditResult,null,2)+'\n');
 for(const r of results)console.log(r.result+' '+r.name+(r.error?' — '+r.error.split('\n')[0]:''));
 console.log(JSON.stringify({groups:results.length,passed:results.filter(r=>r.result==='PASS').length,failed:results.filter(r=>r.result==='FAIL').length,counts}));

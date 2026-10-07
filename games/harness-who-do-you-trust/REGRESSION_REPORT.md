@@ -1,4 +1,86 @@
-# Harness Episode 001 — r6 remediation regression report (LOW ×2: validation fail-fast ordering)
+# Harness Episode 001 — r7 remediation regression report (LOW ×2: r6 validation regressions)
+
+**Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
+
+Astra's r6 result was FAIL with two new LOW findings. The original r5 defects were fixed, and the r3–r6 architecture is unchanged.
+
+r7 is **two small changes in `shapeProblems()`** (stage 2):
+- **Fix 1:** stage 2 now proves required advice-key membership, not just the count.
+- **Fix 2:** the shape-stage label checks length before `trim()`.
+
+Unchanged:
+- r6 staged ordering, r5 `MAX_IDENTIFIER_LENGTH = 64`, r4 limits;
+- r3 `feasibleHistory()`, restore and advice selection;
+- bounded error messages, the postmortem-ordering fix, and all valid-content behavior.
+
+The 121 existing tests pass **unmodified**, and the 32 existing audit groups pass. No merge or deployment.
+
+| Identity | Value |
+|---|---|
+| Exact base / sole parent | `fix/harness-wdyt-redteam-r6` @ `246fa7ebba2d29d2a4164a70406f5a368a6a0b6d` |
+| Branch | `fix/harness-wdyt-redteam-r7` |
+| Product change | `js/content.js` only: the `label()` predicate order, and the advice key check in `shapeProblems()` |
+| Scope | `games/harness-who-do-you-trust/` only; r6 and `main` not modified |
+| Runtime | Node.js `v24.18.0`, LF checkout, no dependencies |
+| Date | 2026-10-06 UTC |
+
+## Exact totals
+
+| Run | Total | Pass | Fail |
+|---|---:|---:|---:|
+| Node suite | **130** | **130** | 0 |
+| ↳ existing 121 (`engine` 17, `episode-001` 14, `redteam` 24, `-r2` 16, `-r3` 13, `-r4` 10, `-r5` 13, `-r6` 14), unmodified | 121 | 121 | 0 |
+| ↳ new `redteam-r7.test.js` | 9 | 9 | 0 |
+| Audit groups (32 existing + 1 r7) | **33** | **33** | 0 |
+| **Before:** r7 tests on r6 `246fa7e` | 9 | 1 control | 8 expected |
+
+The control (short-id labels) holds on both commits. Evidence: [node-test.tap](tests/results/node-test.tap), [astra-audit.json](tests/results/astra-audit.json), [r7-on-r6.tap](tests/results/r7-on-r6.tap).
+
+## Defect → fix → regression
+
+| Defect (Astra, LOW) | Fix (`js/content.js`, stage 2) | Regressions (`tests/redteam-r7.test.js`; audit `r7`) |
+|---|---|---|
+| **1. Missing required advice block reached stage 3 and threw.** Stage 2 checked only that `advice` has 4 keys, then skipped absent required names. Stage 3 called `ep.advice[a].forEach` on `undefined`. Reproducer: `ep.advice.other = ep.advice.boy; delete ep.advice.boy` → r6 throws `TypeError: Cannot read properties of undefined (reading 'forEach')`. | Stage 2 now establishes **count and membership**: `adviceKeysOk = 4 keys && every REQUIRED_ADVISORS key own-present`. Each missing block gets an actionable error: `advice.<name>: required block is missing — the advice blocks must be exactly boy, tooth, darth, donsol`. The stage invariant now holds: stage 3 runs only when every required block is present and its list proven bounded. **Not** fixed by optional chaining in stage 3. | **For each of the 4 advisers independently** (replaced by an unexpected key): problems returned (general + specific message); **no exception**; the **real `loadEpisode()`** rejects with an ordinary `Error` naming the block; **stage 3 not reached**, proven by a sentinel 300k-char episode id that only stage 3 would report and that is absent |
+| | | **Invariant sweep:** 476 malformed shapes (36 locations × 13 malformed values, plus every required-key replacement in `advice` and `advisors`): **0 exceptions** |
+| **2. Shape-stage `label()` scanned over-limit ids.** `id.trim()` was evaluated before `id.length <= 64`, so a huge whitespace id was scanned in the "cheap" stage. | Predicate reordered: `typeof id === 'string' && id.length <= MAX_IDENTIFIER_LENGTH && id.trim()`. `trim()` now only ever runs on ≤ 64 characters. No other stage-2 operation scans string contents: `show()` already checked length before `slice(0, 16)`. | **Instrumented:** `String.prototype.trim` / `trimStart` / `trimEnd` / `normalize` and `RegExp.prototype.exec` (through which `test`, `match`, `replace`, `search` and `split` route) count calls on strings over 64 characters during `validateEpisode()`. **0 scans** for 32 max-cardinality variants (4 advisers × 8) with 300k-char whitespace ids, 1M-char whitespace ids, and 300k-char non-whitespace ids. All 32 are rejected by the length stage with bounded text. |
+| | | **Short ids:** whitespace `"   "` → no label suffix, rejected by the safe-id rule; valid `boy_find` keeps its label; a 64-char id keeps its label; a 65-char id gets no label and is never scanned |
+
+**Why the sweep matters.** It checks the class of bug, not just the instance: on r6 the same 476-shape sweep found **exactly Astra's 4 throws and no others**. On r7 it finds none.
+
+## Before / after (instrumented, same fixtures)
+
+| Fixture | r6 | r7 |
+|---|---|---|
+| `advice.<each>` replaced by an unexpected key (×4) | **throws `TypeError`** | returns 2 problems each; `loadEpisode()` rejects normally |
+| 476-shape malformed sweep | **4 throws** | **0 throws** |
+| 32 × 300k whitespace ids | 14.0 ms; **32 over-limit scans, 9,600,054 chars** | **0.42 ms; 0 scans** |
+| 32 × 1M whitespace ids | 47.6 ms; **32 scans, 32,000,054 chars** | **0.06 ms; 0 scans** |
+| 32 × 300k non-whitespace ids | 4.3 ms; **32 scans, 9,599,766 chars** | **0.05 ms; 0 scans** |
+
+## Preserved (re-run)
+
+| Check | Result |
+|---|---|
+| r6 oversized / malformed-container probes | same script as the r6 report: every case rejected in ≤ ~1.4 ms with ≤ 152 chars of error; 0 postmortem enumerations while decisions > 8 |
+| r5 long-id reproducers and boundaries | 10k / 100k / 300k refused via the real `loadEpisode()`; 63 / 64 / 65 per namespace; 1e6-char ids |
+| r4 pathological arrays | 100k-condition and 100k-variant cases rejected |
+| r3 exact differential / reachable-save controls | tiny1 104,720 / tiny2 50,640: 0 false accepts, 0 false rejects; 194,852 reachable saves; r2 / r4 / r5 controls |
+| Maximum-boundary accepted content | all limits at maximum at once: valid, plays, restores |
+| `/missing-page/` | 5/5 byte-identical to current `main` |
+
+## Documented residual (unchanged, as instructed)
+
+With decisions within bounds, a `postmortem` object holding N stray keys still costs **one O(N) `Object.keys`** (r6: ~106 ms at N = 300k, the same order as the `JSON.parse` that created those keys). JavaScript offers no cheaper own-key count. Not redesigned in r7.
+
+**Not touched, as instructed:** native accessibility / device follow-ups, deployment, homepage linking, the CRLF harness issue, repository governance.
+
+Ready for Don Sol's review. No merge, deployment, publishing or canon change.
+
+---
+
+# History — r6, r5, r4, r3, r2 and r1 reports, unchanged
+
+## Harness Episode 001 — r6 remediation regression report (LOW ×2: validation fail-fast ordering)
 
 **Verdict: AUTOMATED REMEDIATION PASS — READY FOR DON SOL REVIEW.**
 
@@ -134,7 +216,7 @@ Ready for Don Sol's review. No merge, deployment, publishing or canon change.
 
 ---
 
-# History — r5, r4, r3, r2 and r1 reports, unchanged
+## History — r5, r4, r3, r2 and r1 reports, unchanged
 
 ## Harness Episode 001 — r5 remediation regression report (LOW: identifier length)
 

@@ -37,7 +37,8 @@ const show = v => typeof v === 'string'
   ? (v.length <= MAX_IDENTIFIER_LENGTH ? v : `${v.slice(0, 16)}…(${v.length} characters)`)
   : `<${Array.isArray(v) ? 'array' : v === null ? 'null' : typeof v}>`;
 // "advice.boy[0] (boy_find)" — the id suffix only when it is a short string, so labels stay bounded.
-const label = (base, id) => `${base}${typeof id === 'string' && id.trim() && id.length <= MAX_IDENTIFIER_LENGTH ? ` (${id})` : ''}`;
+// r7: the length test comes FIRST, so trim() (a whole-string scan) only ever runs on ≤ 64 characters.
+const label = (base, id) => `${base}${typeof id === 'string' && id.length <= MAX_IDENTIFIER_LENGTH && id.trim() ? ` (${id})` : ''}`;
 const listShape = (value, field, max, overMessage) => {
   if (!Array.isArray(value) || value.length === 0) return `${field} must be a non-empty array`;
   if (value.length > max) return overMessage(value.length);
@@ -62,10 +63,14 @@ function shapeProblems(ep) {
   if (!Array.isArray(ep.advisorOrder) || ep.advisorOrder.length !== REQUIRED_ADVISORS.length) out.push(`advisorOrder must be exactly ${REQUIRED_ADVISORS.join(', ')}`);
   if (!isObj(ep.advisors) || Object.keys(ep.advisors).length !== REQUIRED_ADVISORS.length) out.push('advisors must have exactly the four required profiles');
   // -- advice: 4 blocks; each a bounded list of variants; each variant's lists bounded
-  if (!isObj(ep.advice) || Object.keys(ep.advice).length !== REQUIRED_ADVISORS.length) out.push('advice must have exactly the four required blocks');
+  // r7: count AND membership. Stage 3 reads ep.advice[a] for every required adviser, so stage 2 must prove
+  // each one present; four keys alone is not enough (e.g. `boy` replaced by an unexpected `other`).
+  const adviceKeysOk = isObj(ep.advice) && Object.keys(ep.advice).length === REQUIRED_ADVISORS.length
+    && REQUIRED_ADVISORS.every(a => Object.hasOwn(ep.advice, a));
+  if (!adviceKeysOk) out.push('advice must have exactly the four required blocks');
   if (isObj(ep.advice)) {
     for (const a of REQUIRED_ADVISORS) {
-      if (!Object.hasOwn(ep.advice, a)) continue;
+      if (!Object.hasOwn(ep.advice, a)) { out.push(`advice.${a}: required block is missing — the advice blocks must be exactly ${REQUIRED_ADVISORS.join(', ')}`); continue; }
       const variants = ep.advice[a];
       if (!Array.isArray(variants) || !variants.length) { out.push(`advice.${a}: must be a non-empty array`); continue; }
       if (variants.length > CONTENT_LIMITS.maxAdviceVariantsPerAdviser) {
