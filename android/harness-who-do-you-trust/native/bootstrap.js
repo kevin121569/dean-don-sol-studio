@@ -56,6 +56,10 @@ function installLifecycle() {
 try {
   await hydrate();
   installStorageBridge();
+  // The locked app already calls createStore(episode) with no explicit backend. Shadow only
+  // localStorage at the wrapper boundary so state.js receives the hydrated synchronous cache
+  // without any change to state.js/app.js or reducer semantics.
+  Object.defineProperty(globalThis, 'localStorage', { value: globalThis.__HARNESS_NATIVE_STORAGE__, configurable: true });
   installLifecycle();
 } catch {
   // Native persistence must never prevent play. app.js will fall back to web storage.
