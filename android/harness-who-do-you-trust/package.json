@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "description": "Android Capacitor wrapper for The Harness: Who Do You Trust? Episode 001",
   "scripts": {
-    "cap:add:android": "cap add android",
-    "cap:sync": "cap sync android",
-    "cap:open": "cap open android"
+    "cap:add:android": "npm run build:web && cap add android",
+    "cap:sync": "npm run build:web && cap sync android",
+    "cap:open": "cap open android",
+    "build:web": "node scripts/build-wrapper.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.0",
