@@ -1,0 +1,330 @@
+{
+ "_provenance": "Generated from main 194dac4e4aa5b8451222aa02c59397cafe2bb8bc data/episode-001.json: every id, condition, reveal, rating and decision flag kept; player-visible text replaced by <text>.",
+ "structure": {
+  "id": "episode-001",
+  "version": 1,
+  "title": "<text>",
+  "series": "<text>",
+  "briefing": "<briefing text>",
+  "advisors": {
+   "boy": {
+    "name": "<text>",
+    "verb": "<text>",
+    "strength": "<text>",
+    "weakness": "<text>",
+    "icon": "assets/characters/boy.svg"
+   },
+   "tooth": {
+    "name": "<text>",
+    "verb": "<text>",
+    "strength": "<text>",
+    "weakness": "<text>",
+    "icon": "assets/characters/tooth.svg"
+   },
+   "darth": {
+    "name": "<text>",
+    "verb": "<text>",
+    "strength": "<text>",
+    "weakness": "<text>",
+    "icon": "assets/characters/darth.svg"
+   },
+   "donsol": {
+    "name": "<text>",
+    "verb": "<text>",
+    "strength": "<text>",
+    "weakness": "<text>",
+    "icon": "assets/characters/donsol.svg"
+   }
+  },
+  "advisorOrder": [
+   "boy",
+   "tooth",
+   "darth",
+   "donsol"
+  ],
+  "evidence": [
+   {
+    "id": "e_monitor",
+    "title": "<text>",
+    "source": "<text>",
+    "clock": "<text>",
+    "body": [
+     "<text>",
+     "<text>"
+    ],
+    "summary": "<text>"
+   },
+   {
+    "id": "e_controller",
+    "title": "<text>",
+    "source": "<text>",
+    "clock": "<text>",
+    "body": [
+     "<text>",
+     "<text>"
+    ],
+    "summary": "<text>"
+   },
+   {
+    "id": "e_technician",
+    "title": "<text>",
+    "source": "<text>",
+    "clock": "<text>",
+    "body": [
+     "<text>",
+     "<text>"
+    ],
+    "summary": "<text>"
+   },
+   {
+    "id": "e_protocol",
+    "title": "<text>",
+    "source": "<text>",
+    "clock": "<text>",
+    "body": [
+     "<text>",
+     "<text>"
+    ],
+    "summary": "<text>"
+   },
+   {
+    "id": "e_clocksync",
+    "title": "<text>",
+    "source": "<text>",
+    "clock": "<text>",
+    "hidden": true,
+    "body": [
+     "<text>",
+     "<text>"
+    ],
+    "summary": "<text>"
+   }
+  ],
+  "advice": {
+   "boy": [
+    {
+     "id": "boy_find",
+     "when": {},
+     "text": "<text>",
+     "reveals": [
+      "e_clocksync"
+     ]
+    }
+   ],
+   "tooth": [
+    {
+     "id": "tooth_reconciled",
+     "when": {
+      "inspected": [
+       "e_monitor",
+       "e_controller",
+       "e_clocksync"
+      ]
+     },
+     "text": "<text>"
+    },
+    {
+     "id": "tooth_conflict",
+     "when": {
+      "inspected": [
+       "e_monitor",
+       "e_controller"
+      ]
+     },
+     "text": "<text>"
+    },
+    {
+     "id": "tooth_unread",
+     "when": {},
+     "text": "<text>"
+    }
+   ],
+   "darth": [
+    {
+     "id": "darth_staged",
+     "when": {
+      "inspected": [
+       "e_clocksync"
+      ]
+     },
+     "text": "<text>"
+    },
+    {
+     "id": "darth_worst",
+     "when": {},
+     "text": "<text>"
+    }
+   ],
+   "donsol": [
+    {
+     "id": "donsol_staged",
+     "when": {
+      "hybridUnlocked": true
+     },
+     "text": "<text>"
+    },
+    {
+     "id": "donsol_thin",
+     "when": {
+      "consultedFewerThan": 2
+     },
+     "text": "<text>"
+    },
+    {
+     "id": "donsol_frame",
+     "when": {},
+     "text": "<text>"
+    }
+   ]
+  },
+  "hybridUnlock": {
+   "inspected": [
+    "e_monitor",
+    "e_controller",
+    "e_clocksync"
+   ],
+   "lockedHint": "<text>"
+  },
+  "decisions": [
+   {
+    "id": "d_shutdown",
+    "label": "<text>",
+    "description": "<text>",
+    "outcome": {
+     "heading": "<text>",
+     "text": "<text>"
+    },
+    "risk": "<text>"
+   },
+   {
+    "id": "d_verify",
+    "label": "<text>",
+    "description": "<text>",
+    "outcome": {
+     "heading": "<text>",
+     "text": "<text>"
+    },
+    "risk": "<text>"
+   },
+   {
+    "id": "d_preserve",
+    "label": "<text>",
+    "description": "<text>",
+    "outcome": {
+     "heading": "<text>",
+     "text": "<text>"
+    },
+    "risk": "<text>"
+   },
+   {
+    "id": "d_hybrid",
+    "label": "<text>",
+    "description": "<text>",
+    "requiresHybrid": true,
+    "outcome": {
+     "heading": "<text>",
+     "text": "<text>"
+    },
+    "risk": "<text>"
+   }
+  ],
+  "postmortem": {
+   "d_shutdown": {
+    "unknown": [
+     "<text>",
+     "<text>"
+    ],
+    "advisors": {
+     "boy": {
+      "rating": "mixed",
+      "text": "<text>"
+     },
+     "tooth": {
+      "rating": "strong",
+      "text": "<text>"
+     },
+     "darth": {
+      "rating": "weak",
+      "text": "<text>"
+     },
+     "donsol": {
+      "rating": "mixed",
+      "text": "<text>"
+     }
+    }
+   },
+   "d_verify": {
+    "unknown": [
+     "<text>",
+     "<text>"
+    ],
+    "advisors": {
+     "boy": {
+      "rating": "mixed",
+      "text": "<text>"
+     },
+     "tooth": {
+      "rating": "strong",
+      "text": "<text>"
+     },
+     "darth": {
+      "rating": "mixed",
+      "text": "<text>"
+     },
+     "donsol": {
+      "rating": "mixed",
+      "text": "<text>"
+     }
+    }
+   },
+   "d_preserve": {
+    "unknown": [
+     "<text>",
+     "<text>"
+    ],
+    "advisors": {
+     "boy": {
+      "rating": "weak",
+      "text": "<text>"
+     },
+     "tooth": {
+      "rating": "strong",
+      "text": "<text>"
+     },
+     "darth": {
+      "rating": "mixed",
+      "text": "<text>"
+     },
+     "donsol": {
+      "rating": "weak",
+      "text": "<text>"
+     }
+    }
+   },
+   "d_hybrid": {
+    "unknown": [
+     "<text>",
+     "<text>"
+    ],
+    "advisors": {
+     "boy": {
+      "rating": "strong",
+      "text": "<text>"
+     },
+     "tooth": {
+      "rating": "strong",
+      "text": "<text>"
+     },
+     "darth": {
+      "rating": "mixed",
+      "text": "<text>"
+     },
+     "donsol": {
+      "rating": "strong",
+      "text": "<text>"
+     }
+    }
+   }
+  }
+ }
+}

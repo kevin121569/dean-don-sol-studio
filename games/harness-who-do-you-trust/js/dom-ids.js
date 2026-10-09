@@ -28,6 +28,9 @@ export const domId = Object.freeze({
 export const STATIC_IDS = Object.freeze([
   // index.html
   'main', 'scene', 'live', 'motionToggle', 'helpDialog', 'helpTitle', 'resetDialog', 'resetTitle',
+  // index.html — Creative C1 (sound dialog, opening)
+  'soundButton', 'audioDialog', 'audioTitle', 'soundEnabled', 'volVoice', 'volMusic', 'volSfx', 'narrationNote', 'audioClose',
+  'introDialog', 'introTitle', 'introSubtitle', 'introProgress', 'introSkip', 'introNext',
   // app.js
   'scene-title', 'roles-title', 'btn-start', 'progress', 'evidence-title', 'advisors-title', 'btn-consult-all', 'btn-decide',
   'choices-title', 'ack', 'btn-submit', 'btn-back', 'submit-hint', 'btn-postmortem',

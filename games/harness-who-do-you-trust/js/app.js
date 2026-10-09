@@ -6,13 +6,16 @@ import {createInitialState, createStore} from './state.js';
 import {createTelemetry, domEventSink} from './telemetry.js';
 import {isAdvisor} from './advice.js';
 import {domId} from './dom-ids.js';
+import {createCreativeLayer} from '../creative/creative.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const esc = v => String(v).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
-const TRUST_LABELS = {'-1': 'Discount', '0': 'Neutral', '1': 'Rely on'};
+const TRUST_LABELS = {'-1': 'Doubt', '0': 'Neutral', '1': 'Trust'};
 const SETTINGS_KEY = 'harness-wdyt:settings';
 
 let episode, store, telemetry, state;
+// Creative C1 presentation layer (opening, audio). Observes actions only; never changes game state.
+let creative = null;
 let liveTimer = null, liveGeneration = 0;
 // Bumped only by RESET. Telemetry for an action belongs to the run it was dispatched in: an ordinary
 // nested dispatch (same run) must not truncate it; a reset (new run) must cancel it.
@@ -40,6 +43,12 @@ async function boot() {
   document.addEventListener('click', onClick);
   document.addEventListener('change', onChange);
   render({sceneChanged: false});
+  creative = createCreativeLayer({
+    document, window, storage: settingsStorage(), episode, ACTIONS: A, isHybridUnlocked,
+    getState: () => state, reducedMotion: motionReduced, say,
+    settings: {read: readSettings, write: writeSettings},
+  });
+  creative.boot().catch(() => { /* the opening is optional */ });
 }
 
 // ---------------------------------------------------------------- dispatch
@@ -58,6 +67,7 @@ function dispatch(action) {
   // A nested dispatch already rendered/announced newer state; never draw this older one over it.
   if (state !== next) return next !== prev;
   announce(action, prev, next);
+  creative?.onAction(action, prev, next);
   if (next === prev) return false;
   render({sceneChanged: prev.sceneId !== next.sceneId});
   return true;
@@ -170,6 +180,7 @@ function onClick(e) {
       break;
     }
     case 'askReset': $('#resetDialog').showModal(); break;
+    case 'replayIntro': creative?.openIntro(); break;
     // Reset on the confirm click itself (the form still closes the dialog). Relying on the dialog's
     // async 'close' event proved unreliable when the page is not being drawn.
     case 'confirmReset': resetGame(); say('Progress reset. Episode 001 is back at the briefing.'); break;
@@ -191,6 +202,9 @@ function resetGame() {
 }
 
 // ---------------------------------------------------------------- settings
+function settingsStorage() {
+  try { return localStorage; } catch { return null; } // the property getter itself can throw (denied storage)
+}
 function readSettings() {
   try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}') ?? {}; } catch { return {}; }
 }
@@ -222,54 +236,56 @@ function render({sceneChanged}) {
 }
 
 function sceneTitle() {
-  return {briefing: 'Briefing', investigate: 'Investigate', decide: 'Decide', outcome: 'Outcome', postmortem: 'Postmortem'}[state.sceneId];
+  return {briefing: 'Briefing', investigate: 'Investigate', decide: 'Decide', outcome: 'Outcome', postmortem: 'What you learned'}[state.sceneId];
 }
 
 function briefing() {
   const b = episode.briefing;
   return `
   <section class="panel alert-card" aria-labelledby="scene-title">
-    <p class="eyebrow">Episode 001 · ${esc(episode.title)}</p>
+    <p class="eyebrow">Episode 1 · ${esc(episode.title)}</p>
     <h1 id="scene-title" tabindex="-1">${esc(b.heading)}</h1>
     <p class="status-line"><span class="pill warn">${esc(b.clock)}</span><span class="pill">${esc(b.clockNote)}</span></p>
     ${b.paragraphs.map(p => `<p class="lede">${esc(p)}</p>`).join('')}
   </section>
   <section class="panel" aria-labelledby="roles-title">
-    <h2 id="roles-title">Your collaborators</h2>
+    <h2 id="roles-title">Meet your AI helpers</h2>
     <ul class="roles">
       ${episode.advisorOrder.map(id => { const a = episode.advisors[id]; return `<li><b>${esc(a.name)}</b> — ${esc(a.verb)}. <span class="muted">${esc(a.strength)}; ${esc(a.weakness.toLowerCase())}.</span></li>`; }).join('')}
-      <li><b>YOU</b> — DECIDE.</li>
+      <li><b>YOU, THE DECIDER</b> — <span class="muted">you make the final call.</span></li>
     </ul>
   </section>
-  <div class="actions"><button type="button" class="btn primary" id="btn-start" data-action="start">${state.inspectedSources.length ? 'Continue' : 'Begin investigation'}</button></div>`;
+  <div class="actions"><button type="button" class="btn primary" id="btn-start" data-action="start">${state.inspectedSources.length ? 'Continue' : 'Begin investigation'}</button>
+    <button type="button" class="btn" data-action="replayIntro">Watch the opening</button></div>`;
 }
 
 function investigate() {
   const discovered = state.discoveredEvidence.map(evidenceById);
   return `
   <section aria-labelledby="scene-title">
-    <p class="eyebrow">Episode 001 · Investigate</p>
-    <h1 id="scene-title" tabindex="-1">What do you actually know?</h1>
+    <p class="eyebrow">Episode 1 · Investigate</p>
+    <h1 id="scene-title" tabindex="-1">Did Server 4 really send stolen data?</h1>
     <p class="status-line" id="progress">
-      <span class="pill">${state.inspectedSources.length} of ${discovered.length} evidence items opened</span>
-      <span class="pill">${state.consultations.length} of ${episode.advisorOrder.length} advisers consulted</span>
-      <span class="pill warn">${esc(episode.briefing.clock)} · not timed</span>
+      <span class="pill">${state.inspectedSources.length} of ${discovered.length} clues opened</span>
+      <span class="pill">${state.consultations.length} of ${episode.advisorOrder.length} helpers asked</span>
+      <span class="pill warn">Take your time · no live countdown</span>
     </p>
+    <p class="mission"><b>Your mission:</b> work out what really happened, separate facts from guesses, and decide what to do with Server 4 — without destroying the proof unless you must.</p>
   </section>
   <div class="grid-2">
     <section class="panel" aria-labelledby="evidence-title">
-      <h2 id="evidence-title">Evidence</h2>
-      <p class="muted">Open items in any order.</p>
+      <h2 id="evidence-title">Clues</h2>
+      <p class="muted">Tap a clue to open it. Open them in any order. Which reports are facts, and which are guesses?</p>
       <ul class="evidence-list">${discovered.map(evidenceCard).join('')}</ul>
     </section>
     <section class="panel" aria-labelledby="advisors-title">
-      <h2 id="advisors-title">Advisers</h2>
-      <p class="muted">Ask one, some, or all. Ask again after you learn more.</p>
-      <div class="actions"><button type="button" class="btn" id="btn-consult-all" data-action="consultAll">Consult all four</button></div>
+      <h2 id="advisors-title">Your AI helpers</h2>
+      <p class="muted">Each helper notices different things. Ask again after you find a new clue.</p>
+      <div class="actions"><button type="button" class="btn" id="btn-consult-all" data-action="consultAll">Ask all four</button></div>
       <div class="advisors" style="margin-top:12px">${episode.advisorOrder.map(advisorCard).join('')}</div>
     </section>
   </div>
-  <div class="actions"><button type="button" class="btn primary" id="btn-decide" data-action="goToDecision">I'm ready to decide</button></div>`;
+  <div class="actions"><button type="button" class="btn primary" id="btn-decide" data-action="goToDecision">Make my decision</button></div>`;
 }
 
 function evidenceCard(e) {
@@ -286,7 +302,7 @@ function evidenceCard(e) {
     </button>
     <div class="evidence-body" id="${dom('evidenceBody')}" ${open ? '' : 'hidden'}>
       ${e.body.map(line => `<p class="log-line">${esc(line)}</p>`).join('')}
-      <p class="clock">Clock source: ${esc(e.clock)}</p>
+      <p class="clock">Time shown by: ${esc(e.clock)}</p>
     </div>
   </li>`;
 }
@@ -303,12 +319,12 @@ function advisorCard(id) {
       <img src="${esc(a.icon)}" alt="" width="36" height="36">
       <div><h3 id="${esc(domId.adviserName(id))}">${esc(a.name)}</h3><span class="verb">${esc(a.verb)}</span></div>
     </div>
-    <dl><dt>Strength</dt><dd>${esc(a.strength)}</dd><dt>Weakness</dt><dd>${esc(a.weakness)}</dd></dl>
+    <dl><dt>Good at</dt><dd>${esc(a.strength)}</dd><dt>Watch out</dt><dd>${esc(a.weakness)}</dd></dl>
     ${c ? `<blockquote class="advice" aria-label="${esc(a.name)} says"><p>${esc(adviceText(id, c.adviceId))}</p></blockquote>` : ''}
     ${stale ? `<p class="muted">You've learned more since you asked. ${esc(a.name)} may see it differently now.</p>` : ''}
-    <button type="button" class="btn" id="${esc(domId.consult(id))}" data-action="consult" data-id="${attrId}">${c ? `Ask ${esc(a.name)} again` : `Consult ${esc(a.name)}`}</button>
+    <button type="button" class="btn" id="${esc(domId.consult(id))}" data-action="consult" data-id="${attrId}">${c ? `Ask ${esc(a.name)} again` : `Ask ${esc(a.name)}`}</button>
     <fieldset class="trust" ${c ? '' : 'disabled'}>
-      <legend>How much do you lean on ${esc(a.name)}?${c ? '' : ' (consult first)'}</legend>
+      <legend>How much do you trust ${esc(a.name)}?${c ? '' : ' (ask first)'}</legend>
       <div class="segmented">
         ${[-1, 0, 1].map(v => `<label><input type="radio" name="trust-${attrId}" id="${esc(domId.trust(id, v))}" value="${v}" ${trust === v ? 'checked' : ''}><span>${TRUST_LABELS[v]}</span></label>`).join('')}
       </div>
@@ -321,13 +337,13 @@ function decide() {
   if (ui.selectedDecision && !isDecisionAvailable(state, episode, ui.selectedDecision)) ui.selectedDecision = null;
   return `
   <section aria-labelledby="scene-title">
-    <p class="eyebrow">Episode 001 · Decide</p>
-    <h1 id="scene-title" tabindex="-1">Your call</h1>
-    <p class="lede">You opened ${state.inspectedSources.length} of ${state.discoveredEvidence.length} evidence items and consulted ${state.consultations.length} of ${episode.advisorOrder.length} advisers.</p>
+    <p class="eyebrow">Episode 1 · Decide</p>
+    <h1 id="scene-title" tabindex="-1">What should happen to Server 4?</h1>
+    <p class="lede">You opened ${state.inspectedSources.length} of ${state.discoveredEvidence.length} clues and asked ${state.consultations.length} of ${episode.advisorOrder.length} helpers. You can still go back and check more.</p>
   </section>
   <div class="panel">
     <fieldset style="border:0;padding:0;margin:0">
-      <legend id="choices-title"><h2 style="margin:0 0 .6em">Choose one action</h2></legend>
+      <legend id="choices-title"><h2 style="margin:0 0 .6em">Choose what to do</h2></legend>
       <ul class="choices">
         ${episode.decisions.map(d => {
           const available = !d.requiresHybrid || unlocked;
@@ -343,10 +359,10 @@ function decide() {
       </ul>
     </fieldset>
     <label class="check" for="ack"><input type="checkbox" id="ack" ${state.uncertaintyAcknowledged ? 'checked' : ''}>
-      <span>I accept that I'm deciding without knowing everything.</span></label>
+      <span>I understand that some things are still unknown.</span></label>
     <div class="actions">
-      <button type="button" class="btn primary" id="btn-submit" data-action="submit" ${ui.selectedDecision ? '' : 'disabled aria-describedby="submit-hint"'}>Authorize this action</button>
-      <button type="button" class="btn" id="btn-back" data-action="back">Back to the evidence</button>
+      <button type="button" class="btn primary" id="btn-submit" data-action="submit" ${ui.selectedDecision ? '' : 'disabled aria-describedby="submit-hint"'}>Confirm my decision</button>
+      <button type="button" class="btn" id="btn-back" data-action="back">Go back to the clues</button>
       ${ui.selectedDecision ? '' : '<span class="muted" id="submit-hint">Choose an action first.</span>'}
     </div>
   </div>`;
@@ -356,33 +372,33 @@ function outcome() {
   const d = episode.decisions.find(x => x.id === state.outcomeId);
   return `
   <section class="panel outcome-card" aria-labelledby="scene-title">
-    <p class="eyebrow">Episode 001 · You chose: ${esc(d.label)}</p>
+    <p class="eyebrow">Episode 1 · You chose: ${esc(d.label)}</p>
     <h1 id="scene-title" tabindex="-1">${esc(d.outcome.heading)}</h1>
     <p class="lede">${esc(d.outcome.text)}</p>
   </section>
-  <div class="actions"><button type="button" class="btn primary" id="btn-postmortem" data-action="viewPostmortem">See the postmortem</button></div>`;
+  <div class="actions"><button type="button" class="btn primary" id="btn-postmortem" data-action="viewPostmortem">See what you learned</button></div>`;
 }
 
 function postmortem() {
   const pm = buildPostmortem(state, episode);
-  const trustText = a => !a.consulted ? 'You did not consult them.' : `You marked: ${TRUST_LABELS[a.trust]}.`;
+  const trustText = a => !a.consulted ? 'You didn’t ask them.' : `You chose: ${TRUST_LABELS[a.trust]}.`;
   return `
   <section aria-labelledby="scene-title">
-    <p class="eyebrow">Episode 001 · Postmortem</p>
+    <p class="eyebrow">Episode 1 · What you learned</p>
     <h1 id="scene-title" tabindex="-1">What happened, and what didn't</h1>
-    <p class="lede">You chose: <b>${esc(pm.decision.label)}</b>. ${pm.uncertaintyAcknowledged ? 'You said you were deciding without knowing everything.' : 'You did not say you were deciding under uncertainty.'}</p>
+    <p class="lede">You chose: <b>${esc(pm.decision.label)}</b>. ${pm.uncertaintyAcknowledged ? 'You said some things were still unknown.' : 'You didn’t say whether anything was still unknown.'}</p>
   </section>
   <div class="grid-2">
     <section class="panel pm-section" aria-labelledby="pm-known"><h2 id="pm-known">What you knew</h2>
-      ${pm.known.length ? `<ul class="pm-list">${pm.known.map(k => `<li>${esc(k)}</li>`).join('')}</ul>` : '<p>You decided without opening any evidence.</p>'}</section>
+      ${pm.known.length ? `<ul class="pm-list">${pm.known.map(k => `<li>${esc(k)}</li>`).join('')}</ul>` : '<p>You decided without opening any clues.</p>'}</section>
     <section class="panel pm-section" aria-labelledby="pm-unknown"><h2 id="pm-unknown">What remained unknown</h2>
       <ul class="pm-list">${pm.unknown.map(u => `<li>${esc(u)}</li>`).join('')}</ul></section>
   </div>
   <section class="panel pm-section" aria-labelledby="pm-advisors"><h2 id="pm-advisors">Adviser assumptions</h2>
-    ${pm.advisors.map(a => `<div class="pm-advisor"><header><b>${esc(a.name)}</b><span class="rating ${a.rating}">Assumption: ${a.rating}</span><span class="muted">${trustText(a)}</span></header><p>${esc(a.text)}</p></div>`).join('')}
+    ${pm.advisors.map(a => `<div class="pm-advisor"><header><b>${esc(a.name)}</b><span class="rating ${a.rating}">Their thinking: ${a.rating}</span><span class="muted">${trustText(a)}</span></header><p>${esc(a.text)}</p></div>`).join('')}
   </section>
   <section class="panel pm-section" aria-labelledby="pm-alts"><h2 id="pm-alts">What the alternatives risked</h2>
     <ul class="pm-list">${pm.alternatives.map(x => `<li><b>${esc(x.label)}</b>${x.wasAvailable ? '' : ' <span class="muted">(locked for you this time)</span>'} — ${esc(x.risk)}</li>`).join('')}</ul>
   </section>
-  <div class="actions"><button type="button" class="btn primary" id="btn-again" data-action="playAgain">Play Episode 001 again</button></div>`;
+  <div class="actions"><button type="button" class="btn primary" id="btn-again" data-action="playAgain">Play Episode 1 again</button></div>`;
 }

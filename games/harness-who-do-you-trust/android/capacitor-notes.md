@@ -47,3 +47,19 @@
 - A privacy policy URL is required even when no data is collected.
 - If the target audience includes under-13s, the Families policy applies. Decide this before the store listing.
 - Target the API level Play currently requires.
+
+## Creative C1 additions (branch `feature/harness-wdyt-creative-c1`)
+
+**Status:** web source only. No APK was built in C1, and nothing here changes the Android wrapper branch.
+
+**What C1 needs from the wrapper** (`feature/harness-android-capacitor-shell`, `android/harness-who-do-you-trust/`):
+
+1. **Copy the new folder.** Copy `games/harness-who-do-you-trust/creative/` into `www/creative/`. `js/app.js` imports `../creative/creative.js`, and the opening loads `creative/intro-script.json` at runtime.
+2. **Update the payload lock.** `scripts/build-wrapper.mjs` hash-locks 14 files at their **r5** values. It refuses to stage r7 or C1 ("Locked payload drift") until its `expected` map is updated in a separately reviewed commit. The C1 blob SHAs are in `CREATIVE_C1_REPORT.md` §7.
+3. **Safe areas.** The top inset is now on the sticky header (`.bar { padding-top: calc(10px + env(safe-area-inset-top)) }`). With `viewport-fit=cover` and an overlaid status bar (`StatusBar.setOverlaysWebView({overlay: true})`, or edge-to-edge on Android 15+), the header clears the status bar while scrolling. The opening pads its top and bottom by the same insets.
+4. **Audio.**
+   - Web Audio synthesis works in the WebView after the player taps "Turn sound on" (the required user gesture). No audio permission and no audio files are needed.
+   - **`speechSynthesis` is often missing in Android WebView.** Narration then falls back to subtitles only, and the sound dialog says so.
+   - A native TTS plugin would be a separately reviewed adapter; C1 does not add one.
+5. **Backgrounding.** Audio pauses on `visibilitychange` / `pagehide`, which the WebView fires when the app is paused.
+6. **Back button.** The opening is a native `<dialog>`. The Capacitor `backButton` listener should close any open dialog first (opening → Skip; sound / help / reset → close) before leaving the app. This is in the existing native-adapter backlog.

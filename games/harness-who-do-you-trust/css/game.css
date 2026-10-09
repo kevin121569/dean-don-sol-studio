@@ -31,7 +31,9 @@ body {
     linear-gradient(#0b0f14, #070a0e);
   color: var(--ink);
   font: 1rem/1.55 var(--font);
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  /* C1: the TOP inset lives on the sticky header (below), not here — body padding scrolls away, which let the
+     sticky header slide under the Android status bar. Side and bottom insets stay on the page. */
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 button, input, label { font: inherit; }
 button, [role="radio"], label { touch-action: manipulation; }
@@ -53,6 +55,7 @@ kbd { font-family: var(--mono); border: 1px solid var(--line); border-bottom-wid
   position: sticky; top: 0; z-index: 10;
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px;
   padding: 10px max(16px, 3vw);
+  padding-top: calc(10px + env(safe-area-inset-top)); /* clears the Android status bar / notch while sticky */
   background: #0b0f14ee; border-bottom: 1px solid var(--line);
   backdrop-filter: blur(8px);
 }
@@ -202,3 +205,71 @@ dialog::backdrop { background: #000b; }
   .advisor, .evidence, .choice label, .btn { border: 1px solid CanvasText; }
   .segmented input:checked + span, .choice input:checked + label { outline: 2px solid Highlight; }
 }
+
+/* ======================= Creative C1 ======================= */
+/* Mission line (investigate) */
+.mission { margin: 10px 0 0; padding: 10px 14px; border-left: 4px solid var(--warn); background: #ffb5470f; border-radius: 0 8px 8px 0; max-width: 72ch; }
+
+/* Sound dialog */
+.sliders { display: grid; gap: 14px; margin: 8px 0 12px; }
+.sliders label { display: grid; gap: 6px; font-size: .95rem; }
+.sliders input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--warn); }
+.sliders input:disabled { opacity: .45; }
+
+/* Opening: full-screen command-centre scene. Safe areas respected on every side. */
+dialog.intro {
+  max-width: none; width: 100vw; height: 100dvh; max-height: none; margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: radial-gradient(ellipse at 50% 60%, #12233a 0%, #070b12 70%);
+  color: var(--ink); overflow: hidden;
+}
+dialog.intro[open] { display: grid; grid-template-rows: 1fr auto; }
+dialog.intro::backdrop { background: #000; }
+.intro-stage { position: relative; min-height: 0; overflow: hidden; padding-top: env(safe-area-inset-top); }
+.intro-map { position: absolute; inset: 0; width: 100%; height: 100%; }
+.intro-grid path { stroke: #1e3a55; stroke-width: 1; fill: none; }
+.intro-wire { stroke: #3c6c96; stroke-width: 1.5; fill: none; opacity: .55; stroke-dasharray: 6 6; }
+.intro-nodes circle { fill: #5b9bd5; opacity: .7; }
+.intro-target { fill: var(--bad); opacity: 0; }
+.intro-halo { fill: none; stroke: var(--bad); stroke-width: 2; opacity: 0; transform-origin: 262px 150px; transform-box: view-box; }
+.intro-callout { position: absolute; left: 50%; top: 18%; transform: translateX(-50%); text-align: center; display: grid; gap: 2px;
+  font-family: var(--mono); letter-spacing: .14em; opacity: 0; background: #070b12cc; padding: 10px 16px; border: 1px solid #ff8a7a66; border-radius: 8px; }
+.intro-callout span { font-size: .75rem; color: var(--muted); }
+.intro-callout strong { color: var(--bad); font-size: clamp(1rem, 4vw, 1.4rem); }
+.intro-callout small { color: var(--warn); font-size: .75rem; }
+.intro-cast { position: absolute; left: 0; right: 0; bottom: 12px; margin: 0; padding: 0 max(16px, env(safe-area-inset-left)); list-style: none;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.intro-cast li { text-align: center; padding: 8px 4px; border: 1px solid var(--line); border-radius: 8px; background: #0b0f14cc;
+  font-weight: 800; letter-spacing: .08em; font-size: clamp(.72rem, 2.6vw, .9rem); opacity: .35; }
+.intro-cast small { display: block; font-weight: 400; letter-spacing: 0; color: var(--muted); font-size: .7rem; }
+.intro-cast li[data-cast="boy"] { border-top: 3px solid var(--boy); }
+.intro-cast li[data-cast="tooth"] { border-top: 3px solid var(--tooth); }
+.intro-cast li[data-cast="luke"] { border-top: 3px solid var(--darth); }
+.intro-cast li[data-cast="donsol"] { border-top: 3px solid var(--donsol); }
+.intro-scan { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(#ffffff00 0%, #78cfff14 50%, #ffffff00 100%); background-size: 100% 12%; opacity: 0; }
+.intro-text { padding: 16px max(16px, 4vw) calc(16px + env(safe-area-inset-bottom)); background: #070b12f2; border-top: 1px solid var(--line); }
+.intro-kicker { font: 700 .72rem/1 var(--mono); letter-spacing: .16em; color: var(--warn); margin: 0 0 6px; }
+.intro-text h2 { font-size: clamp(1.2rem, 4.5vw, 1.8rem); margin: 0 0 8px; }
+.intro-subtitle { font-size: clamp(1rem, 3.6vw, 1.2rem); min-height: 3.2em; max-width: 64ch; margin: 0 0 10px; }
+.intro-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-end; }
+.intro-controls .muted { margin-right: auto; font-family: var(--mono); font-size: .8rem; }
+
+/* Beat states: what is visible at each beat (applies with or without motion). */
+.intro[data-beat="pulse"] .intro-target, .intro[data-beat="callout"] .intro-target, .intro[data-beat="question"] .intro-target,
+.intro[data-beat="stakes"] .intro-target, .intro[data-beat="world"] .intro-target, .intro[data-beat="final"] .intro-target { opacity: 1; }
+.intro[data-beat="callout"] .intro-callout, .intro[data-beat="question"] .intro-callout, .intro[data-beat="final"] .intro-callout { opacity: 1; }
+.intro[data-beat="world"] .intro-nodes circle { fill: var(--warn); }
+.intro[data-beat="boy"] li[data-cast="boy"], .intro[data-beat="tooth"] li[data-cast="tooth"], .intro[data-beat="luke"] li[data-cast="luke"],
+.intro[data-beat="donsol"] li[data-cast="donsol"], .intro[data-beat="mission"] .intro-cast li, .intro[data-beat="final"] .intro-cast li { opacity: 1; }
+
+/* Motion: ONLY when the player has not asked for less (OS setting or in-game toggle). Transform/opacity only. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduce"]) .intro-wire { animation: c1-flow 6s linear infinite; }
+  html:not([data-motion="reduce"]) .intro-halo { animation: c1-halo 1.8s ease-out infinite; }
+  html:not([data-motion="reduce"]) .intro-scan { opacity: 1; animation: c1-scan 5s linear infinite; }
+  html:not([data-motion="reduce"]) .intro-callout,
+  html:not([data-motion="reduce"]) .intro-cast li,
+  html:not([data-motion="reduce"]) .intro-target { transition: opacity .5s ease; }
+}
+@keyframes c1-flow { to { stroke-dashoffset: -120; } }
+@keyframes c1-halo { from { opacity: .9; transform: scale(.6); } to { opacity: 0; transform: scale(2.4); } }
+@keyframes c1-scan { from { background-position: 0 -20%; } to { background-position: 0 120%; } }

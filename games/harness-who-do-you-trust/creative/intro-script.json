@@ -1,0 +1,20 @@
+{
+  "id": "ep01-opening",
+  "title": "The Shutdown Call",
+  "kicker": "THE HARNESS · THE SIGNAL WAR",
+  "lines": [
+    {"id": "l01", "beat": "grid", "durationMs": 4200, "text": "Around the world, quiet networks keep everyday life running. Power. Hospitals. Banks. Most nights, nobody notices them."},
+    {"id": "l02", "beat": "pulse", "durationMs": 4200, "text": "Tonight, at a company called Open Forge, one machine raised an alarm. Its name is Server 4."},
+    {"id": "l03", "beat": "callout", "durationMs": 3600, "text": "Signal detected. Threat unconfirmed."},
+    {"id": "l04", "beat": "question", "durationMs": 5200, "text": "Server 4 was cut off from the network after a security scare. But an alarm says it kept sending data anyway."},
+    {"id": "l05", "beat": "stakes", "durationMs": 5600, "text": "Security wants it shut down now. That would stop any threat — and also erase its short-term memory, along with clues about what really happened. There is no undo."},
+    {"id": "l06", "beat": "world", "durationMs": 5600, "text": "Some people have started calling nights like this the Signal War: false alarms and real attacks that are hard to tell apart. Nobody knows yet whether tonight is part of it."},
+    {"id": "l07", "beat": "boy", "durationMs": 3400, "text": "BOY, the Searcher, finds leads fast. He doesn't always check them."},
+    {"id": "l08", "beat": "tooth", "durationMs": 3400, "text": "TOOTH, the Fact-Checker, checks every source. That takes time."},
+    {"id": "l09", "beat": "luke", "durationMs": 3400, "text": "LUKE, the Worst-Case Thinker, spots danger early. Sometimes he assumes the worst."},
+    {"id": "l10", "beat": "donsol", "durationMs": 3600, "text": "DON SOL, the Team Lead, connects the clues — but only the clues the others bring him."},
+    {"id": "l11", "beat": "mission", "durationMs": 5400, "text": "Your job: tap a clue to open it. Ask your helpers what they think, and ask again when you find something new."},
+    {"id": "l12", "beat": "mission", "durationMs": 5400, "text": "Choose how much you trust each helper. There is no live countdown, so take your time. Then make the call."},
+    {"id": "l13", "beat": "final", "durationMs": 4200, "text": "An attack? A mistake? Or a trap? You decide."}
+  ]
+}
