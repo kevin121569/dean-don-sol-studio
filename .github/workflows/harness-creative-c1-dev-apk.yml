@@ -1,0 +1,129 @@
+name: Harness C1 development APK (no release)
+
+on:
+  push:
+    branches:
+      - feature/harness-creative-c1-dev-apk-ci-2026-10-10
+
+permissions:
+  contents: read
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out Android wrapper branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Check out verified Creative C1 source
+        uses: actions/checkout@v4
+        with:
+          ref: 9d85bb0117efa02b4821aead8c10e872e25eb975
+          path: c1
+          persist-credentials: false
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install Android SDK 36
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
+      - name: Test C1 web game independently
+        working-directory: c1/games/harness-who-do-you-trust
+        run: |
+          node --test tests/*.test.js
+          node tests/astra-audit.mjs
+      - name: Stage pinned C1 source into isolated Android wrapper
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re, json, hashlib, shutil, subprocess
+          android = Path('android/harness-who-do-you-trust')
+          source = Path('c1/games/harness-who-do-you-trust')
+          assert subprocess.check_output(['git','-C','c1','rev-parse','HEAD'],text=True).strip() == '9d85bb0117efa02b4821aead8c10e872e25eb975'
+          target = android/'www'
+          shutil.rmtree(target,ignore_errors=True)
+          target.mkdir(parents=True)
+          for item in ['assets','css','data','js','creative','index.html']:
+              src=source/item; dest=target/item
+              if src.is_dir(): shutil.copytree(src,dest)
+              else: shutil.copy2(src,dest)
+          protected=['assets/characters/boy.svg','assets/characters/darth.svg','assets/characters/donsol.svg','assets/characters/tooth.svg','css/game.css','data/episode-001.json','index.html','js/advice.js','js/app.js','js/content.js','js/dom-ids.js','js/engine.js','js/state.js','js/telemetry.js','creative/audio.js','creative/creative.js','creative/intro.js','creative/intro-script.json']
+          entries=[]
+          for rel in protected:
+              payload=(target/rel).read_bytes()
+              blob=hashlib.sha1(f'blob {len(payload)}\0'.encode()+payload).hexdigest()
+              canonical=subprocess.check_output(['git','-C','c1','rev-parse',f'HEAD:games/harness-who-do-you-trust/{rel}'],text=True).strip()
+              if blob!=canonical: raise SystemExit(f'C1 content mismatch: {rel}')
+              entries.append(f"  ['{rel}', '{blob}'],")
+          script=android/'scripts/build-wrapper.mjs'
+          text=script.read_text()
+          text,count=re.subn(r'const expected = new Map\(\[.*?\n\]\);', 'const expected = new Map([\n'+'\n'.join(entries)+'\n]);', text, count=1, flags=re.S)
+          assert count==1, 'Could not pin expected C1 hashes'
+          script.write_text(text)
+          config=android/'capacitor.config.json'
+          value=json.loads(config.read_text())
+          value['appId']='com.theidealabstudio.harnesswhodoyoutrust.creativec1dev'
+          value['appName']='WDYT CREATIVE C1 DEV'
+          config.write_text(json.dumps(value,indent=2)+'\n')
+          print('PASS: 18/18 C1 web files matched their GitHub commit blob hashes. Separate Android development identity configured.')
+          PY
+      - name: Install Capacitor and bundler
+        working-directory: android/harness-who-do-you-trust
+        run: npm install --save-dev --no-audit --no-fund esbuild@0.28.2
+      - name: Produce native-bridged web game
+        working-directory: android/harness-who-do-you-trust
+        run: |
+          set -euo pipefail
+          npm run build:web
+          npx esbuild dist/native/bootstrap.js --bundle --platform=browser --format=esm --target=es2022 --outfile=dist/native/bootstrap.bundle.js
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('dist/index.html')
+          text=p.read_text()
+          assert text.count('src="native/bootstrap.js"')==1
+          p.write_text(text.replace('src="native/bootstrap.js"','src="native/bootstrap.bundle.js"'))
+          for rel in ['creative/audio.js','creative/creative.js','creative/intro.js','creative/intro-script.json','native/bootstrap.bundle.js']:
+              assert (Path('dist')/rel).is_file(), rel
+          print('PASS: staged creative source and bundled Capacitor bridge')
+          PY
+      - name: Generate and sync separate native development app
+        working-directory: android/harness-who-do-you-trust
+        run: |
+          npx cap add android
+          npx cap sync android
+      - name: Build debug APK
+        working-directory: android/harness-who-do-you-trust/android
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug --no-daemon --max-workers=2 --console=plain
+      - name: Verify APK and record checksum
+        working-directory: android/harness-who-do-you-trust
+        run: |
+          set -euo pipefail
+          apk=android/app/build/outputs/apk/debug/app-debug.apk
+          test -s "$apk"
+          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep 'package: name=' | tee APK_IDENTITY.txt
+          grep -q 'com.theidealabstudio.harnesswhodoyoutrust.creativec1dev' APK_IDENTITY.txt
+          unzip -l "$apk" | grep -q 'assets/public/creative/intro.js'
+          sha256sum "$apk" | tee APK_SHA256SUMS.txt
+          printf 'Source C1: 9d85bb0117efa02b4821aead8c10e872e25eb975\nSeparate development APK; not approved for production.\n' > QA_BUILD_NOTE.txt
+      - name: Upload development-only APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-creative-c1-dev-debug-2026-10-10
+          path: |
+            android/harness-who-do-you-trust/android/app/build/outputs/apk/debug/app-debug.apk
+            android/harness-who-do-you-trust/APK_SHA256SUMS.txt
+            android/harness-who-do-you-trust/APK_IDENTITY.txt
+            android/harness-who-do-you-trust/QA_BUILD_NOTE.txt
+          retention-days: 14
