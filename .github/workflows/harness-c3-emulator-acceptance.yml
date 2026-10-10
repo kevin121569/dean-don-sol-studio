@@ -1,0 +1,50 @@
+name: Harness C3 real Android emulator acceptance
+on:
+  push:
+    branches:
+      - feature/harness-c3-emulator-acceptance-2026-10-10
+permissions:
+  contents: read
+  actions: read
+jobs:
+  android-emulator-qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out emulator test (no game modifications)
+        uses: actions/checkout@v4
+      - name: Download exact C3 APK that went to Motorola
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38080970790
+          github-token: ${{ github.token }}
+          repository: kevin121569/dean-don-sol-studio
+          name: harness-creative-c3-dev-debug-2026-10-10
+          path: c3-artifact
+      - name: Validate APK exists
+        run: |
+          test -s c3-artifact/android/app/build/outputs/apk/debug/app-debug.apk
+          sha256sum c3-artifact/android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Enable KVM acceleration
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run the actual APK in Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          ram-size: 2048M
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none
+          disable-animations: true
+          script: bash scripts/harness_c3_android_emulator_qa.sh
+      - name: Preserve screenshots and logs even if emulator fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-c3-android-emulator-acceptance-evidence
+          path: emulator-qa/
+          retention-days: 14
