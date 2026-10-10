@@ -1,0 +1,51 @@
+name: Harness V3.1 mall demo Android emulator first-play evidence
+on:
+  push:
+    branches:
+      - feature/harness-mall-v31-emulator-smoke-2026-10-10
+permissions:
+  contents: read
+  actions: read
+jobs:
+  actual-android-apk-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retrieve exact independently verified mall demo APK
+        uses: actions/download-artifact@v4
+        with:
+          run-id: 38088082747
+          github-token: ${{ github.token }}
+          repository: kevin121569/dean-don-sol-studio
+          name: HARNESS_MALL_DEMO_V31_ANDROID_2026-10-10
+          path: mall-apk
+      - name: Check archive is exactly the delivered mall APK
+        run: |
+          test -s mall-apk/android/app/build/outputs/apk/debug/app-debug.apk
+          echo '64ffeed8ca1773f1b03cc6624146dfd71f02c9e5f1ddfabbf75253cb8b086a48  mall-apk/android/app/build/outputs/apk/debug/app-debug.apk' | sha256sum -c -
+          mkdir -p emulator-qa
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install APK in isolated Android emulator and screenshot first-play
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 32
+          target: google_apis
+          arch: x86_64
+          profile: pixel_4
+          ram-size: 1536M
+          heap-size: 192M
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none -camera-front none
+          disable-animations: true
+          script: bash scripts/harness_mall_v31_emulator_smoke.sh
+      - name: Preserve screenshot evidence even if Android emulator disconnects
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HARNESS_MALL_V31_ANDROID_EMULATOR_SCREENSHOTS_2026-10-10
+          path: emulator-qa/
+          retention-days: 14
