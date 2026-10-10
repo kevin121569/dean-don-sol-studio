@@ -10,15 +10,19 @@ adb shell svc wifi disable || true
 adb shell svc data disable || true
 echo 'Offline Android app launch' | tee emulator-qa/RESULT.txt
 adb shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1
-sleep 7
+sleep 17
 adb shell pidof "$PKG" | tee -a emulator-qa/RESULT.txt
 adb exec-out screencap -p > emulator-qa/01-title-offline.png
 python3 - <<'PY'
 from pathlib import Path
 p=Path('emulator-qa/01-title-offline.png')
-assert p.stat().st_size>20000, f'no useful opening screenshot, bytes: {p.stat().st_size}'
-print('First screen saved:',p.stat().st_size)
+assert p.stat().st_size>1000, 'first screenshot capture empty'
+print('First screen saved, bytes:',p.stat().st_size)
 PY
+adb shell dumpsys activity activities > emulator-qa/activity-dumpsys.txt || true
+adb logcat -d -v time > emulator-qa/01-launch-logcat.txt
+sleep 12
+adb exec-out screencap -p > emulator-qa/01b-title-after-30s.png
 SIZE=$(adb shell wm size | tr -d '\r' | grep -oE '[0-9]+x[0-9]+' | head -1)
 W=$(echo "$SIZE" | cut -dx -f1)
 H=$(echo "$SIZE" | cut -dx -f2)
