@@ -27,9 +27,10 @@ SIZE=$(adb shell wm size | tr -d '\r' | grep -oE '[0-9]+x[0-9]+' | head -1)
 W=$(echo "$SIZE" | cut -dx -f1)
 H=$(echo "$SIZE" | cut -dx -f2)
 echo "Display $W x $H" | tee -a emulator-qa/RESULT.txt
-adb shell input tap "$((W/2))" "$((H*72/100))"
+adb shell input tap "$((W/2))" "$((H*80/100))"
 sleep 6
 adb exec-out screencap -p > emulator-qa/02-after-start-tap.png
+if cmp -s emulator-qa/01b-title-after-30s.png emulator-qa/02-after-start-tap.png; then echo "FAIL: title unchanged after Enter tap" >> emulator-qa/RESULT.txt; exit 2; fi
 adb shell pidof "$PKG" | tee -a emulator-qa/RESULT.txt
 adb shell input keyevent KEYCODE_HOME
 sleep 2
