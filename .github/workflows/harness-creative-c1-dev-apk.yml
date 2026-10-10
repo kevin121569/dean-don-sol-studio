@@ -32,8 +32,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Inspect preinstalled Android SDK
+        run: |
+          command -v sdkmanager
+          echo "ANDROID_HOME=${ANDROID_HOME}"
+          sdkmanager --version
       - name: Install Android SDK 36
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
       - name: Test C1 web game independently
