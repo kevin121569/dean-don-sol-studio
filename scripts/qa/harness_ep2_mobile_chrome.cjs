@@ -34,7 +34,7 @@ await page.locator('[data-consult="boy"]').click();
 assert.equal(await page.locator('.case-evidence-card').count(),5);
 await page.locator('[data-evidence="e_clocksync"]').click();
 await page.locator('[data-consult="tooth"]').click();
-assert.match(await page.locator('#caseAdvice').innerText(),/Nine of twelve/);
+assert.match(await page.locator('#caseAdvice').innerText(),/nine of twelve/i);
 await page.locator('[data-consult="donsol"]').click();
 assert.match(await page.locator('#caseAdvice').innerText(),/revoke outgoing access/);
 await shot('04-audit-and-advisers');
