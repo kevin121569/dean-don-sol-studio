@@ -242,3 +242,19 @@ dialog.intro-c2[open]{display:block}dialog.intro-c2::backdrop{background:#05080d
 @media(prefers-reduced-motion:reduce){.intro-environment{animation:none!important}}html[data-motion=reduce] .intro-environment{animation:none!important}
 
 .intro-cover[hidden],.intro-guide[hidden]{display:none!important}
+
+/* === C3: scripted comic-cinematic story cards, no autoplay or wall of microtext. === */
+.intro-story{height:100%;position:relative;overflow-y:auto;isolation:isolate;background:#070c13}
+.story-backdrop{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#06101ed6 0%,#09142196 38%,#02060af0 94%),url('../creative/server4-cover.webp') center/cover no-repeat}
+.story-frame{width:min(760px,100%);min-height:100%;margin:auto;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 26px) clamp(24px,6vw,55px) calc(env(safe-area-inset-bottom) + 28px)}
+.story-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.story-counter{font:800 .75rem var(--mono);color:#e7c99e}
+.story-threat{display:flex;align-items:center;gap:12px;background:#210d0bd6;border:1px solid #f07b44b0;padding:14px 16px;margin-top:clamp(24px,5vh,60px);font:700 .83rem/1.4 var(--mono);letter-spacing:.06em;color:#ffbf99}
+.story-led{flex:none;width:12px;height:12px;border-radius:50%;background:#fd6a36;box-shadow:0 0 18px #ff6e24}
+.story-text{margin-top:clamp(18px,3vh,35px);padding:18px 0;max-width:650px}
+.story-text h2{font-size:clamp(2.6rem,9vw,5.5rem);color:#fff;line-height:.95;letter-spacing:-.055em;text-shadow:0 4px 22px #000;margin:0 0 26px}
+.story-lead{font-size:clamp(1.18rem,3.2vw,1.65rem);font-weight:700;line-height:1.45;color:#f0f7ff;text-shadow:0 3px 12px #000}
+.story-moment{padding:14px 16px;background:#101e2bdc;border-left:4px solid #e99542;font-size:clamp(1.15rem,3vw,1.55rem);line-height:1.5;color:#fff}
+.story-quote{color:#d6e6f4;font-size:clamp(1.02rem,2.5vw,1.3rem);line-height:1.55;text-shadow:0 2px 9px #000}
+.story-actions{margin-top:auto;padding-top:16px}.story-actions .intro-primary{max-width:none}
+.intro-story[hidden]{display:none!important}
+@media(max-height:680px){.story-frame{padding-top:calc(env(safe-area-inset-top) + 12px)}.story-threat{margin-top:16px}.story-text{margin-top:14px;padding:8px 0}.story-text h2{margin-bottom:12px}}

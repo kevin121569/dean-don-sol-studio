@@ -31,7 +31,7 @@ export const STATIC_IDS = Object.freeze([
   // index.html — Creative C1 (sound dialog, opening)
   'soundButton', 'audioDialog', 'audioTitle', 'soundEnabled', 'volVoice', 'volMusic', 'volSfx', 'narrationNote', 'audioClose',
   'introDialog', 'introTitle', 'introSubtitle', 'introProgress', 'introSkip', 'introNext',
-  'audioTest', 'audioState', 'introCover', 'introGuide', 'introMuteToggle', 'introAudioStatus', 'introGuideAudioStatus', 'introBegin', 'introBack', 'introTestSound',
+  'audioTest', 'audioState', 'introCover', 'introGuide', 'introMuteToggle', 'introAudioStatus', 'introGuideAudioStatus', 'introBegin', 'introBack', 'introTestSound', 'introStory', 'storyEyebrow', 'storyTitle', 'storySystem', 'storyLead', 'storyMoment', 'storyQuote', 'storyWho', 'storyStep', 'storyNext', 'storyBack', 'introStoryAudioStatus',
   // app.js
   'scene-title', 'roles-title', 'btn-start', 'progress', 'evidence-title', 'advisors-title', 'btn-consult-all', 'btn-decide',
   'choices-title', 'ack', 'btn-submit', 'btn-back', 'submit-hint', 'btn-postmortem',

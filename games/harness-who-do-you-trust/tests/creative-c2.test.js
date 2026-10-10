@@ -22,7 +22,7 @@ test('C2 static instructions can be read indefinitely; no timer, 13-frame progre
  assert.match(html,/Read at your own pace/);
  assert(!/setTimeout/.test(intro));
  assert(!/auto-advance/.test(intro));
- assert.match(intro,/index=1;render\(\)/);
+ assert.match(intro,/index\+\+; render\(\)/);
 });
 test('C2 sound defaults on, remains gesture locked, and offers a mute plus Test sound',()=>{
  assert.equal(DEFAULT_AUDIO_PREFS.enabled,true);

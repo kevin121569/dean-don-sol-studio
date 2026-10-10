@@ -71,17 +71,36 @@
     <div class="intro-cover-bottom">
       <span class="intro-eyebrow">EPISODE 001 · THE SHUTDOWN CALL</span>
       <h2 id="introTitle">THE<br>HARNESS</h2>
-      <p class="intro-hook">Someone wants the machine shut down.<br><strong>You have one chance to find out why.</strong></p>
+      <p class="intro-hook">Security says the machine is dangerous.<br><strong>Its own records might prove them wrong.</strong></p>
       <button type="button" class="intro-primary" id="introNext">Enter Server 4 <span aria-hidden="true">→</span></button>
       <button type="button" class="intro-sound-toggle" id="introMuteToggle" aria-pressed="false">Sound on · Tap to mute</button>
       <span class="intro-small" id="introAudioStatus" role="status" aria-live="polite">Sound starts when you enter.</span>
     </div>
   </div>
+  <div class="intro-story" id="introStory" hidden>
+    <div class="story-backdrop" aria-hidden="true"></div>
+    <div class="story-frame">
+      <div class="story-head"><span class="intro-overline" id="storyEyebrow">INCIDENT // 001</span><span class="story-counter" id="storyStep">STORY 1 OF 2</span></div>
+      <div class="story-threat"><span class="story-led" aria-hidden="true"></span><span id="storySystem">ISOLATION COMPLETE — SIGNAL DETECTED</span></div>
+      <div class="story-text">
+        <h2 id="storyTitle">THE ALARM</h2>
+        <p class="story-lead" id="storyLead"></p>
+        <p class="story-moment" id="storyMoment"></p>
+        <p class="story-quote" id="storyQuote"></p>
+        <span class="intro-overline" id="storyWho"></span>
+      </div>
+      <div class="story-actions">
+        <button type="button" class="intro-primary" id="storyNext">Keep listening →</button>
+        <button type="button" class="intro-secondary" id="storyBack">Back</button>
+      </div>
+      <p class="intro-small" id="introStoryAudioStatus" role="status" aria-live="polite"></p>
+    </div>
+  </div>
   <div class="intro-guide" id="introGuide" hidden>
     <div class="intro-guide-inner">
-      <div class="intro-guide-top"><span class="intro-overline">SECURITY BRIEFING / YOUR MISSION</span><span class="intro-system-chip">THREAT UNCONFIRMED</span></div>
+      <div class="intro-guide-top"><span class="intro-overline">THE STORY CONTINUES / YOUR MISSION</span><span class="intro-system-chip">THREAT UNCONFIRMED</span></div>
       <h2>THE SHUTDOWN<br>CALL</h2>
-      <p class="intro-stakes">Server 4 was disconnected. A warning says it kept transmitting. Security wants to erase its memory and shut it down. That might stop an attack—or destroy the evidence.</p>
+      <p class="intro-stakes">An isolated AI server may still be transmitting. Security wants it switched off before anything else is threatened. But shutting it down could destroy the evidence that reveals what really happened.</p>
       <p class="intro-guide-instruction"><strong>You're in command.</strong> Decide what happens, but investigate first. There is no real-time countdown.</p>
       <div class="intro-steps" aria-label="How to play">
         <div class="intro-step"><b>01</b><div><strong>Inspect the clues</strong><p>Open evidence and check what each source actually shows.</p></div></div>
@@ -94,7 +113,7 @@
         <button class="intro-secondary" type="button" id="introTestSound">Test sound <span aria-hidden="true">♪</span></button>
       </div>
       <p class="intro-guide-status" id="introGuideAudioStatus" role="status" aria-live="polite"></p>
-      <span class="intro-small">Read at your own pace. Nothing advances until you choose.</span>
+      <span class="intro-small">Read at your own pace. Your existing game progress is preserved when you return.</span>
     </div>
   </div>
   <span class="sr-only" id="introSubtitle" aria-live="polite"></span>

@@ -46,6 +46,54 @@ export function createAudioDirector({window: win = globalThis, storage} = {}) {
   const AC = win?.AudioContext ?? win?.webkitAudioContext ?? null;
   const speech = win?.speechSynthesis ?? null;
   const Utterance = win?.SpeechSynthesisUtterance ?? null;
+  const Media = win?.Audio ?? null;
+  let soundtrack = null, confirmSound = null, mediaState = 'not started', mediaError = '', musicWanted = false;
+  const statusListeners = new Set();
+  const notify = () => { for (const fn of statusListeners) { try { fn(); } catch { /* status can't break play */ } } };
+  function mediaTrack(which) {
+    if (!Media) return null;
+    try {
+      if (which === 'music') {
+        if (!soundtrack) {
+          soundtrack = new Media('creative/audio/server4-atmosphere.wav');
+          soundtrack.loop = true; soundtrack.preload = 'auto';
+          soundtrack.addEventListener?.('error', () => { mediaError = 'Music file failed to load'; mediaState = 'file error'; notify(); });
+        }
+        soundtrack.volume = prefs.music;
+        return soundtrack;
+      }
+      if (!confirmSound) {
+        confirmSound = new Media('creative/audio/server4-confirm.wav');
+        confirmSound.preload = 'auto';
+        confirmSound.addEventListener?.('error', () => { mediaError = 'Confirmation sound failed to load'; notify(); });
+      }
+      confirmSound.volume = prefs.sfx;
+      return confirmSound;
+    } catch (err) { mediaError = String(err?.name ?? err); notify(); return null; }
+  }
+  function playMedia(which) {
+    const track = mediaTrack(which);
+    if (!track) return false;
+    try {
+      if (which === 'test') track.currentTime = 0;
+      const result = track.play(); // Crucially invoked synchronously by a real tap.
+      if (which === 'music') mediaState = 'starting';
+      notify();
+      Promise.resolve(result).then(() => {
+        if (which === 'music') {
+          mediaState = 'playing';
+          if (musicWanted && prefs.enabled) stopMusic();
+          else track.pause?.();
+        } else { mediaError = ''; }
+        notify();
+      }).catch(err => {
+        mediaError = `Playback blocked: ${err?.name ?? 'unknown error'}`;
+        if (which === 'music') { mediaState = 'blocked'; if (musicWanted) startMusic(); }
+        notify();
+      });
+      return true;
+    } catch (err) { mediaError = `Playback failed: ${err?.name ?? 'error'}`; if (which === 'music') mediaState = 'blocked'; notify(); return false; }
+  }
 
   function ensureContext() {
     if (ctx || !AC) return ctx;
@@ -65,6 +113,8 @@ export function createAudioDirector({window: win = globalThis, storage} = {}) {
     buses.master.gain.value = prefs.enabled ? 1 : 0;
     buses.music.gain.value = prefs.music * 0.75;
     buses.sfx.gain.value = prefs.sfx * 0.85;
+    if (soundtrack) soundtrack.volume = prefs.music;
+    if (confirmSound) confirmSound.volume = prefs.sfx;
   }
   const playing = () => prefs.enabled && unlocked && ctx && ctx.state !== 'closed';
 
@@ -123,23 +173,41 @@ export function createAudioDirector({window: win = globalThis, storage} = {}) {
     get prefs() { return {...prefs}; },
     capabilities: Object.freeze({webAudio: Boolean(AC), speech: Boolean(speech && Utterance)}),
     get unlocked() { return unlocked; },
-    status() { if(!prefs.enabled) return 'Sound off. Tap to turn it on.';
-      if(!AC) return 'Audio unavailable on this device: Web Audio is missing.';
-      if(!ctx||!unlocked) return 'Sound ready. Tap Enter Server 4 to activate.';
-      return `Audio engine: ${ctx.state}. ${ctx.state==='running'?'Music and effects enabled.':'Tap Test sound to retry.'}`;
+    status() {
+      if (!prefs.enabled) return 'Sound muted. Tap Sound to enable.';
+      if (!unlocked) return 'Sound ready. Tap Enter Server 4 to activate.';
+      const engine = ctx?.state ?? (AC ? 'not started' : 'unavailable');
+      const playback = soundtrack ? mediaState : (music ? 'synth playing' : 'not started');
+      return `Music: ${playback}. Audio engine: ${engine}.${mediaError ? ' ' + mediaError + '.' : ''}`;
+    },
+    subscribe(fn) { statusListeners.add(fn); return () => statusListeners.delete(fn); },
+    testSound() {
+      if (!prefs.enabled) return false;
+      this.unlock();
+      const media = playMedia('test');
+      // Always play a tone too when WebAudio is available, for diagnostic comparison.
+      const synth = this.cue('reveal');
+      notify();
+      return media || synth;
     },
     /** Call ONLY from a user gesture (click / tap / key). */
     unlock() {
-      if (!ensureContext()) return false;
-      try { const result=ctx.resume?.(); result?.catch?.(()=>{}); } catch { /* resume is best effort */ }
       unlocked = true;
-      return true;
+      const context = ensureContext();
+      if (context) {
+        try { Promise.resolve(context.resume?.()).then(notify).catch(err=>{mediaError='Web Audio resume: '+String(err?.name??err);notify();}); }
+        catch (err) { mediaError='Web Audio resume: '+String(err?.name??err); }
+      }
+      notify();
+      return Boolean(context || Media);
     },
     setPrefs(patch) {
       prefs = normalizeAudioPrefs({...prefs, ...patch});
       saveAudioPrefs(storage, prefs);
       applyGains();
-      if (!prefs.enabled) { stopMusic(); this.stopSpeech(); }
+      if (!prefs.enabled) { musicWanted = false; soundtrack?.pause?.(); mediaState='paused'; stopMusic(); this.stopSpeech(); }
+      else if (musicWanted) { soundtrack && (soundtrack.volume = prefs.music); }
+      notify();
       return {...prefs};
     },
     cue(name) {
@@ -147,8 +215,15 @@ export function createAudioDirector({window: win = globalThis, storage} = {}) {
       if(ctx.state==='suspended') { try { ctx.resume?.()?.catch?.(()=>{}); } catch {} }
       try { SOUNDS[name](); return true; } catch { return false; }
     },
-    setMusic(on) { if (on) startMusic(); else stopMusic(); return Boolean(music); },
-    get musicPlaying() { return Boolean(music); },
+    setMusic(on) {
+      musicWanted = Boolean(on);
+      if (!on || !prefs.enabled) { soundtrack?.pause?.(); mediaState='paused'; stopMusic(); notify(); return false; }
+      if (!unlocked) return false;
+      if (mediaState === 'playing') return true;
+      if (!playMedia('music')) startMusic();
+      return Boolean(soundtrack || music);
+    },
+    get musicPlaying() { return mediaState==='playing' || Boolean(music); },
     /** Speak one subtitle line with the device voice. Returns false when narration is unavailable or off. */
     speak(text) {
       if (!prefs.enabled || !unlocked || prefs.voice === 0 || !speech || !Utterance) return false;
@@ -162,7 +237,7 @@ export function createAudioDirector({window: win = globalThis, storage} = {}) {
     },
     stopSpeech() { try { speech?.cancel(); } catch { /* ignore */ } },
     /** Background the game: pause everything. */
-    suspend() { this.stopSpeech(); try { ctx?.suspend?.(); } catch { /* ignore */ } },
-    resume() { if (prefs.enabled && unlocked) { try { ctx?.resume?.(); } catch { /* ignore */ } } },
+    suspend() { this.stopSpeech(); soundtrack?.pause?.(); mediaState = 'paused'; try { ctx?.suspend?.(); } catch { /* ignore */ } notify(); },
+    resume() { if (prefs.enabled && unlocked) { try { ctx?.resume?.(); } catch { /* ignore */ } } notify(); },
   };
 }

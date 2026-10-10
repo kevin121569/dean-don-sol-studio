@@ -234,13 +234,13 @@ function fakeIntroDom() {
   const make = id => ({id, dataset: {}, textContent: '', attrs: {}, listeners: {}, open: false, focused: false,
     setAttribute(k, v) { this.attrs[k] = v; }, removeAttribute(k) { delete this.attrs[k]; },
     addEventListener(t, f) { this.listeners[t] = f; }, showModal() { this.open = true; }, close() { this.open = false; }, focus() { this.focused = true; }});
-  for (const id of ['introDialog', 'introSubtitle', 'introProgress', 'introNext', 'introSkip', 'scene-title', 'introCover', 'introGuide', 'introBegin', 'introBack', 'introMuteToggle', 'introAudioStatus', 'introGuideAudioStatus', 'introTestSound']) els[id] = make(id);
-  els.introGuide.hidden=true; els.introCover.hidden=false;
+  for (const id of ['introDialog', 'introSubtitle', 'introProgress', 'introNext', 'introSkip', 'scene-title', 'introCover', 'introGuide', 'introStory', 'storyNext', 'storyBack', 'storyEyebrow', 'storyTitle', 'storySystem', 'storyLead', 'storyMoment', 'storyQuote', 'storyWho', 'storyStep', 'introStoryAudioStatus', 'introBegin', 'introBack', 'introMuteToggle', 'introAudioStatus', 'introGuideAudioStatus', 'introTestSound']) els[id] = make(id);
+  els.introGuide.hidden=true; els.introStory.hidden=true; els.introCover.hidden=false;
   return {els, doc: {getElementById: id => els[id] ?? null}};
 }
 
-// C2 approved re-pin: static title + written briefing, deliberately no timed subtitle advancement.
-test('C2 opening: title then static instructions, first Enter unlocks audio, no timer or progress counter', () => {
+// C3 approved re-pin: title + two player-paced story scenes + fixed written briefing, no timed advancement.
+test('C3 opening: title, two story scenes, then readable instructions; first Enter unlocks audio', () => {
   const {els,doc}=fakeIntroDom();const {win,timers,log}=fakeAudioWindow();
   const audio=createAudioDirector({window:win,storage:memory()});
   let closed=null;
@@ -248,14 +248,16 @@ test('C2 opening: title then static instructions, first Enter unlocks audio, no 
   assert(intro.available&&intro.open());assert.equal(intro.index,0);assert(els.introNext.focused);
   assert.equal(els.introGuide.hidden,true);assert.equal(els.introCover.hidden,false);
   assert.equal(timers.length,0);assert.equal(log.contexts,0);
-  intro.next();assert.equal(intro.index,1);assert.equal(els.introGuide.hidden,false);assert.equal(els.introCover.hidden,true);
+  intro.next();assert.equal(intro.index,1);assert.equal(els.introStory.hidden,false);assert.equal(els.introGuide.hidden,true);assert.equal(els.introCover.hidden,true);
   assert.equal(log.contexts,1,'first player gesture unlocks the audio engine');
-  assert.equal(timers.length,1,'only repeating music schedules a timer; instructions never advance');
+  assert.equal(timers.length,1,'only repeating music schedules a timer; story never advances');
   assert.equal(els.introProgress.textContent,'');
+  intro.next();assert.equal(intro.index,2);assert.equal(els.introStory.hidden,false);
+  intro.next();assert.equal(intro.index,3);assert.equal(els.introGuide.hidden,false);
   intro.next();assert.equal(closed,'finished');assert.equal(els.introDialog.open,false);
 });
 
-test('C1 opening: first launch only; never changes game state; absent markup is a no-op', async () => {
+test('C3 story always reappears on relaunch without resetting state; absent markup is a no-op', async () => {
   const {els, doc} = fakeIntroDom();
   const {win} = fakeAudioWindow();
   let saved = {};
@@ -270,7 +272,8 @@ test('C1 opening: first launch only; never changes game state; absent markup is 
     getState: () => state, reducedMotion: () => true, settings: {read: () => saved, write: s => { saved = s; }}, loadScript: async () => script});
   els.introDialog.open = false;
   await again.boot();
-  assert.equal(els.introDialog.open, false, 'not shown again automatically');
+  assert.equal(els.introDialog.open, true, 'C3 reopens the title on launch even after saved introSeen');
+  assert.equal(again.intro.index,0, 'relaunch starts at title');
   // Observing every kind of action never mutates game state (all inputs are frozen).
   const next = Object.freeze(reduce(state, {type: A.START}, episode));
   assert.doesNotThrow(() => again.onAction({type: A.START}, state, next));

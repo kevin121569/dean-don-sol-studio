@@ -41,7 +41,7 @@ export function createCreativeLayer(deps) {
   ui.button?.addEventListener('click', () => { syncControls(); try { ui.dialog?.showModal(); } catch { ui.dialog?.setAttribute('open', ''); } });
   ui.close?.addEventListener('click', () => { try { ui.dialog?.close(); } catch { ui.dialog?.removeAttribute('open'); } });
   ui.enabled?.addEventListener('change', () => setEnabled(ui.enabled.checked));
-  ui.test?.addEventListener('click', () => { if(audio.prefs.enabled) {audio.unlock();audio.cue('reveal');} syncControls(); });
+  ui.test?.addEventListener('click', () => { audio.testSound(); syncControls(); });
   for (const k of ['voice', 'music', 'sfx']) ui[k]?.addEventListener('input', () => { audio.setPrefs({[k]: Number(ui[k].value) / 100}); if (k === 'sfx') audio.cue('evidence'); });
   syncControls();
 
@@ -56,7 +56,8 @@ export function createCreativeLayer(deps) {
       const script = await loadScript();
       if (validateIntroScript(script).length) return null;
       intro = createIntro({document: doc, window: win, audio, script, reducedMotion,
-        onAudioChange: syncControls, onClose: how => { settings.write({...settings.read(), introSeen: true}); if (how === 'finished' && getState()?.sceneId === 'briefing') deps.beginInvestigation?.(); else audio.setMusic(MUSIC_SCENES.has(getState()?.sceneId)); doc?.getElementById?.('scene-title')?.focus?.(); }});
+        getState, onAudioChange: syncControls, onClose: how => { settings.write({...settings.read(), introSeen: true}); if (how === 'finished' && getState()?.sceneId === 'briefing') deps.beginInvestigation?.(); else audio.setMusic(MUSIC_SCENES.has(getState()?.sceneId)); doc?.getElementById?.('scene-title')?.focus?.(); }});
+      audio.subscribe?.(() => {syncControls();intro?.refreshStatus?.();});
       return intro;
     } catch { return null; }
   }
@@ -64,10 +65,10 @@ export function createCreativeLayer(deps) {
   return {
     audio,
     get intro() { return intro; },
-    /** First launch shows the opening once; afterwards it is available from the briefing. */
+    /** C3: always opens the story on boot, including when a saved investigation resumes. */
     async boot() {
       await prepareIntro();
-      if (intro?.available && settings.read().introSeen !== true && getState()?.sceneId === 'briefing') intro.open();
+      if (intro?.available) intro.open(); // C3: title/story on EVERY cold launch; saved game remains intact
     },
     openIntro() { return intro?.open() ?? false; },
     /** Called by app.js after every committed, current dispatch. Presentation only. */
