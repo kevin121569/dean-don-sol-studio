@@ -1,4 +1,4 @@
-name: Harness C1 development APK (no release)
+name: Harness C2 first-play development APK (no release)
 
 on:
   push:
@@ -17,10 +17,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Check out verified Creative C1 source
+      - name: Check out verified Creative C2 source
         uses: actions/checkout@v4
         with:
-          ref: 9d85bb0117efa02b4821aead8c10e872e25eb975
+          ref: 67b9869372f4a8bc30afab4a28a0950f3a269df6
           path: c1
           persist-credentials: false
       - name: Set up Node 22
@@ -38,12 +38,12 @@ jobs:
           packages: platform-tools
       - name: Install Android SDK 36
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
-      - name: Test C1 web game independently
+      - name: Test C2 web game independently
         working-directory: c1/games/harness-who-do-you-trust
         run: |
           node --test tests/*.test.js
           node tests/astra-audit.mjs
-      - name: Stage pinned C1 source into isolated Android wrapper
+      - name: Stage pinned C2 source into isolated Android wrapper
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -51,7 +51,7 @@ jobs:
           import re, json, hashlib, shutil, subprocess
           android = Path('android/harness-who-do-you-trust')
           source = Path('c1/games/harness-who-do-you-trust')
-          assert subprocess.check_output(['git','-C','c1','rev-parse','HEAD'],text=True).strip() == '9d85bb0117efa02b4821aead8c10e872e25eb975'
+          assert subprocess.check_output(['git','-C','c1','rev-parse','HEAD'],text=True).strip() == '67b9869372f4a8bc30afab4a28a0950f3a269df6'
           target = android/'www'
           shutil.rmtree(target,ignore_errors=True)
           target.mkdir(parents=True)
@@ -65,7 +65,7 @@ jobs:
               payload=(target/rel).read_bytes()
               blob=hashlib.sha1(f'blob {len(payload)}\0'.encode()+payload).hexdigest()
               canonical=subprocess.check_output(['git','-C','c1','rev-parse',f'HEAD:games/harness-who-do-you-trust/{rel}'],text=True).strip()
-              if blob!=canonical: raise SystemExit(f'C1 content mismatch: {rel}')
+              if blob!=canonical: raise SystemExit(f'C2 content mismatch: {rel}')
               entries.append(f"  ['{rel}', '{blob}'],")
           script=android/'scripts/build-wrapper.mjs'
           text=script.read_text()
@@ -74,10 +74,10 @@ jobs:
           script.write_text(text)
           config=android/'capacitor.config.json'
           value=json.loads(config.read_text())
-          value['appId']='com.theidealabstudio.harnesswhodoyoutrust.creativec1dev'
-          value['appName']='WDYT CREATIVE C1 DEV'
+          value['appId']='com.theidealabstudio.harnesswhodoyoutrust.creativec2dev'
+          value['appName']='WDYT CREATIVE C2 DEV'
           config.write_text(json.dumps(value,indent=2)+'\n')
-          print('PASS: 18/18 C1 web files matched their GitHub commit blob hashes. Separate Android development identity configured.')
+          print('PASS: 18/18 C2 web files matched their GitHub commit blob hashes. Separate Android development identity configured.')
           PY
       - name: Install Capacitor and bundler
         working-directory: android/harness-who-do-you-trust
@@ -115,14 +115,14 @@ jobs:
           apk=android/app/build/outputs/apk/debug/app-debug.apk
           test -s "$apk"
           "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep 'package: name=' | tee APK_IDENTITY.txt
-          grep -q 'com.theidealabstudio.harnesswhodoyoutrust.creativec1dev' APK_IDENTITY.txt
+          grep -q 'com.theidealabstudio.harnesswhodoyoutrust.creativec2dev' APK_IDENTITY.txt
           unzip -l "$apk" | grep -q 'assets/public/creative/intro.js'
           sha256sum "$apk" | tee APK_SHA256SUMS.txt
-          printf 'Source C1: 9d85bb0117efa02b4821aead8c10e872e25eb975\nSeparate development APK; not approved for production.\n' > QA_BUILD_NOTE.txt
+          printf 'Source C2: 67b9869372f4a8bc30afab4a28a0950f3a269df6\nSeparate development APK; not approved for production.\n' > QA_BUILD_NOTE.txt
       - name: Upload development-only APK
         uses: actions/upload-artifact@v4
         with:
-          name: harness-creative-c1-dev-debug-2026-10-10
+          name: harness-creative-c2-dev-debug-2026-10-10
           path: |
             android/harness-who-do-you-trust/android/app/build/outputs/apk/debug/app-debug.apk
             android/harness-who-do-you-trust/APK_SHA256SUMS.txt
