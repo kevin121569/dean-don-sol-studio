@@ -1,0 +1,42 @@
+name: Harness investigation V3 real browser QA
+on:
+  push:
+    branches:
+      - feature/harness-investigation-v3-browser-qa-2026-10-10
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Unpack independently preserved V3 source
+        run: |
+          unzip -q prototypes/harness-investigation-v3/vertical-slice-v3-source.zip -d /tmp/harness
+          test -s /tmp/harness/HARNESS_INVESTIGATION_V3/index.html
+          test -s /tmp/harness/HARNESS_INVESTIGATION_V3/canonical-core-bundle.js
+      - name: Run canonical game rule regression tests
+        run: node --test /tmp/harness/HARNESS_INVESTIGATION_V3/tests/*.test.mjs
+      - name: Install browser automation (runner Chrome)
+        run: npm install --no-save --no-audit --no-fund playwright@1.56.1
+      - name: Check Chrome installed
+        run: |
+          command -v google-chrome
+          google-chrome --version
+      - name: Test interactive opening and full investigation in Chrome
+        run: |
+          mkdir -p qa/screenshots
+          python3 -m http.server 8793 --bind 127.0.0.1 --directory /tmp/harness/HARNESS_INVESTIGATION_V3 >/tmp/harness-v3-http.log 2>&1 &
+          sleep 2
+          node prototypes/harness-investigation-v3/browser-qa.cjs
+      - name: Preserve visual screenshots and result even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-v3-real-chrome-evidence
+          path: qa/
+          retention-days: 14
