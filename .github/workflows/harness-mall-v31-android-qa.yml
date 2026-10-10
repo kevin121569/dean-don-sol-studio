@@ -1,0 +1,113 @@
+name: Harness V3.1 approved Mall Demo Android APK (development only)
+on:
+  push:
+    branches:
+      - feature/harness-mall-demo-v31-android-2026-10-10
+permissions:
+  contents: read
+jobs:
+  mall-demo-apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out isolated Android wrapper source
+        uses: actions/checkout@v4
+      - name: Check out exact approved V3.1 gameplay archive
+        uses: actions/checkout@v4
+        with:
+          ref: d163dcc70068e73a0ed674a4adb084d03b185775
+          path: approved-v31
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
+      - name: Install Android SDK 36
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
+      - name: Verify immutable approved source, unzip and stage a new app
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,zipfile,shutil,json
+          from pathlib import Path
+          base=Path('approved-v31/prototypes/harness-investigation-v3/vertical-slice-v3-source.zip')
+          digest=hashlib.sha256(base.read_bytes()).hexdigest()
+          expected='43dc48a5ef0115e08ca8a09ed7b4c69c40463ce11bbca986c41d3b153fb6c504'
+          assert digest==expected,(digest,expected)
+          assert __import__('subprocess').check_output(['git','-C','approved-v31','rev-parse','HEAD'],text=True).strip()=='d163dcc70068e73a0ed674a4adb084d03b185775'
+          with zipfile.ZipFile(base) as z:
+            assert z.testzip() is None
+            z.extractall('/tmp/harness-mall-v31')
+          src=Path('/tmp/harness-mall-v31/HARNESS_INVESTIGATION_V3')
+          checks={'index.html':'03ff9748449f8968689173756d5e1358b7bc07588ab9f5f91e27815bb529cfbb','script.js':'1042f6442128b0f74a6b6442f18b6d0ed43f7cfd6b14a3260308ef2226ea4cd3'}
+          for p,d in checks.items(): assert hashlib.sha256((src/p).read_bytes()).hexdigest()==d,p
+          for p in ['audio/containment-bed.wav','audio/anomaly-pulse.wav','audio/system-ack.wav','art/evidence-monitor.svg','canonical-core-bundle.js']:
+            assert (src/p).stat().st_size>500,p
+          target=Path('android/harness-who-do-you-trust/dist')
+          shutil.rmtree(target,ignore_errors=True)
+          shutil.copytree(src,target,ignore=shutil.ignore_patterns('tests','README.md','QA_*.md','QA_*.json','canonical_core','data'))
+          (target/'DEMO_BUILD.txt').write_text('APP: THE HARNESS MALL DEMO V3.1\nSOURCE: d163dcc70068e73a0ed674a4adb084d03b185775\nDEVELOPMENT ONLY. NO OFFICIAL GAME REPLACED.\n')
+          conf=Path('android/harness-who-do-you-trust/capacitor.config.json')
+          data=json.loads(conf.read_text())
+          data['appId']='com.theidealabstudio.harness.mallv31demo'
+          data['appName']='HARNESS MALL DEMO'
+          conf.write_text(json.dumps(data,indent=2)+'\n')
+          print('PASS: verified exact V3.1 archive, staged standalone HTML, 3 real WAVs and new isolated Android app ID')
+          PY
+      - name: Run original episode and demo regression tests
+        run: |
+          node --test /tmp/harness-mall-v31/HARNESS_INVESTIGATION_V3/tests/*.test.mjs
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          root=Path('android/harness-who-do-you-trust/dist')
+          html=(root/'index.html').read_text()
+          for text in ['id="audioToggle"','id="helpButton"','id="startButton"','id="briefingNext"','id="missionButton"']:
+              assert text in html,text
+          assert not re.search(r'<script[^>]+src="https?://',html), 'external runtime script'
+          print('PASS: audio on/off, no-timer briefing and main gameplay controls staged')
+          PY
+      - name: Install Capacitor dependencies
+        working-directory: android/harness-who-do-you-trust
+        run: npm install --no-audit --no-fund
+      - name: Generate and sync isolated native game
+        working-directory: android/harness-who-do-you-trust
+        run: |
+          npx cap add android
+          npx cap sync android
+      - name: Build debug APK
+        working-directory: android/harness-who-do-you-trust/android
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug --no-daemon --max-workers=2 --console=plain
+      - name: Verify APK identity, assets and sound tracks
+        working-directory: android/harness-who-do-you-trust
+        run: |
+          set -euo pipefail
+          apk=android/app/build/outputs/apk/debug/app-debug.apk
+          test -s "$apk"
+          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep 'package: name=' | tee APK_IDENTITY.txt
+          grep -q 'com.theidealabstudio.harness.mallv31demo' APK_IDENTITY.txt
+          unzip -Z1 "$apk" | grep -q 'assets/public/index.html'
+          unzip -Z1 "$apk" | grep -q 'assets/public/audio/containment-bed.wav'
+          unzip -Z1 "$apk" | grep -q 'assets/public/audio/system-ack.wav'
+          unzip -Z1 "$apk" | grep -q 'assets/public/audio/anomaly-pulse.wav'
+          unzip -Z1 "$apk" | grep -q 'assets/public/DEMO_BUILD.txt'
+          sha256sum "$apk" | tee APK_SHA256SUMS.txt
+          printf 'Exact approved V3.1 source: d163dcc70068e73a0ed674a4adb084d03b185775\nAndroid speaker and Motorola first-play still require physical acceptance.\nIsolated DEVELOPMENT APK only; no production replacement.\n' > QA_BUILD_NOTE.txt
+      - name: Upload demo APK and identity proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: HARNESS_MALL_DEMO_V31_ANDROID_2026-10-10
+          path: |
+            android/harness-who-do-you-trust/android/app/build/outputs/apk/debug/app-debug.apk
+            android/harness-who-do-you-trust/APK_SHA256SUMS.txt
+            android/harness-who-do-you-trust/APK_IDENTITY.txt
+            android/harness-who-do-you-trust/QA_BUILD_NOTE.txt
+          retention-days: 14
