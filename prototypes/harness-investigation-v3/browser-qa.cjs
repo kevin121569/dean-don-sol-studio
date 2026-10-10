@@ -8,7 +8,7 @@ const assert=require('assert/strict');
  const url='http://127.0.0.1:8793/';
  await p.goto(url,{waitUntil:'load'});
  fs.mkdirSync('qa/screenshots',{recursive:true});
- async function shot(n,full=true){await p.screenshot({path:'qa/screenshots/'+n+'.png',fullPage:full})}
+ async function shot(n,full=true){await p.waitForTimeout(850);await p.screenshot({path:'qa/screenshots/'+n+'.png',fullPage:full})}
  async function click(id){await p.locator('#'+id).click()}
  assert.equal(await p.locator('#game').getAttribute('data-scene'),'title');
  await shot('01-title',false);
@@ -49,7 +49,7 @@ const assert=require('assert/strict');
  desktop.on('pageerror',e=>errs.push(String(e)));
  await desktop.goto(url);
  for(const btn of ['startButton','relayButton','commandButton','briefingNext','missionButton'])await desktop.locator('#'+btn).click();
- await desktop.screenshot({path:'qa/screenshots/10-investigation-desktop.png',fullPage:true});
+ await desktop.waitForTimeout(850);await desktop.screenshot({path:'qa/screenshots/10-investigation-desktop.png',fullPage:true});
  await desktop.close();
  await browser.close();
  assert.equal(errs.length,0,'Browser exceptions: '+JSON.stringify(errs));
