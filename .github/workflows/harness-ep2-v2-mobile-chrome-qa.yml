@@ -1,0 +1,29 @@
+name: Harness Episode 2 v2 tragedy-prevention live Chrome QA
+on:
+  push:
+    branches:
+      - feature/harness-ep2-tragedy-v2-mobile-qa-2026-10-10
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: npm install --no-save --no-audit --no-fund playwright@1.56.1
+      - name: Verify Chrome
+        run: google-chrome --version
+      - name: Run two-level phone-sized live browser journey
+        run: node scripts/qa/harness_ep2_v2_mobile_chrome.cjs
+      - name: Save browser screenshots and result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-ep2-v2-live-mobile-chrome
+          path: qa/ep2-v2/
+          retention-days: 14
