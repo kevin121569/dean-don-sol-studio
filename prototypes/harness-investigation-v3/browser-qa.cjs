@@ -23,7 +23,7 @@ const assert=require('assert/strict');
  await shot('05-monitor-report');
  await p.locator('[data-evidence="e_controller"]').click();
  await p.locator('[data-consult="tooth"]').click();
- assert((await p.locator('#caseAdvice').innerText()).includes('different clocks'));
+ assert((await p.locator('#caseAdvice').innerText()).includes('main clock'));
  await p.locator('[data-consult="boy"]').click();
  assert.equal(await p.locator('.case-evidence-card').count(),5);
  await p.locator('[data-evidence="e_clocksync"]').click();
