@@ -46,6 +46,7 @@ async function boot() {
   creative = createCreativeLayer({
     document, window, storage: settingsStorage(), episode, ACTIONS: A, isHybridUnlocked,
     getState: () => state, reducedMotion: motionReduced, say,
+    beginInvestigation: () => { if (state?.sceneId === 'briefing') dispatch({type:A.START}); },
     settings: {read: readSettings, write: writeSettings},
   });
   creative.boot().catch(() => { /* the opening is optional */ });

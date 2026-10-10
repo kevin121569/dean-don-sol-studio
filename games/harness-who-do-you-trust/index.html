@@ -19,7 +19,7 @@
   </div>
   <nav class="tools" aria-label="Game controls">
     <button type="button" class="tool" data-action="help">Help</button>
-    <button type="button" class="tool" id="soundButton" aria-haspopup="dialog" aria-pressed="false">Sound: off</button>
+    <button type="button" class="tool" id="soundButton" aria-haspopup="dialog" aria-pressed="true">Sound: on</button>
     <button type="button" class="tool" data-action="toggleMotion" aria-pressed="false" id="motionToggle">Reduce motion</button>
     <button type="button" class="tool" data-action="askReset">Reset</button>
   </nav>
@@ -59,43 +59,47 @@
     <label for="volSfx">Sound effects<input type="range" id="volSfx" min="0" max="100" step="5"></label>
   </div>
   <p class="muted" id="narrationNote"></p>
+  <button type="button" class="btn" id="audioTest">Test sound</button>
+  <p class="muted" id="audioState" aria-live="polite"></p>
   <div class="dialog-actions"><button type="button" class="btn primary" id="audioClose">Done</button></div>
 </dialog>
 
-<dialog id="introDialog" class="intro" aria-labelledby="introTitle" data-beat="grid">
-  <div class="intro-stage" aria-hidden="true">
-    <svg class="intro-map" viewBox="0 0 500 220" focusable="false" preserveAspectRatio="xMidYMid slice">
-      <g class="intro-grid">
-        <path d="M0 55H500M0 110H500M0 165H500M100 0V220M200 0V220M300 0V220M400 0V220"/>
-      </g>
-      <path class="intro-wire" d="M30 120 L110 60 L190 112 L262 40 L340 96 L470 50 M110 60 L160 182 L262 150 L340 96 L420 176 M190 112 L262 150 L420 176 L470 50"/>
-      <g class="intro-nodes">
-        <circle cx="30" cy="120" r="5"/><circle cx="110" cy="60" r="5"/><circle cx="190" cy="112" r="5"/>
-        <circle cx="262" cy="40" r="5"/><circle cx="340" cy="96" r="5"/><circle cx="470" cy="50" r="5"/>
-        <circle cx="160" cy="182" r="5"/><circle cx="420" cy="176" r="5"/>
-      </g>
-      <circle class="intro-halo" cx="262" cy="150" r="22"/>
-      <circle class="intro-target" cx="262" cy="150" r="8"/>
-    </svg>
-    <div class="intro-callout"><span>SERVER 4</span><strong>SIGNAL DETECTED</strong><small>THREAT UNCONFIRMED</small></div>
-    <ul class="intro-cast">
-      <li data-cast="boy">BOY<small>Searcher</small></li>
-      <li data-cast="tooth">TOOTH<small>Fact-Checker</small></li>
-      <li data-cast="luke">LUKE<small>Worst-Case Thinker</small></li>
-      <li data-cast="donsol">DON SOL<small>Team Lead</small></li>
-    </ul>
-    <div class="intro-scan"></div>
-  </div>
-  <div class="intro-text">
-    <p class="intro-kicker">THE HARNESS · THE SIGNAL WAR</p>
-    <h2 id="introTitle">Episode 1: The Shutdown Call</h2>
-    <p id="introSubtitle" class="intro-subtitle" aria-live="polite"></p>
-    <div class="intro-controls">
-      <span id="introProgress" class="muted" aria-hidden="true"></span>
-      <button type="button" class="btn" id="introSkip">Skip intro</button>
-      <button type="button" class="btn primary" id="introNext">Next</button>
+<dialog id="introDialog" class="intro intro-c2" aria-labelledby="introTitle" data-beat="cover">
+  <div class="intro-cover" id="introCover">
+    <div class="intro-environment" aria-hidden="true"><div class="intro-light-beam"></div><div class="intro-warning"></div></div>
+    <div class="intro-cover-top"><span class="intro-overline">OPEN FORGE // SERVER 4</span><span class="intro-system-chip">SIGNAL DETECTED <i aria-hidden="true"></i></span></div>
+    <div class="intro-cover-bottom">
+      <span class="intro-eyebrow">EPISODE 001 · THE SHUTDOWN CALL</span>
+      <h2 id="introTitle">THE<br>HARNESS</h2>
+      <p class="intro-hook">Someone wants the machine shut down.<br><strong>You have one chance to find out why.</strong></p>
+      <button type="button" class="intro-primary" id="introNext">Enter Server 4 <span aria-hidden="true">→</span></button>
+      <button type="button" class="intro-sound-toggle" id="introMuteToggle" aria-pressed="false">Sound on · Tap to mute</button>
+      <span class="intro-small" id="introAudioStatus" role="status" aria-live="polite">Sound starts when you enter.</span>
     </div>
   </div>
+  <div class="intro-guide" id="introGuide" hidden>
+    <div class="intro-guide-inner">
+      <div class="intro-guide-top"><span class="intro-overline">SECURITY BRIEFING / YOUR MISSION</span><span class="intro-system-chip">THREAT UNCONFIRMED</span></div>
+      <h2>THE SHUTDOWN<br>CALL</h2>
+      <p class="intro-stakes">Server 4 was disconnected. A warning says it kept transmitting. Security wants to erase its memory and shut it down. That might stop an attack—or destroy the evidence.</p>
+      <p class="intro-guide-instruction"><strong>You're in command.</strong> Decide what happens, but investigate first. There is no real-time countdown.</p>
+      <div class="intro-steps" aria-label="How to play">
+        <div class="intro-step"><b>01</b><div><strong>Inspect the clues</strong><p>Open evidence and check what each source actually shows.</p></div></div>
+        <div class="intro-step"><b>02</b><div><strong>Ask the four advisers</strong><p>BOY finds leads. TOOTH verifies. LUKE spots risks. DON SOL connects them. They can disagree.</p></div></div>
+        <div class="intro-step"><b>03</b><div><strong>Make the call</strong><p>Choose how much you trust each adviser, then decide whether to shut Server 4 down.</p></div></div>
+      </div>
+      <div class="intro-guide-actions">
+        <button class="intro-primary" type="button" id="introBegin">Begin investigation <span aria-hidden="true">→</span></button>
+        <button class="intro-secondary" type="button" id="introBack">Back to title</button>
+        <button class="intro-secondary" type="button" id="introTestSound">Test sound <span aria-hidden="true">♪</span></button>
+      </div>
+      <p class="intro-guide-status" id="introGuideAudioStatus" role="status" aria-live="polite"></p>
+      <span class="intro-small">Read at your own pace. Nothing advances until you choose.</span>
+    </div>
+  </div>
+  <span class="sr-only" id="introSubtitle" aria-live="polite"></span>
+  <span class="sr-only" id="introProgress" aria-hidden="true"></span>
+  <button type="button" class="sr-only" id="introSkip" tabindex="-1" aria-hidden="true">Skip intro</button>
 </dialog>
 
 <dialog id="resetDialog" aria-labelledby="resetTitle">

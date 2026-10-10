@@ -128,15 +128,15 @@ test('C1 plain English: the opening and briefing explain the crisis, the stakes,
 });
 
 // =============================================================================================================
-// 3. Audio: optional, muted by default, separate preferences, autoplay-safe
+// 3. Audio: default enabled but waiting for an explicit start gesture, separate preferences
 // =============================================================================================================
 const memory = () => { const m = new Map(); return {getItem: k => m.get(k) ?? null, setItem: (k, v) => m.set(k, v), removeItem: k => m.delete(k), m}; };
 
-test('C1 audio prefs: muted on first launch, normalized, stored under their own key, never in the game save', () => {
+test('C2 audio prefs: sound enabled by default, mute respected, preferences separate from saves', () => {
   const store = memory();
   assert.deepEqual(loadAudioPrefs(store), {...DEFAULT_AUDIO_PREFS});
-  assert.equal(DEFAULT_AUDIO_PREFS.enabled, false);
-  assert.deepEqual(normalizeAudioPrefs({enabled: 'yes', voice: 7, music: -1, sfx: 'x', extra: 1}), {enabled: false, voice: 1, music: 0, sfx: DEFAULT_AUDIO_PREFS.sfx});
+  assert.equal(DEFAULT_AUDIO_PREFS.enabled, true);
+  assert.deepEqual(normalizeAudioPrefs({enabled: 'yes', voice: 7, music: -1, sfx: 'x', extra: 1}), {enabled: true, voice: 1, music: 0, sfx: DEFAULT_AUDIO_PREFS.sfx});
   assert(saveAudioPrefs(store, {enabled: true, voice: 0.5, music: 0.2, sfx: 0.9}));
   assert.deepEqual(loadAudioPrefs(store), {enabled: true, voice: 0.5, music: 0.2, sfx: 0.9});
   // Separate from the game save and the motion/intro settings key.
@@ -145,7 +145,7 @@ test('C1 audio prefs: muted on first launch, normalized, stored under their own 
   assert.notEqual(AUDIO_PREFS_KEY, 'harness-wdyt:settings');
   gameStore.save(createInitialState(episode));
   assert(!/voice|music|sfx/.test(store.getItem(gameStore.key)));
-  // Broken storage never throws and falls back to muted defaults.
+  // Broken storage never throws and falls back to default-enabled preferences.
   const broken = {getItem() { throw new Error('denied'); }, setItem() { throw new Error('quota'); }};
   assert.deepEqual(loadAudioPrefs(broken), {...DEFAULT_AUDIO_PREFS});
   assert.equal(saveAudioPrefs(broken, {enabled: true}), false);
@@ -172,7 +172,7 @@ function fakeAudioWindow() {
   }};
 }
 
-test('C1 audio: nothing is created or played until the player turns sound on (autoplay-safe)', () => {
+test('C2 audio: no context or sound before player taps Enter even though sound defaults ON', () => {
   const {log, win} = fakeAudioWindow();
   const audio = createAudioDirector({window: win, storage: memory()});
   assert.equal(log.contexts, 0, 'no AudioContext at load');
@@ -180,8 +180,8 @@ test('C1 audio: nothing is created or played until the player turns sound on (au
   assert.equal(audio.speak('hello'), false);
   assert.equal(audio.setMusic(true), false);
   assert.equal(log.contexts, 0);
-  // Player turns sound on (a user gesture): unlock + enable.
-  assert(audio.unlock()); audio.setPrefs({enabled: true});
+  // Player taps Enter (a user gesture): unlock the already enabled sound.
+  assert(audio.unlock());
   assert.equal(log.contexts, 1);
   assert(audio.cue('evidence') && audio.cue('advisor-darth') && audio.cue('outcome'));
   assert(audio.setMusic(true) && audio.musicPlaying);
@@ -234,42 +234,25 @@ function fakeIntroDom() {
   const make = id => ({id, dataset: {}, textContent: '', attrs: {}, listeners: {}, open: false, focused: false,
     setAttribute(k, v) { this.attrs[k] = v; }, removeAttribute(k) { delete this.attrs[k]; },
     addEventListener(t, f) { this.listeners[t] = f; }, showModal() { this.open = true; }, close() { this.open = false; }, focus() { this.focused = true; }});
-  for (const id of ['introDialog', 'introSubtitle', 'introProgress', 'introNext', 'introSkip', 'scene-title']) els[id] = make(id);
+  for (const id of ['introDialog', 'introSubtitle', 'introProgress', 'introNext', 'introSkip', 'scene-title', 'introCover', 'introGuide', 'introBegin', 'introBack', 'introMuteToggle', 'introAudioStatus', 'introGuideAudioStatus', 'introTestSound']) els[id] = make(id);
+  els.introGuide.hidden=true; els.introCover.hidden=false;
   return {els, doc: {getElementById: id => els[id] ?? null}};
 }
 
-test('C1 opening: shows subtitles, auto-advances only with motion allowed, skip and Esc close it', () => {
-  for (const reduced of [false, true]) {
-    const {els, doc} = fakeIntroDom();
-    const {win, timers, log} = fakeAudioWindow();
-    const audio = createAudioDirector({window: win, storage: memory()});
-    audio.unlock(); audio.setPrefs({enabled: true});
-    let closed = null;
-    const intro = createIntro({document: doc, window: win, audio, script, reducedMotion: () => reduced, onClose: how => { closed = how; }});
-    assert(intro.available && intro.open());
-    assert.equal(els.introDialog.open, true);
-    assert.equal(els.introSubtitle.textContent, script.lines[0].text, 'subtitle shown');
-    assert.equal(log.spoken[0], script.lines[0].text, 'narration matches subtitle');
-    assert(els.introSkip.focused, 'Skip receives focus');
-    assert.equal(timers.length, reduced ? 0 : 1, reduced ? 'reduced motion: never auto-advances' : 'auto-advance scheduled');
-    intro.next();
-    assert.equal(intro.index, 1); assert.equal(els.introDialog.dataset.beat, script.lines[1].beat);
-    if (reduced) {
-      els.introDialog.listeners.cancel({preventDefault() {}}); // Esc
-      assert.equal(closed, 'skip');
-    } else {
-      els.introSkip.listeners.click?.();
-      intro.close('skip');
-      assert.equal(closed, 'skip');
-    }
-    assert.equal(els.introDialog.open, false);
-  }
-  // Finishing: Next on the last line closes as 'finished'.
-  const {doc} = fakeIntroDom(); const {win} = fakeAudioWindow();
-  let how = null;
-  const intro = createIntro({document: doc, window: win, audio: null, script, reducedMotion: () => true, onClose: h => { how = h; }});
-  intro.open(); for (let i = 0; i < script.lines.length; i++) intro.next();
-  assert.equal(how, 'finished');
+// C2 approved re-pin: static title + written briefing, deliberately no timed subtitle advancement.
+test('C2 opening: title then static instructions, first Enter unlocks audio, no timer or progress counter', () => {
+  const {els,doc}=fakeIntroDom();const {win,timers,log}=fakeAudioWindow();
+  const audio=createAudioDirector({window:win,storage:memory()});
+  let closed=null;
+  const intro=createIntro({document:doc,window:win,audio,script,reducedMotion:()=>false,onClose:how=>{closed=how;}});
+  assert(intro.available&&intro.open());assert.equal(intro.index,0);assert(els.introNext.focused);
+  assert.equal(els.introGuide.hidden,true);assert.equal(els.introCover.hidden,false);
+  assert.equal(timers.length,0);assert.equal(log.contexts,0);
+  intro.next();assert.equal(intro.index,1);assert.equal(els.introGuide.hidden,false);assert.equal(els.introCover.hidden,true);
+  assert.equal(log.contexts,1,'first player gesture unlocks the audio engine');
+  assert.equal(timers.length,1,'only repeating music schedules a timer; instructions never advance');
+  assert.equal(els.introProgress.textContent,'');
+  intro.next();assert.equal(closed,'finished');assert.equal(els.introDialog.open,false);
 });
 
 test('C1 opening: first launch only; never changes game state; absent markup is a no-op', async () => {
@@ -314,19 +297,19 @@ test('C1 visuals: every C1 animation is gated by reduced motion; motion uses tra
 test('C1 safe areas: sticky header clears the status bar; opening respects every inset', () => {
   assert.match(css, /\.bar \{[^}]*padding-top: calc\(10px \+ env\(safe-area-inset-top\)\)/);
   assert.match(css, /body \{[^}]*padding: 0 env\(safe-area-inset-right\) env\(safe-area-inset-bottom\) env\(safe-area-inset-left\)/);
-  assert.match(css, /\.intro-stage \{[^}]*padding-top: env\(safe-area-inset-top\)/);
-  assert.match(css, /\.intro-text \{[^}]*env\(safe-area-inset-bottom\)/);
+  assert.match(css, /\.intro-cover-top\{[^}]*env\(safe-area-inset-top\)/);
+  assert.match(css, /\.intro-cover-bottom\{[^}]*env\(safe-area-inset-bottom\)/);
   assert.match(html, /viewport-fit=cover/);
 });
 
 test('C1 accessibility: labelled controls, live subtitles, keyboard-reachable skip, 44px targets', () => {
   for (const id of ['soundEnabled', 'volVoice', 'volMusic', 'volSfx']) assert.match(html, new RegExp(`<label[^>]*for="${id}"`), id);
   assert.match(html, /id="introSubtitle"[^>]*aria-live="polite"/);
-  assert.match(html, /<button[^>]*id="introSkip"[^>]*>Skip intro<\/button>/);
+  assert.match(html, /<button[^>]*id="introNext"[^>]*>Enter Server 4/);
   assert.match(html, /<dialog id="introDialog"[^>]*aria-labelledby="introTitle"/);
   assert.match(html, /<dialog id="audioDialog"[^>]*aria-labelledby="audioTitle"/);
-  assert.match(html, /id="soundButton"[^>]*aria-pressed="false"[^>]*>Sound: off</);
-  assert.match(css, /\.sliders input\[type="range"\] \{[^}]*min-height: 44px/);
+  assert.match(html, /id="soundButton"[^>]*aria-pressed="true"[^>]*>Sound: on</);
+  assert.match(css, /\.sliders input\[type=range\]\{[^}]*min-height:44px/);
   assert.match(html, /Everything you hear is also shown on screen/);
 });
 

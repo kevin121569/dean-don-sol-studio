@@ -20,12 +20,13 @@ export function createCreativeLayer(deps) {
 
   // ---- audio controls (header button → dialog with on/off and three volumes) -------------------------------
   const ui = {button: el('soundButton'), dialog: el('audioDialog'), enabled: el('soundEnabled'),
-    voice: el('volVoice'), music: el('volMusic'), sfx: el('volSfx'), close: el('audioClose'), note: el('narrationNote')};
+    voice: el('volVoice'), music: el('volMusic'), sfx: el('volSfx'), close: el('audioClose'), note: el('narrationNote'), test: el('audioTest'), status: el('audioState')};
   function syncControls() {
     const p = audio.prefs;
     if (ui.button) { ui.button.textContent = p.enabled ? 'Sound: on' : 'Sound: off'; ui.button.setAttribute('aria-pressed', String(p.enabled)); }
     if (ui.enabled) ui.enabled.checked = p.enabled;
     for (const k of ['voice', 'music', 'sfx']) if (ui[k]) { ui[k].value = String(Math.round(p[k] * 100)); ui[k].disabled = !p.enabled; }
+    if (ui.status) ui.status.textContent = audio.status();
     if (ui.note) ui.note.textContent = audio.capabilities.speech
       ? 'Narration uses this device’s built-in voice. Subtitles are always shown.'
       : 'This device has no built-in voice, so narration appears as subtitles only.';
@@ -40,6 +41,7 @@ export function createCreativeLayer(deps) {
   ui.button?.addEventListener('click', () => { syncControls(); try { ui.dialog?.showModal(); } catch { ui.dialog?.setAttribute('open', ''); } });
   ui.close?.addEventListener('click', () => { try { ui.dialog?.close(); } catch { ui.dialog?.removeAttribute('open'); } });
   ui.enabled?.addEventListener('change', () => setEnabled(ui.enabled.checked));
+  ui.test?.addEventListener('click', () => { if(audio.prefs.enabled) {audio.unlock();audio.cue('reveal');} syncControls(); });
   for (const k of ['voice', 'music', 'sfx']) ui[k]?.addEventListener('input', () => { audio.setPrefs({[k]: Number(ui[k].value) / 100}); if (k === 'sfx') audio.cue('evidence'); });
   syncControls();
 
@@ -54,9 +56,7 @@ export function createCreativeLayer(deps) {
       const script = await loadScript();
       if (validateIntroScript(script).length) return null;
       intro = createIntro({document: doc, window: win, audio, script, reducedMotion,
-        onClose: how => { settings.write({...settings.read(), introSeen: true}); say?.(how === 'finished' ? 'Opening finished. Start investigating whenever you are ready.' : 'Opening skipped. Start investigating whenever you are ready.'); doc?.getElementById?.('scene-title')?.focus?.(); }});
-      el('introSkip')?.addEventListener('click', () => intro.close('skip'));
-      el('introNext')?.addEventListener('click', () => intro.next());
+        onAudioChange: syncControls, onClose: how => { settings.write({...settings.read(), introSeen: true}); if (how === 'finished' && getState()?.sceneId === 'briefing') deps.beginInvestigation?.(); else audio.setMusic(MUSIC_SCENES.has(getState()?.sceneId)); doc?.getElementById?.('scene-title')?.focus?.(); }});
       return intro;
     } catch { return null; }
   }

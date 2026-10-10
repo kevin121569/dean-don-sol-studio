@@ -5,11 +5,10 @@
 // (window.speechSynthesis) when it exists and ships no audio file; subtitles are always shown either way.
 //
 // Rules: audio is never required to play and never the only carrier of information. Preferences live under
-// their own storage key, separate from game saves. Sound is OFF on first launch, and nothing plays until the
-// player turns it on, which is itself the user gesture that browser and mobile autoplay policies require.
+// their own storage key, separate from game saves. Sound is enabled by default, but an explicit Enter tap unlocks playback as required by WebView policies.
 
 export const AUDIO_PREFS_KEY = 'harness-wdyt:audio';
-export const DEFAULT_AUDIO_PREFS = Object.freeze({enabled: false, voice: 0.8, music: 0.35, sfx: 0.7});
+export const DEFAULT_AUDIO_PREFS = Object.freeze({enabled: true, voice: 0.8, music: 0.65, sfx: 0.85});
 export const CUES = Object.freeze(['evidence', 'reveal', 'unlock', 'decide', 'outcome',
   'advisor-boy', 'advisor-tooth', 'advisor-darth', 'advisor-donsol']);
 
@@ -19,7 +18,7 @@ const clamp01 = v => (typeof v === 'number' && Number.isFinite(v) ? Math.min(1, 
 export function normalizeAudioPrefs(raw) {
   const r = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
   return {
-    enabled: r.enabled === true,
+    enabled: r.enabled !== false,
     voice: clamp01(r.voice) ?? DEFAULT_AUDIO_PREFS.voice,
     music: clamp01(r.music) ?? DEFAULT_AUDIO_PREFS.music,
     sfx: clamp01(r.sfx) ?? DEFAULT_AUDIO_PREFS.sfx,
@@ -64,8 +63,8 @@ export function createAudioDirector({window: win = globalThis, storage} = {}) {
   function applyGains() {
     if (!buses) return;
     buses.master.gain.value = prefs.enabled ? 1 : 0;
-    buses.music.gain.value = prefs.music * 0.5;
-    buses.sfx.gain.value = prefs.sfx * 0.6;
+    buses.music.gain.value = prefs.music * 0.75;
+    buses.sfx.gain.value = prefs.sfx * 0.85;
   }
   const playing = () => prefs.enabled && unlocked && ctx && ctx.state !== 'closed';
 
@@ -98,16 +97,16 @@ export function createAudioDirector({window: win = globalThis, storage} = {}) {
 
   function startMusic() {
     if (music || !playing()) return;
-    const drone = [55, 82.41].map(f => {
+    const drone = [NOTE.E3, NOTE.A3].map(f => {
       const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = 'sine'; o.frequency.value = f; g.gain.value = 0.08;
+      o.type = 'triangle'; o.frequency.value = f; g.gain.value = 0.065;
       o.connect(g).connect(buses.music); o.start();
       return o;
     });
     let step = 0;
     const tick = () => {
       if (!music) return;
-      if (ctx.state === 'running') tone(NOTE[MOTIF[step++ % MOTIF.length]], 0, 1.4, {type: 'triangle', gain: 0.07, bus: 'music', attack: 0.06});
+      if (ctx.state === 'running') tone(NOTE[MOTIF[step++ % MOTIF.length]], 0, 1.4, {type: 'triangle', gain: 0.15, bus: 'music', attack: 0.06});
       music.timer = win.setTimeout(tick, 1600 + (step % 3) * 400);
     };
     music = {drone, timer: null};
@@ -124,10 +123,15 @@ export function createAudioDirector({window: win = globalThis, storage} = {}) {
     get prefs() { return {...prefs}; },
     capabilities: Object.freeze({webAudio: Boolean(AC), speech: Boolean(speech && Utterance)}),
     get unlocked() { return unlocked; },
+    status() { if(!prefs.enabled) return 'Sound off. Tap to turn it on.';
+      if(!AC) return 'Audio unavailable on this device: Web Audio is missing.';
+      if(!ctx||!unlocked) return 'Sound ready. Tap Enter Server 4 to activate.';
+      return `Audio engine: ${ctx.state}. ${ctx.state==='running'?'Music and effects enabled.':'Tap Test sound to retry.'}`;
+    },
     /** Call ONLY from a user gesture (click / tap / key). */
     unlock() {
       if (!ensureContext()) return false;
-      try { ctx.resume?.(); } catch { /* resume is best effort */ }
+      try { const result=ctx.resume?.(); result?.catch?.(()=>{}); } catch { /* resume is best effort */ }
       unlocked = true;
       return true;
     },
@@ -140,13 +144,14 @@ export function createAudioDirector({window: win = globalThis, storage} = {}) {
     },
     cue(name) {
       if (!CUES.includes(name) || !playing()) return false;
+      if(ctx.state==='suspended') { try { ctx.resume?.()?.catch?.(()=>{}); } catch {} }
       try { SOUNDS[name](); return true; } catch { return false; }
     },
     setMusic(on) { if (on) startMusic(); else stopMusic(); return Boolean(music); },
     get musicPlaying() { return Boolean(music); },
     /** Speak one subtitle line with the device voice. Returns false when narration is unavailable or off. */
     speak(text) {
-      if (!prefs.enabled || prefs.voice === 0 || !speech || !Utterance) return false;
+      if (!prefs.enabled || !unlocked || prefs.voice === 0 || !speech || !Utterance) return false;
       try {
         speech.cancel();
         const u = new Utterance(text);
