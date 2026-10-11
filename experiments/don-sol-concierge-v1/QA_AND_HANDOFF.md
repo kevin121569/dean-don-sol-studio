@@ -39,3 +39,11 @@ A delightful animated, accessible sales-oriented concierge for The Idea Lab Stud
 
 ## Rollback
 Delete only the new `don-sol-preview/` directory preview and/or revert associated unlisted-preview commit. Do not revert existing site content.
+
+## Hosted browser smoke test — 2026-10-11
+- GitHub Pages deploy: https://github.com/kevin121569/dean-don-sol-studio/actions/runs/38134737213 (**success**).
+- Actual preview: https://theidealabstudio.com/don-sol-preview/ (**live, noindex**).
+- Interactive browser QA: https://agent.tinyfish.ai/runs/c6cda013-4ad7-4d3e-bc35-8e562899a623
+- **PASS:** Read, Play, Film and Animation destination options update dialogue, art, title, status and real working CTAs; Meet Don Sol greeting; Surprise Me cycling; character SVG and decorative expression effects present; link routes and desktop layout clarity.
+- **UNTESTED:** actual phone viewport / Motorola, keyboard-only focus, screen reader. Do not treat desktop browser smoke test as mobile certification.
+- QA browser described Surprise Me as randomization, but code uses a deterministic rotating cycle; report actual implementation accurately.
