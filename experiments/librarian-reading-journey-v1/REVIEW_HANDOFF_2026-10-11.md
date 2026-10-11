@@ -41,3 +41,19 @@ No cookies, local/session storage, analytics, API calls, login, AI model, networ
 3. Open next intro; open its sample; return. Confirm already-opened Distance is **not** pitched again.
 4. Open The Harness directly from shelf; Reader close produces Forty Bales suggestion. Test Not now.
 5. Repeat at narrow mobile widths, keyboard tab/Escape and English UK device narration; confirm no film or speech autoplay.
+
+
+## Final feature-branch real Chromium checkpoint — PASS
+GitHub Actions run: https://github.com/kevin121569/dean-don-sol-studio/actions/runs/38179599498
+Commit tested: \`8a9cc4ce72f77c6229cdf48ec3d4524d60dcf38a\`
+The runner checked out this **feature branch**, served its actual website files and original published excerpts on \`127.0.0.1\`, and navigated them with Playwright Chromium. This is full browser QA against the branch build; it is **not a live HTTPS deployment or physical-phone certification**.
+
+Log results:
+- PASS 1440×900: original First Words → seated actor, distance/god nested sample flow, original Harness, direct Last Memory excerpt, three spoiler-free follow-ups, no prior-book duplicate pitch, dismiss action, kids world switch and return without replay, zero page exceptions or viewport overflow.
+- PASS 390×844: same real Chromium assertions, including kids-to-adult return preserving seated actor and paused film.
+- PASS four additional book pairings in fresh browser pages with reduced-motion preference: Forty Bales, Stardust, Fight Your Way Through, When Fighting Stops Working.
+- The earlier first run failed because a *test* clicked the hidden threshold Kids button; fixed by selecting the active Library Kids button, rerun passed. Not an app failure.
+
+**Further continuity improvement:** \`entrance.js\` now uses in-memory \`greetedDuringThisPage\` to show the seated Librarian on each subsequent Library visit during the same page session, while preserving the direct adult visitor's first entrance and manual replay control.
+
+Open release gates: original actor English narration recording, synchronization and rights, physical iPhone/Android and screen-reader QA, editorial signoff, live HTTPS staged QA if preview later promoted. Do not merge draft or change public site without approval.
