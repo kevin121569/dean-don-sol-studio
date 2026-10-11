@@ -129,4 +129,14 @@
     actions.appendChild(b);count++;
   });
   document.documentElement.dataset.storyGuides=String(count);
+  // Put the bookworm one click from the actual homepage entrance, not behind a hidden preview.
+  const heroActions=document.querySelector('.hero .hero-actions');
+  const kidCard=cards.find(c=>c.dataset.shelf==='kids');
+  const kidButton=kidCard?.querySelector('.sg-meet-button');
+  if(heroActions&&kidCard&&kidButton){
+    const b=document.createElement('button');b.type='button';b.className='btn ghost sg-hero-curley';
+    b.textContent='🐍 Meet Curley';b.setAttribute('aria-label','Curley introduces our children\u2019s book');
+    b.addEventListener('click',()=>present(kidCard,b));
+    heroActions.appendChild(b);
+  }
 })();
