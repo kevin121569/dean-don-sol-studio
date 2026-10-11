@@ -1,0 +1,29 @@
+name: Harness Kate visual mobile smoke QA
+on:
+  push:
+    branches:
+      - feature/harness-kate-visual-phone-qa-2026-10-11
+permissions:
+  contents: read
+jobs:
+  chrome-phone:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright without downloading another browser
+        run: npm install --no-save --no-audit --no-fund playwright@1.56.1
+      - name: Verify Chrome
+        run: google-chrome --version
+      - name: Run phone-size hosted two-episode visual/audio browser smoke
+        run: node scripts/qa/harness_kate_visual_phone.cjs
+      - name: Preserve screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-kate-visual-phone-smoke
+          path: qa/kate-visual/
+          retention-days: 14
