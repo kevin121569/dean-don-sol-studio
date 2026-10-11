@@ -83,7 +83,7 @@ async function testJourney(page,base,viewport){
   await page.locator('#closeReadingDesk').click();
   await note.waitFor({state:'visible'});
   check((await note.innerText()).includes('Stardust'),'direct sample link follows existing Reader');
-  await page.locator('[data-enter="kids"]').first().click();
+  await page.locator('#adultWorld [data-enter="kids"]').click();
   assert.equal(await note.isVisible(),false,'adult suggestion disappears in the kids world');
   await page.locator('#kidsWorld').waitFor({state:'visible'});
   check(errors.length===0,'no JS exceptions: '+errors.join(' | '));
