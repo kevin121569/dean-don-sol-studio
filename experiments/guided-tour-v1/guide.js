@@ -11,10 +11,14 @@
   const names=cards.map(card=>card.querySelector('.book-title')?.textContent.trim()).filter(Boolean);
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
   const poster='/assets/characters/don-sol-idealable-v3.svg';
+  const videoUrl='/assets/video/don-sol-approved-closeup-web-v1.mp4';
   const companion=document.createElement('div');
   companion.className='tg-companion';
   companion.setAttribute('aria-hidden','true');
-  companion.innerHTML='<span class="tg-bubble">Looking for a story?</span><span class="tg-face"><img src="'+poster+'" alt="" width="110" height="98"></span><span class="tg-cloud"></span>';
+  companion.innerHTML='<span class="tg-bubble">Looking for a story?</span><span class="tg-face"><img src="'+poster+'" alt="" width="110" height="98"><video class="tg-face-video" muted playsinline loop preload="none" aria-hidden="true"><source src="'+videoUrl+'" type="video/mp4"></video></span><span class="tg-cloud"></span>';
+  const floatingVideo=companion.querySelector('video');
+  floatingVideo.addEventListener('playing',()=>companion.classList.add('tg-has-motion'));
+  floatingVideo.addEventListener('error',()=>companion.classList.remove('tg-has-motion'));
   document.body.appendChild(companion);
   const bubble=companion.querySelector('.tg-bubble');
   const panel=document.createElement('aside');
@@ -32,14 +36,15 @@
   function clearStatus(){status.hidden=true}
   function choosePanel(open){
     panel.hidden=!open;heroFab.setAttribute('aria-expanded',String(open));
-    if(open){lastFab=document.activeElement;select.focus();bubble.textContent='Let’s find your story.'}
+    if(open){lastFab=document.activeElement;select.focus();bubble.textContent='Let’s find your story.';if(!reduced.matches)floatingVideo.play().catch(()=>{})}
     else {lastFab?.focus();bubble.textContent='Need a guide? Ask me.'}
   }
   heroFab.setAttribute('aria-controls','tgGuideChooser');
   heroFab.setAttribute('aria-expanded','false');
   heroFab.innerHTML='<span aria-hidden="true">😎</span> Ask Don Sol';
   // Replace the previous generic recommendation popup only in this review preview.
-  heroFab.onclick=e=>{e.preventDefault();choosePanel(panel.hidden)};
+  heroFab.onclick=null;
+  heroFab.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();choosePanel(panel.hidden)},true);
   panel.querySelector('[data-dismiss]').addEventListener('click',()=>choosePanel(false));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden){choosePanel(false)}});
   panel.addEventListener('keydown',e=>{
@@ -76,36 +81,52 @@
     },delay);
   }
   panel.querySelector('[data-go]').addEventListener('click',()=>goToBook(select.value));
-  // Allow the on-page character sales stage to summon Don Sol as well.
-  const bookIntro=stageDialog.querySelector('.sg-stage');
-  const filmButton=document.createElement('button');
-  filmButton.className='tg-film-trigger';filmButton.type='button';
-  filmButton.textContent='▶ Watch approved Don Sol animation';
-  filmButton.title='Private studio preview of the approved, silent ten-second animated close-up.';
-  bookIntro?.appendChild(filmButton);
-  const videoDialog=document.createElement('dialog');videoDialog.className='tg-film-dialog';
-  videoDialog.setAttribute('aria-labelledby','tgFilmTitle');
-  videoDialog.innerHTML='<header class="tg-film-head"><h2 id="tgFilmTitle">Don Sol · Approved Close-up</h2><button type="button" class="tg-film-close" aria-label="Close approved studio animation">×</button></header><div class="tg-film-frame" data-film></div><div class="tg-film-note"><strong>Studio review only:</strong> this is the verified 10-second character-performance master in our private Drive. It is not a finished speaking-book pitch, and its soundtrack is not approved for use on the website. Play the footage only if your studio Drive account can access it. The book introduction remains available without video.</div>';
-  document.body.appendChild(videoDialog);
-  const filmArea=videoDialog.querySelector('[data-film]');
-  const filmClose=videoDialog.querySelector('.tg-film-close');
-  let filmLastFocus;
-  filmButton.addEventListener('click',()=>{
-    filmLastFocus=document.activeElement;
-    filmArea.replaceChildren();
-    const iframe=document.createElement('iframe');
-    iframe.setAttribute('title','Approved Don Sol close-up animation — studio Drive login required');
-    iframe.setAttribute('allow','fullscreen');
-    iframe.setAttribute('referrerpolicy','no-referrer');
-    iframe.loading='lazy';
-    iframe.src='https://drive.google.com/file/d/1VV3aabtxnr9s-jUn62fiG_tjim9dH0fL/preview';
-    filmArea.appendChild(iframe);
-    videoDialog.showModal();
-    filmClose.focus();
+  // The real approved G1 close-up now plays inside the bookstore pitch stage.
+  // It is silent and expression-only: no claim of speech or full-body animation.
+  const stage=stageDialog.querySelector('.sg-stage');
+  const face=stageDialog.querySelector('.sg-head-art');
+  const performance=document.createElement('video');
+  performance.className='tg-approved-performance';
+  performance.setAttribute('aria-label','Don Sol smiling, listening and nodding in the studio approved cartoon clip; silent.');
+  performance.setAttribute('playsinline','');
+  performance.muted=true;
+  performance.loop=true;
+  performance.preload='metadata';
+  performance.src=videoUrl;
+  performance.poster=poster;
+  face?.appendChild(performance);
+  const replay=document.createElement('button');
+  replay.type='button';replay.className='tg-film-trigger';
+  replay.textContent='↻ Replay Don Sol animation';
+  replay.title='Replay the genuine, silent ten-second approved cartoon close-up. This is not lip-synced dialogue.';
+  stage?.appendChild(replay);
+  const liveStatus=document.createElement('span');
+  liveStatus.className='tg-video-note';
+  liveStatus.textContent='Approved cartoon movement · Silent close-up · Voice performance in production';
+  stage?.appendChild(liveStatus);
+  function setPerformance() {
+    const isKids=stageDialog.classList.contains('is-kids');
+    replay.hidden=isKids;
+    liveStatus.hidden=isKids;
+    performance.hidden=isKids;
+    if(isKids){performance.pause();return;}
+    if(reduced.matches){performance.pause();performance.currentTime=0;return;}
+    performance.play().catch(()=>{liveStatus.textContent='Still image fallback · Motion playback unavailable on this device';});
+  }
+  replay.addEventListener('click',()=>{
+    try{performance.currentTime=0;}catch(_){}
+    performance.play().catch(()=>{liveStatus.textContent='Movement unavailable here; original image remains visible.'});
   });
-  filmClose.addEventListener('click',()=>videoDialog.close());
-  videoDialog.addEventListener('close',()=>{filmArea.replaceChildren();filmLastFocus?.focus()});
-  videoDialog.addEventListener('click',e=>{if(e.target===videoDialog)videoDialog.close()});
-  // The video is a review reference; don't open private Drive footage for casual site visitors.
-  document.documentElement.dataset.guidedTour='v1';
+  stageDialog.addEventListener('close',()=>{performance.pause();floatingVideo.pause();companion.classList.remove('tg-has-motion')});
+  // Programmatic click on a catalog "Meet" button also bubbles to this listener.
+  document.addEventListener('click',e=>{
+    if(e.target.closest('.sg-meet-button,.sg-hero-curley,.sales-hero-pitch,[data-sales-title]')){
+      // Existing handler opens the book presentation before event bubbles.
+      if(stageDialog.open)setPerformance();
+    }
+  });
+  performance.addEventListener('playing',()=>{face?.classList.add('tg-animation-ready');liveStatus.textContent='Don Sol’s approved close-up is playing · Silent performance'});
+  performance.addEventListener('error',()=>{face?.classList.remove('tg-animation-ready');liveStatus.textContent='Character portrait fallback · Video unavailable'});
+  document.documentElement.dataset.guidedTour='v2';
+
 })();
