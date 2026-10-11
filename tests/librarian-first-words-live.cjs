@@ -18,7 +18,7 @@ function tone(){
    const page=await browser.newPage({viewport:vp});
    const errors=[];page.on('pageerror',e=>errors.push(String(e)));
    await page.goto(site,{waitUntil:'domcontentloaded',timeout:45000});
-   await page.locator('#seatedPortrait').waitFor();
+   await page.locator('#seatedPortrait').waitFor({state:'attached'});
    assert.equal(await page.locator('#seatedPortrait').evaluate(el=>el.complete&&el.naturalWidth>0),true,'real approved poster failed');
    assert.ok((await page.locator('#welcomeScript').innerText()).startsWith("Ah, welcome. Come in, won't you?"));
    assert.equal(await page.locator('#voicePlay').isDisabled(),true);
