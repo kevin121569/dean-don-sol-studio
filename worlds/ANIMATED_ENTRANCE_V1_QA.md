@@ -46,3 +46,13 @@
 2. Add store buttons only on verified public retailer listings; until then prefer excerpts, demos and release-updates paths.
 3. Extend the same cross-links to every title with a real verified adaptation.
 4. Iterate to improve appeal and sales; this is **not** a permanent website freeze.
+
+## Hosted browser smoke test — completed Oct 10, 2026
+Deployment: https://theidealabstudio.com/worlds-preview/
+GitHub Pages deployment action: https://github.com/kevin121569/dean-don-sol-studio/actions/runs/38101187066 (success)
+Interactive browser QA session: https://agent.tinyfish.ai/runs/131579a5-a438-40b8-b889-ba4bf82a046e
+
+**PASS 6/6 interactions (desktop viewport):** entry trigger, Books choice dialogue and correct Explore Books link, Games choice dialogue and Explore Games link, Replay control, Skip effects control, and retention of actionable links. No observable render errors or overflow in that session.
+
+**Still not tested:** physical Motorola, phone-width rendering, keyboard-only use, screen reader, iOS Safari, animation frame-timing/performance. The remote QA browser did not switch to a mobile viewport; do not claim mobile certification.
+**Preview isolation:** `/worlds-preview/` is a public-but-unlisted, noindex preview. The original homepage and full game remain unchanged. The draft PR remains unmerged.
