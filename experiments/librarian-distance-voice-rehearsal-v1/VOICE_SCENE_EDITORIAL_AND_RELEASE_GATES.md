@@ -48,3 +48,17 @@ Audio goal once rights/costs are approved: standard PCM 48kHz WAV master, web-co
 
 ## Cross-project preservation
 All earlier versions of the Librarian, Reading Desk, original published sample pages, `Curley V2` and other children's projects, `The Harness` Android baseline and creative masters remain unchanged.
+
+## Final V1 branch-browser QA checkpoint — PASS
+**GitHub Actions run:** https://github.com/kevin121569/dean-don-sol-studio/actions/runs/38180868067
+**Tested commit:** `c5564cad6e1da044488632ccbbd14ef80c64c993`
+**Run result:** SUCCESS (Chromium, branch served on localhost; not a public HTTPS deployment).
+
+Recorded console results:
+- `PASS 1440x900: source lock, original actor, 5 scripted audio cues, local take, transcript, privacy, layout`
+- `PASS 390x844: source lock, original actor, 5 scripted audio cues, local take, transcript, privacy, layout`
+- `PASS no-English-UK fallback: full transcript visible, no accent substitution`
+
+Four screenshots archived in GitHub Actions artifact `librarian-distance-voice-qa-screenshots`, including clean first-arrival desktop/mobile and post-audition local synthetic QA WAV; the latter **is not human voice audio**. Original actor image loaded, local file remains a `blob:` URL, no outgoing HTTP/HTTPS requests and no horizontal page overflow. Tests use synthetic in-memory on-device speech events to validate control flow. **No actual actor voice playback, accurate accent or final captions were certified.**
+
+The first two CI attempts failed due to test-harness mistakes (unbound UK mock fixture and misclassifying a local `blob:` as external network); both were repaired. Final branch CI is PASS. These were not application defects. The main website remains untouched. DRAFT release gates remain active.
