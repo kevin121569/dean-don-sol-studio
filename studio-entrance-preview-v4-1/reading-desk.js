@@ -88,6 +88,8 @@
  });
  // Explicit, easily discoverable button in an existing book pitch.
  // Keep the original source href as a separate ordinary link and no-JS fallback.
+ const deskDemo=document.getElementById('deskDemoLink');
+ deskDemo.addEventListener('click',()=>openSample('/samples/harness.html',deskDemo));
  directReader.hidden=false;
  directReader.addEventListener('click',()=>{
    const source=pitch.querySelector('#pitchSample');

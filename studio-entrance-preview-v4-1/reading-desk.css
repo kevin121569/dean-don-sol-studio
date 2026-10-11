@@ -30,3 +30,9 @@
 .reader-desk-note a:hover{color:#ffedc5}
 #pitchReader{min-width:220px}
 @media(max-width:470px){#pitchReader{width:100%}.reader-desk-note{align-items:start}}
+
+/* V4.1.1: use native button to open the in-Library demo; preserve separate navigable fallback. */
+#deskDemoLink{border:1px solid #c89b62;border-radius:25px;background:#efc990;color:#281915;font:800 .84rem/1.25 system-ui;padding:8px 14px;min-height:40px;cursor:pointer}
+#deskDemoLink:hover{filter:brightness(1.06)}
+#deskFullSample{white-space:nowrap}
+@media(max-width:470px){.reader-desk-note{flex-direction:column;align-items:flex-start}#deskDemoLink{width:100%}}
