@@ -58,13 +58,15 @@
   const cameFromWelcome=new URLSearchParams(location.search).get('arrival')==='seated';
   const alreadySeatedPhoto=document.getElementById('libraryArrivalStill');
   let arrivalFlagUsed=false;
+  let greetedDuringThisPage=false; // Film may play only once per page visit.
   function view(which,fromNavigation=false){
     if(!['adult','kids'].includes(which))which='home';
     stopVoice();activeView=which;
     threshold.hidden=which!=='home';adult.hidden=which!=='adult';kids.hidden=which!=='kids';
     document.body.dataset.world=which;
-    const continuation=which==='adult' && cameFromWelcome && !arrivalFlagUsed && fromNavigation;
+    const continuation=which==='adult' && (greetedDuringThisPage || (cameFromWelcome && !arrivalFlagUsed && fromNavigation));
     if(continuation)arrivalFlagUsed=true;
+    if(which==='adult')greetedDuringThisPage=true;
     alreadySeatedPhoto.hidden=!continuation;
     if(continuation){
       video.pause();
