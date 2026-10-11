@@ -49,6 +49,7 @@
    try{window.speechSynthesis.speak(u);report('Playing English (UK) device audition: '+sessionVoice+'. This is NOT recorded actor audio or lip sync.');}
    catch(_){endVoice('The English device voice could not start.');}
  }
+ film.addEventListener('error',()=>{if(stage==='film'){seated();report('Video unavailable. The seated portrait and welcome are still available.');}});
  film.addEventListener('ended',seated);
  film.addEventListener('timeupdate',()=>{if(stage==='film'&&film.currentTime>4)cue.textContent='He takes his seat.';});
  start.addEventListener('click',watch);again.addEventListener('click',watch);skip.addEventListener('click',()=>{endVoice();seated()});
