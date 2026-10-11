@@ -8,6 +8,7 @@ import {createInitialState, createStore} from '../js/state.js';
 import {createTelemetry, domEventSink} from '../js/telemetry.js';
 import {domId} from '../js/dom-ids.js';
 import {createCreativeLayer} from '../creative/creative.js';
+import {buildMissionReport} from '../creative/mission-report.js';
 
 const source = fs.readFileSync(new URL('../js/app.js', import.meta.url), 'utf8');
 const body = source.replace(/^import .*;\n/gm, '').replace('\nboot();', '\n');
@@ -60,7 +61,7 @@ export function makeUI(episode, options = {}) {
     reduce, A, isAdvisor, isHybridUnlocked, isDecisionAvailable, selectAdvice, buildPostmortem,
     createInitialState,
     createStore: ep => options.defaultStorage ? createStore(ep) : createStore(ep, storage),
-    createTelemetry, domEventSink, domId, createCreativeLayer,
+    createTelemetry, domEventSink, domId, createCreativeLayer, buildMissionReport,
   };
   const create = new Function(...Object.keys(dependencies), body + '\nreturn {boot,dispatch,onClick,onChange,resetGame,render,getState:()=>state,events:()=>telemetry.events()};');
   const app = create(...Object.values(dependencies));

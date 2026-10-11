@@ -7,6 +7,7 @@ import {createTelemetry, domEventSink} from './telemetry.js';
 import {isAdvisor} from './advice.js';
 import {domId} from './dom-ids.js';
 import {createCreativeLayer} from '../creative/creative.js';
+import {buildMissionReport} from '../creative/mission-report.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const esc = v => String(v).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -248,6 +249,11 @@ function briefing() {
     <p class="status-line"><span class="pill warn">${esc(b.clock)}</span><span class="pill">${esc(b.clockNote)}</span></p>
     ${b.paragraphs.map(p => `<p class="lede">${esc(p)}</p>`).join('')}
   </section>
+  <section class="panel mission-goal" aria-labelledby="mission-goal-title">
+    <h2 id="mission-goal-title">How do you win?</h2>
+    <p>Find the clues. Question your four AI advisers. Then make a decision you can explain. You finish the mission when you make your call and review its consequences.</p>
+    <p class="muted">Your mission report celebrates thorough investigation. But finishing does not make every choice right: good judgment means weighing evidence and risks, even when the outcome is lucky.</p>
+  </section>
   <section class="panel" aria-labelledby="roles-title">
     <h2 id="roles-title">Meet your AI helpers</h2>
     <ul class="roles">
@@ -381,11 +387,30 @@ function outcome() {
 
 function postmortem() {
   const pm = buildPostmortem(state, episode);
+  const report = buildMissionReport(state, episode);
+  const honoursMarkup = report.honours.length
+    ? `<ul class="mission-honours">${report.honours.map(h => `<li><b>${esc(h.title)}</b><span>${esc(h.detail)}</span></li>`).join('')}</ul>`
+    : '<p class="muted">No special investigation awards this time. You can replay and discover more.</p>';
   const trustText = a => !a.consulted ? 'You didn’t ask them.' : `You chose: ${TRUST_LABELS[a.trust]}.`;
   return `
-  <section aria-labelledby="scene-title">
+  <section class="panel mission-report" aria-labelledby="scene-title">
+    <p class="mission-status">${esc(report.label)} · EPISODE ONE</p>
+    <h1 id="scene-title" tabindex="-1">${esc(report.heading)}</h1>
+    <p>${esc(report.mission)}</p>
+    <div class="mission-stats" role="group" aria-label="Investigation progress">
+      <p><strong>${report.evidence.done} / ${report.evidence.total}</strong><span>Evidence records read</span></p>
+      <p><strong>${report.advisers.done} / ${report.advisers.total}</strong><span>Advisers questioned</span></p>
+    </div>
+    <p><b>Your action:</b> ${esc(report.decision.label)}</p>
+    <p><b>The risk you accepted:</b> ${esc(report.decision.risk)}</p>
+    <h2>Recognition earned</h2>
+    ${honoursMarkup}
+    <p class="mission-caution">${esc(report.note)}</p>
+    <p class="muted">${esc(report.replay)}</p>
+  </section>
+  <section aria-labelledby="postmortem-context-title">
     <p class="eyebrow">Episode 1 · What you learned</p>
-    <h1 id="scene-title" tabindex="-1">What happened, and what didn't</h1>
+    <h2 id="postmortem-context-title">What happened, and what didn't</h2>
     <p class="lede">You chose: <b>${esc(pm.decision.label)}</b>. ${pm.uncertaintyAcknowledged ? 'You said some things were still unknown.' : 'You didn’t say whether anything was still unknown.'}</p>
   </section>
   <div class="grid-2">
