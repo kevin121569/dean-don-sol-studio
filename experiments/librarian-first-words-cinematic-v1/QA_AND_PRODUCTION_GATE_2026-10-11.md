@@ -1,6 +1,6 @@
 # THE LIBRARIAN'S FIRST WORDS — cinematic welcome V1
 Date: 2026-10-11
-Status: **UNLISTED REVIEW / LOCAL SYNTHETIC BROWSER QA PASS / LIVE HTTPS QA PENDING UNTIL RUN**
+Status: **UNLISTED REVIEW / LOCAL SYNTHETIC BROWSER QA PASS / WEBM FALLBACK LIVE RE-TEST PENDING**
 
 ## Creative lock
 - The original dark-haired, mustached tweed-suited **first cinematic Librarian** remains cast. No identity replacement, recasting, repainting or change of his original master.
@@ -31,3 +31,9 @@ An *unlisted, noindexed* isolated 'First Words' cinematic rehearsal page:
 - Source resides only under `/librarian-welcome-preview-v1/` in GitHub Pages and versioned source snapshot on a draft branch. Preserve site homepage, original V4.1.1 and every earlier preview, Curley V2, Android Harness baseline, game, film source.
 - Use only approved studio dialogue to evaluate Google free-tier TTS, no confidential manuscripts or data. Original voice should be an **original fictional English narrator**, not a cloned public figure.
 - Next acceptance: 1 signed-off original ~20–25-second British English WAV, actual rights/cost/duration noted; 2 staging only against seated portrait; 3 listener/QC and user review; 4 final audio/master/captions; 5 separate public-launch approval.
+
+## V1.1 playback compatibility checkpoint (same-day update)
+- Initial 2026-10-11 real hosted headless Chromium check FAILED the video `currentTime > 0.3` assertion; the approved H.264 MP4 was not advancing in that CI environment. This is not proof of a defect on the user's Windows browser; could be an H.264 codec limitation.
+- To improve compatibility, added an exact-content **8.0-second VP9/WebM derivative** of the same already-approved shot (800x450, 24 fps). It is now the first source for browsers supporting WebM; the preserved H.264 MP4 remains the second fallback (iOS/Safari). No generative rerun, new actor, movement alterations, or Google charges.
+- Added a video-error fallback to the already approved seated portrait. New file `assets/librarian-arrive-and-sit-framed-web-v1.webm` is ~421 KB. Source master and MP4 unchanged.
+- Original V1 ZIP preserved in studio Drive. Revised V1.1 ZIP archived separately, with new checksums. The real HTTPS video-progression test is rerun before approval.
