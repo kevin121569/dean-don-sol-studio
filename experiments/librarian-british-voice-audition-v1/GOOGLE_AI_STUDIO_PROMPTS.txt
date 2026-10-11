@@ -1,0 +1,27 @@
+THE IDEA LAB STUDIO — THE LIBRARIAN (ORIGINAL ENGLISH VOICE)
+Date: 2026-10-11
+Status: AUDITION SCRIPT ONLY — NO GENERATED VOICE RECORDING
+
+Google AI Studio speech workspace: https://aistudio.google.com/generate-speech
+Google official pricing: https://ai.google.dev/gemini-api/docs/pricing
+
+CASTING DIRECTION (same voice across both parts)
+One original, fictional older adult male narrator, native British English with soft Southern English/Received Pronunciation, warm, literate, slightly amused and deeply welcoming. Measured but naturally conversational, no exaggerated aristocratic accent and no imitation of any actual person. Deliver ONLY the supplied dialogue exactly, without extra sentences, music, effects, or sound. Studio-clean spoken audio.
+
+TAKE A — WELCOME TO THE LIBRARY
+Direction: gently smile on “Come in, won't you?”; a small thoughtful beat before “No spoilers.” Not a theatrical announcer; he is hosting a guest at home.
+
+"Ah, welcome. Come in, won't you? Here we keep the stories that ask difficult questions—and aren't afraid of untidy answers. Choose a book, and I'll tell you why it deserves a look. No spoilers. Just an invitation."
+
+TAKE B — THE HARNESS INTRODUCTION
+Direction: a subtle conspiratorial amusement on “Now here is an intriguing arrangement” and warm emphasis on “think as well as feel”. Do not spoil story beyond the source.
+
+"Now here is an intriguing arrangement. Four very different artificial minds, a human caught between them, and a reset nobody can prove is harmless. The Harness has danger, wit and more than one uncomfortable question. If you like a thriller that trusts you to think as well as feel, I suggest you open the first chapter."
+
+AUDIO/GOVERNANCE GATE
+- Use Google (or a properly licensed original human recording), never Runway; never imitate any real artist's voice.
+- Before generating, verify a Free Tier project/model in YOUR Google AI Studio UI. Google lists Gemini 3.8 Flash TTS standard input and audio output as free on Free Tier. Paid projects can still be charged. Do not link billing or buy credits merely for this test.
+- AI Studio Free Tier submissions may be used to improve Google products; use only the approved fictional character's published lines, never private manuscript pages, unannounced plots or confidential files.
+- Save each raw generated WAV/master separately with its model, voice label, date, actual duration, account tier, usage rights and any amount charged.
+- The first visual host film is only 8 seconds and silent. Play an entire 20-40-second narration with the seated still rather than claiming video lip-sync.
+- Loading audio in our separate https://theidealabstudio.com/librarian-voice-audition-v1/ is 100% local browser listening; the selected WAV does not upload to the studio website. For studio publication, separately upload an approved MP3/OGG/WAV master to the official workflow later.
