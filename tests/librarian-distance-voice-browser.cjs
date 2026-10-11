@@ -32,7 +32,7 @@ function makeWav(){
  b.writeUInt32LE(rate,24);b.writeUInt32LE(rate*2,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);
  b.write('data',36);b.writeUInt32LE(n*2,40);return b;
 }
-const mockScript=(uk)=>()=>{
+const mockScript=({uk})=>{
  window.__qaSpoken=[];
  const voices=uk?[{name:'QA synthetic UK device voice',lang:'en-GB'}]:[{name:'QA US voice only',lang:'en-US'}];
  class QAUtterance{constructor(text){this.text=text;this.onend=null;this.onerror=null;}}
@@ -52,7 +52,7 @@ async function main(){
  try{
   for(const size of [{width:1440,height:900},{width:390,height:844}]){
    const ctx=await browser.newContext({viewport:size,reducedMotion:'no-preference'});
-   await ctx.addInitScript(mockScript(true));
+   await ctx.addInitScript(mockScript,{uk:true});
    const page=await ctx.newPage();const errs=[],outside=[];
    page.on('pageerror',e=>errs.push(e.message));
    page.on('request',r=>{if(!r.url().startsWith(base))outside.push(r.url())});
@@ -65,9 +65,9 @@ async function main(){
    assert.ok(initial.includes('No recording'));
    assert.equal(await page.locator('#localPlayer').isVisible(),false);
    await page.locator('#playAudition').click();
-   await page.waitForFunction(()=>window.__qaSpoken.length===5,{timeout:8000});
+   await page.waitForFunction(()=>window.__qaSpoken?.length===5,null,{timeout:8000});
    assert.deepEqual(await page.evaluate(()=>window.__qaSpoken),text.map(x=>x.trim()),'Sentence cue order follows locked dialogue');
-   await page.waitForFunction(()=>document.getElementById('stopAudition').disabled,{timeout:8000});
+   await page.waitForFunction(()=>document.getElementById('stopAudition').disabled,null,{timeout:8000});
    assert.equal(await page.locator('#lines [data-line]').count(),5,'Transcript persists after audition');
    await page.locator('#localAudio').setInputFiles({name:'qa-only-silent-audio.wav',mimeType:'audio/wav',buffer:makeWav()});
    assert.equal(await page.locator('#localPlayer').isVisible(),true,'local licensed-take slot visible');
@@ -83,7 +83,7 @@ async function main(){
    await ctx.close();
   }
   const ctx=await browser.newContext({viewport:{width:390,height:844}});
-  await ctx.addInitScript(mockScript(false));
+  await ctx.addInitScript(mockScript,{uk:false});
   const noGB=await ctx.newPage();
   await noGB.goto(base+'/librarian-distance-voice-rehearsal-v1/',{waitUntil:'domcontentloaded'});
   await noGB.locator('#playAudition').click();
