@@ -781,7 +781,7 @@ let prev=document.getElementById('kate-final-report');if(prev)prev.remove();
 const block=document.createElement('section');block.id='kate-final-report';block.className='kate-report';
 block.innerHTML='<div class="kreporthead">★ MISSION COMPLETE ★</div><h3>Your decision. Your consequences.</h3><p>You finished the investigation. Completing a mission is not proof that every decision was right.</p><div class="kstats"><div><strong>'+evidence+' / '+ep.evidence.length+'</strong><span>Records read</span></div><div><strong>'+advisers+' / '+ep.advisorOrder.length+'</strong><span>Advisers consulted</span></div></div><p><b>Decision made:</b> '+(decision?.label||'')+'</p><p><b>Risk:</b> '+(decision?.risk||'')+'</p>'+earned.map(x=>'<span class="kaward">'+x+'</span>').join('')+'<p>Try another approach. What might you do differently next time?</p>';
 target.parentNode.insertBefore(block,target);
-}catch(e){/* never block the original game debrief */}},0);
+}catch(e){/* never block the original game debrief */}},0));
 const nav=document.querySelector('.hud-actions');
 if(nav&&!nav.querySelector('a[href="cases.html"]')){const a=document.createElement('a');a.className='hud-button';a.href='cases.html';a.textContent='EPISODES';nav.append(a)}
 })();
