@@ -86,9 +86,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&activeUtte
 function openSales(t,audio){
  const card=findCard(t),button=card?.querySelector('.sg-meet-button');
  if(!button)return;
- button.click();
- updateScene();
- if(audio)speak();
+ button.click(); // Existing card listener opens the stage, refreshes the pitch, and voices it on user action.
 }
 const hero=document.querySelector('.hero .hero-actions');
 if(hero){
