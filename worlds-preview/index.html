@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Explore the Worlds — The Idea Lab Studio (Development Preview)</title>
+<meta name="description" content="Books, games, films and animation projects from The Idea Lab Studio. Preview build; not an official launch page.">
+<meta name="theme-color" content="#12101a">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../base.css?v=15">
+<style>
+:root{--hgold:#ffbc63;--hink:#0f0d17;--hpanel:#201a2d;--haqua:#94edcf}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#100d17;color:#f7f0e9;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit}a:focus-visible{outline:3px solid var(--haqua);outline-offset:4px}
+.wrap{width:min(1170px,calc(100% - 40px));margin:auto}.mast{display:flex;justify-content:space-between;gap:24px;align-items:center;padding:22px 0;flex-wrap:wrap}
+.brand-h{font-size:.92rem;letter-spacing:.12em;text-transform:uppercase;font-weight:900;text-decoration:none}.brand-h em{color:var(--hgold);font-style:normal}
+.navigation{display:flex;gap:18px;flex-wrap:wrap}.navigation a{font-size:.9rem;text-decoration:none;color:#e7ddea}.navigation a:hover{color:var(--hgold)}
+.hero-h{padding:88px 0 80px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 77% 28%,#50335b 0,transparent 39%),radial-gradient(ellipse at 19% 80%,#493021 0,transparent 36%),#15101d;border-top:1px solid #443651;border-bottom:1px solid #443651}
+.kicker{color:var(--hgold);text-transform:uppercase;font-size:.75rem;font-weight:800;letter-spacing:.18em}.hero-h h1{font-family:Impact,"Arial Narrow",sans-serif;font-size:clamp(3.7rem,10vw,8rem);text-transform:uppercase;letter-spacing:.015em;line-height:.96;max-width:780px;margin:18px 0}
+.hero-h h1 span{color:var(--hgold)}.hero-h p{font-size:clamp(1.04rem,2vw,1.25rem);line-height:1.65;max-width:720px;color:#dfd4e4}
+.pill-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.cta{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:100px;text-decoration:none;font-weight:800;background:var(--hgold);color:#24150d;border:1px solid var(--hgold)}.cta.outline{background:transparent;color:#f6eadc;border-color:#796984}.cta:hover{filter:brightness(1.08)}
+.notice{font-size:.83rem!important;color:#bbaec8!important;margin-top:20px}.main-h{padding:30px 0 88px}
+.band{padding:65px 0;border-bottom:1px solid #3c304b;scroll-margin-top:50px}.band h2{font-family:Impact,"Arial Narrow",sans-serif;font-size:clamp(2.4rem,5.5vw,4.7rem);text-transform:uppercase;line-height:1.04;margin:8px 0 14px}
+.band-intro{color:#cdc0d4;max-width:680px;line-height:1.65;margin-bottom:28px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card-h{border:1px solid #4c3b58;border-radius:17px;background:linear-gradient(145deg,#251d33,#17121f);overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card-h .visual{height:210px;background:radial-gradient(circle at 72% 23%,#9970a35c,transparent 35%),linear-gradient(135deg,#2e2448,#10151d);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-h .visual span{font-size:5rem;opacity:.74;line-height:1}
+.visual img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 35%}
+.card-h .contents{padding:22px;display:flex;flex-direction:column;flex:1}
+.status-h{display:inline-block;align-self:start;border:1px solid #94713c;border-radius:20px;color:#ffce87;padding:4px 10px;font-size:.71rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#64451e33}
+.status-h.free{border-color:#3e7c6a;color:#9ff7d9;background:#3c7d6b26}.status-h.future{border-color:#63516f;color:#dbd0e6;background:#71638322}
+.card-h h3{font-size:1.45rem;line-height:1.22;margin:18px 0 10px}.card-h p{font-size:.96rem;color:#c9bdcf;line-height:1.58;flex:1;margin:0 0 22px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.textlink{display:inline-flex;align-items:center;min-height:44px;font-weight:800;color:var(--hgold);text-underline-offset:4px}
+.feature{grid-column:span 2;display:grid;grid-template-columns:1.05fr .95fr}.feature .visual{height:auto;min-height:340px}
+.callout{border:1px solid #756543;border-radius:14px;padding:20px 24px;margin-top:26px;color:#f3e5cb;background:#36271433}
+.foot{padding:40px 0 70px;color:#c3b5cc;font-size:.92rem}.foot a{color:#ffc773}.foot p{max-width:720px;line-height:1.6}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.feature{grid-template-columns:1fr}.feature .visual{height:240px;min-height:0}}
+@media(max-width:620px){.wrap{width:min(100% - 30px,1170px)}.navigation{gap:10px}.navigation a{font-size:.83rem}.hero-h{padding:60px 0 56px}.cards{grid-template-columns:1fr}.feature{grid-column:span 1}.band{padding:48px 0}.card-h .visual{height:190px}.feature .visual{height:220px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+<link rel="stylesheet" href="guide.css?v=1">
+<script src="guide.js?v=1" defer></script>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<div class="wrap"><header class="mast">
+<a class="brand-h" href="../" aria-label="The Idea Lab Studio homepage">✦ THE IDEA LAB <em>STUDIO</em></a>
+<nav class="navigation" aria-label="Explore studio"><a href="#games">Games</a><a href="#books">Books</a><a href="#films">Films</a><a href="#animation">Animation</a><a href="../">Main site ↗</a></nav>
+</header></div>
+<main id="content">
+<section class="hero-h"><div class="wrap portal-hero-grid"><div class="portal-hero-copy">
+<p class="kicker">THE IDEA LAB STUDIO · PREVIEW</p>
+<h1>ONE STUDIO.<br><span>MANY WORLDS.</span></h1>
+<p>Read the stories. Make the decisions. Follow the characters from page to screen to play. Explore the books, interactive games, films and animation projects taking shape inside The Idea Lab.</p>
+<div class="pill-row"><a class="cta" href="#portal" data-portal-start>Get Your Mind Bent →</a><a class="cta outline" href="#games">Explore games ↓</a><a class="cta outline" href="#books">Explore books ↓</a></div>
+<p class="notice">Development preview for studio review. Titles are labeled by their actual current stage. No Play Store release is claimed.</p>
+
+</div>
+<aside class="portal-hero-art" role="img" aria-label="Don Sol the smiling sun in sunglasses, Curley the friendly snake, and Percy the Parenthesis Princess welcoming visitors.">
+<span class="halo" aria-hidden="true"></span><span class="portal-art-title">MEET YOUR GUIDES</span>
+<div class="portal-actor sun" aria-hidden="true">
+<svg viewBox="0 0 260 240" width="210" height="205">
+<g stroke="#ffc463" stroke-linecap="round" stroke-width="9">
+<path d="M125 5v24M125 192v24M25 110h23M202 110h23M48 36l19 18M184 166l18 17M204 36l-20 18M65 164l-17 19"/>
+</g><circle cx="125" cy="110" r="82" fill="#ffbd4b" stroke="#ffe098" stroke-width="4"/>
+<path d="M57 100q29-9 61 0v29q-25 14-57-7zM134 100q32-9 61 0l-5 22q-27 16-56 7z" fill="#1b1828"/>
+<rect x="115" y="108" width="22" height="9" rx="4" fill="#1b1828"/>
+<path d="M95 154q30 30 61 0" fill="none" stroke="#7d3d2d" stroke-width="8" stroke-linecap="round"/>
+</svg><strong>Don Sol</strong><small>The host</small></div>
+<div class="portal-actor curley" aria-hidden="true">
+<svg viewBox="0 0 180 170" width="156" height="145">
+<path d="M27 120Q12 94 40 78Q69 65 92 98Q112 134 77 142Q45 147 56 114Q62 95 98 86Q125 81 129 54" fill="none" stroke="#397c70" stroke-width="27" stroke-linecap="round"/>
+<path d="M27 120Q12 94 40 78Q69 65 92 98Q112 134 77 142Q45 147 56 114Q62 95 98 86Q125 81 129 54" fill="none" stroke="#77dfb1" stroke-width="19" stroke-linecap="round"/>
+<ellipse cx="129" cy="45" rx="27" ry="25" fill="#92edc0"/><circle cx="120" cy="40" r="4" fill="#172b2b"/><circle cx="141" cy="40" r="4" fill="#172b2b"/>
+<path d="M129 56q8 5 16 0" stroke="#2f6259" stroke-width="2.5" fill="none"/><path d="M151 57l12 5-7 4" fill="none" stroke="#fa8b8f" stroke-width="3" stroke-linecap="round"/>
+</svg><strong>Curley</strong><small>The explorer</small></div>
+<div class="portal-actor percy" aria-hidden="true">
+<svg viewBox="0 0 130 160" width="105" height="115">
+<path d="M54 16C22 36 20 113 54 142" fill="none" stroke="#8d87e8" stroke-width="12" stroke-linecap="round"/>
+<path d="M76 16C108 36 110 113 76 142" fill="none" stroke="#8d87e8" stroke-width="12" stroke-linecap="round"/>
+<circle cx="59" cy="75" r="3" fill="#f6e1ff"/><circle cx="71" cy="75" r="3" fill="#f6e1ff"/>
+</svg><strong>Percy</strong><small>Parenthesis Princess</small></div>
+<div class="art-caption">Ideas enter. Stories come out. Occasionally sideways.</div>
+</aside>
+</div></section>
+
+<section class="portal-section" id="portal" aria-labelledby="portalHeading"><div class="wrap">
+<div class="portal-top"><div><p class="kicker">THE MINDBENDING ENTRANCE · OPTIONAL ADVENTURE</p>
+<h2 id="portalHeading">GET YOUR <em>MIND BENT.</em></h2>
+<p>One little pen enters straight. Curley comes out with a new perspective. Choose where our crew should take you—or skip the effects and explore normally.</p></div></div>
+<div class="portal-panel">
+<div class="portal-theater" data-theater aria-hidden="true">
+<span class="stage-label">THE PORTAL · STUDIO TOUR</span><div class="portal-loop"></div><div class="portal-bendline"></div>
+<svg class="portal-pen" viewBox="0 0 260 180">
+<g transform="rotate(-12 130 90)">
+<rect x="22" y="74" width="175" height="27" rx="9" fill="#c7ad84" stroke="#ffd5a2" stroke-width="3"/>
+<rect x="42" y="76" width="107" height="23" rx="5" fill="#eacb93"/>
+<path d="M197 74L247 87L197 101Z" fill="#d4a15c"/><path d="M232 84L247 87L232 91Z" fill="#201727"/>
+<rect x="22" y="78" width="17" height="19" rx="4" fill="#383040"/>
+<path d="M62 78v17" stroke="#ac895a" stroke-width="3"/>
+</g>
+</svg>
+<svg class="portal-snake" viewBox="0 0 260 180">
+<path d="M18 143Q46 79 91 119T161 113Q180 100 183 77" fill="none" stroke="#326f67" stroke-width="30" stroke-linecap="round"/>
+<path d="M18 143Q46 79 91 119T161 113Q180 100 183 77" fill="none" stroke="#93ebbe" stroke-width="21" stroke-linecap="round"/>
+<ellipse cx="185" cy="66" rx="35" ry="30" fill="#a0efc6"/><circle cx="173" cy="58" r="4.5" fill="#17272c"/><circle cx="195" cy="58" r="4.5" fill="#17272c"/><path d="M181 79q13 7 21-1" fill="none" stroke="#2d6a55" stroke-width="3" stroke-linecap="round"/>
+<path d="M215 78q14 2 17 9l-7 3" fill="none" stroke="#f6999a" stroke-width="3" stroke-linecap="round"/>
+</svg><div class="stage-caption" data-stage-caption>Choose a door to begin the transformation.</div>
+</div>
+<div class="portal-controls">
+<div class="portal-guide"><div class="portal-mini-sun" aria-hidden="true">☀</div><div><span class="portal-guide-title">DON SOL · YOUR HOST</span><span class="portal-guide-desc">Curley finds the shortcuts. Percy keeps the brackets balanced.</span></div></div>
+<p class="portal-dialogue" data-guide-dialogue aria-live="polite">Don Sol: “Welcome to the Lab. Choose a door. Curley knows the shortcuts.”</p>
+<div class="portal-paths" role="group" aria-label="Choose a studio destination">
+<button type="button" data-guide-destination="books" aria-pressed="false">📚 Read a story</button>
+<button type="button" data-guide-destination="games" aria-pressed="true">🎮 Play a game</button>
+<button type="button" data-guide-destination="films" aria-pressed="false">🎬 Watch a film teaser</button>
+<button type="button" data-guide-destination="animation" aria-pressed="false">✏️ Meet the cartoons</button></div>
+<div class="portal-actions"><a class="portal-action-link" data-guide-launch href="#games">Explore Games →</a>
+<button type="button" class="portal-quiet" data-guide-skip>Skip effects</button><button type="button" class="portal-quiet" data-guide-replay>Replay</button></div>
+<p class="portal-direct">Prefer no animation? Jump straight to <a href="#books">books</a>, <a href="#games">games</a>, <a href="#films">films</a>, or <a href="#animation">animation</a>.</p>
+</div></div>
+<div class="portal-universe"><strong>One story, three doors: THE HARNESS</strong>
+<p>Start with the novel, step into the player's decisions, or see how we're developing it for film.</p>
+<div class="portal-universe-links"><a href="../the-harness/">Read the book excerpt ↗</a><a href="../harness-play/dev-ep2-v2/cases.html">Play the browser game ↗</a><a href="../the-harness/clips.html">Watch film teasers ↗</a></div></div>
+<p class="portal-endnote">Motion starts only when you choose a destination. No sound autoplays. Existing story links work without running this experience.</p>
+</div></section>
+<div class="wrap main-h">
+<section class="band" id="games" aria-labelledby="gamesHeading">
+<p class="kicker">PLAY · EXPLORE · DECIDE</p><h2 id="gamesHeading">Games</h2>
+<p class="band-intro">Some stories ask you to turn a page. These ask you to make the call. The browser playtests below are separate from any future Google Play release.</p>
+<div class="cards">
+<article class="card-h feature"><div class="visual"><img src="../assets/covers/harness-v12.jpg" alt="The Harness cover artwork" width="600" height="900" loading="lazy" decoding="async"></div><div class="contents"><span class="status-h">Two-level browser development test</span><h3>THE HARNESS</h3><p>Four AI advisers. One human decision-maker. Investigate the Shutdown Call, then follow the evidence in The Answer Key. Play the current browser test; not on Google Play yet.</p><div class="actions"><a class="cta" href="../harness-play/dev-ep2-v2/cases.html">Play the two-level test →</a><a class="textlink" href="../the-harness/">Explore the story ↗</a></div></div></article>
+<article class="card-h"><div class="visual" aria-hidden="true"><span>▧</span></div><div class="contents"><span class="status-h free">Free browser mystery</span><h3>THE MISSING PAGE</h3><p>Follow clues across sample chapters, choose a reading trail and solve a free mystery with no account or countdown.</p><div class="actions"><a class="textlink" href="../missing-page/">Open mystery →</a></div></div></article>
+</div>
+<div class="callout"><strong>Coming to Google Play?</strong> The Harness is undergoing mobile testing and release preparation. This page intentionally shows no Play Store badge or install link until a real public listing has been verified.</div>
+</section>
+<section class="band" id="books" aria-labelledby="booksHeading">
+<p class="kicker">FROM THE BOOKSHELF</p><h2 id="booksHeading">Books</h2>
+<p class="band-intro">Nine book projects are already cataloged on the studio site with samples and honest release stages. Here are three doors into the wider collection.</p>
+<div class="cards">
+<article class="card-h"><a class="visual" href="../the-harness/" aria-label="The Harness book"><img src="../assets/covers/harness-v12.jpg" alt="The Harness book cover" loading="lazy" width="280" height="420"></a><div class="contents"><span class="status-h">Preparing for release</span><h3>THE HARNESS</h3><p>One human between four AI minds, with a containment decision that changes everything. Continue the story as a game or a film concept.</p><div class="actions"><a class="textlink" href="../the-harness/">Read excerpt ↗</a><a class="textlink" href="../harness-play/dev-ep2-v2/cases.html">Play the game ↗</a><a class="textlink" href="../the-harness/clips.html">Watch teasers ↗</a></div></div></article>
+<article class="card-h"><a class="visual" href="../forty-bales/" aria-label="Forty Bales book"><img src="../assets/covers/forty-v13.jpg" alt="Forty Bales book cover" loading="lazy" width="280" height="420"></a><div class="contents"><span class="status-h">Preparing for release</span><h3>FORTY BALES</h3><p>An AI inherits a Missouri farm and must defend the life it has learned to live.</p><a class="textlink" href="../forty-bales/">Explore the book →</a></div></article>
+<article class="card-h"><a class="visual" href="../the-distance-between-thoughts/" aria-label="The Distance Between Thoughts book"><img src="../assets/covers/distance.jpg" alt="The Distance Between Thoughts book cover" loading="lazy" width="280" height="420"></a><div class="contents"><span class="status-h future">Manuscript complete</span><h3>THE DISTANCE BETWEEN THOUGHTS</h3><p>A story about continuity, memory, and what survives between versions of a mind.</p><a class="textlink" href="../the-distance-between-thoughts/">Explore the book →</a></div></article>
+</div>
+<p style="margin-top:24px"><a class="cta outline" href="../#books">Browse all nine book projects →</a></p>
+</section>
+<section class="band" id="films" aria-labelledby="filmsHeading">
+<p class="kicker">FROM PAGE TO SCREEN</p><h2 id="filmsHeading">Films</h2>
+<div class="cards"><article class="card-h feature"><div class="visual" aria-hidden="true"><span>◈</span></div><div class="contents"><span class="status-h">Feature screenplay complete</span><h3>THE HARNESS — THE FILM</h3><p>A near-future AI thriller with wit, danger, and a human in the middle. Explore existing motion teasers and the media kit; this is not a claim of film release.</p><div class="actions"><a class="cta" href="../the-harness/clips.html">Watch teasers →</a><a class="textlink" href="../the-harness/media-kit.html">Media kit ↗</a></div></div></article></div>
+</section>
+<section class="band" id="animation" aria-labelledby="animationHeading">
+<p class="kicker">IN THE DRAWING ROOM</p><h2 id="animationHeading">Animation</h2>
+<p class="band-intro">Animated adventures are a creative direction in development. This shelf will become the home for finished episodes, trailers, and character introductions when they are ready.</p>
+<div class="cards">
+<article class="card-h"><div class="visual" aria-hidden="true"><span>✎</span></div><div class="contents"><span class="status-h future">Concept stage</span><h3>THE BOOK OF BETTER QUESTIONS</h3><p>A possible animated extension of our curiosity-driven family adventure with Don Sol, Tooth, and the Idea Lab crew.</p><a class="textlink" href="../the-book-of-better-questions/">Meet the book →</a></div></article>
+<article class="card-h"><div class="visual" aria-hidden="true"><span>☼</span></div><div class="contents"><span class="status-h future">Visual development</span><h3>THE IDEA LAB CREW</h3><p>Character-driven shorts and visual experiments can grow alongside the stories, without promising a released series that doesn't exist yet.</p><a class="textlink" href="../#studio">Meet the studio →</a></div></article>
+</div>
+</section>
+</div>
+</main>
+<footer class="foot"><div class="wrap"><p><strong>THE IDEA LAB STUDIO</strong> · Ideas enter. Stories come out.</p><p>Books, films, games, animations and experiments. This preview supplements the existing site; approved content and public releases remain unchanged.</p><a href="../">Return to the main site ↑</a></div></footer>
+</body>
+</html>
