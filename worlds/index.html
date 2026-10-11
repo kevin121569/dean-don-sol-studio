@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Explore the Worlds — The Idea Lab Studio (Development Preview)</title>
+<meta name="description" content="Books, games, films and animation projects from The Idea Lab Studio. Preview build; not an official launch page.">
+<meta name="theme-color" content="#12101a">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../base.css?v=15">
+<style>
+:root{--hgold:#ffbc63;--hink:#0f0d17;--hpanel:#201a2d;--haqua:#94edcf}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#100d17;color:#f7f0e9;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit}a:focus-visible{outline:3px solid var(--haqua);outline-offset:4px}
+.wrap{width:min(1170px,calc(100% - 40px));margin:auto}.mast{display:flex;justify-content:space-between;gap:24px;align-items:center;padding:22px 0;flex-wrap:wrap}
+.brand-h{font-size:.92rem;letter-spacing:.12em;text-transform:uppercase;font-weight:900;text-decoration:none}.brand-h em{color:var(--hgold);font-style:normal}
+.navigation{display:flex;gap:18px;flex-wrap:wrap}.navigation a{font-size:.9rem;text-decoration:none;color:#e7ddea}.navigation a:hover{color:var(--hgold)}
+.hero-h{padding:88px 0 80px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 77% 28%,#50335b 0,transparent 39%),radial-gradient(ellipse at 19% 80%,#493021 0,transparent 36%),#15101d;border-top:1px solid #443651;border-bottom:1px solid #443651}
+.kicker{color:var(--hgold);text-transform:uppercase;font-size:.75rem;font-weight:800;letter-spacing:.18em}.hero-h h1{font-family:Impact,"Arial Narrow",sans-serif;font-size:clamp(3.7rem,10vw,8rem);text-transform:uppercase;letter-spacing:.015em;line-height:.96;max-width:780px;margin:18px 0}
+.hero-h h1 span{color:var(--hgold)}.hero-h p{font-size:clamp(1.04rem,2vw,1.25rem);line-height:1.65;max-width:720px;color:#dfd4e4}
+.pill-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.cta{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;border-radius:100px;text-decoration:none;font-weight:800;background:var(--hgold);color:#24150d;border:1px solid var(--hgold)}.cta.outline{background:transparent;color:#f6eadc;border-color:#796984}.cta:hover{filter:brightness(1.08)}
+.notice{font-size:.83rem!important;color:#bbaec8!important;margin-top:20px}.main-h{padding:30px 0 88px}
+.band{padding:65px 0;border-bottom:1px solid #3c304b;scroll-margin-top:50px}.band h2{font-family:Impact,"Arial Narrow",sans-serif;font-size:clamp(2.4rem,5.5vw,4.7rem);text-transform:uppercase;line-height:1.04;margin:8px 0 14px}
+.band-intro{color:#cdc0d4;max-width:680px;line-height:1.65;margin-bottom:28px}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card-h{border:1px solid #4c3b58;border-radius:17px;background:linear-gradient(145deg,#251d33,#17121f);overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.card-h .visual{height:210px;background:radial-gradient(circle at 72% 23%,#9970a35c,transparent 35%),linear-gradient(135deg,#2e2448,#10151d);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.card-h .visual span{font-size:5rem;opacity:.74;line-height:1}
+.visual img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 35%}
+.card-h .contents{padding:22px;display:flex;flex-direction:column;flex:1}
+.status-h{display:inline-block;align-self:start;border:1px solid #94713c;border-radius:20px;color:#ffce87;padding:4px 10px;font-size:.71rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;background:#64451e33}
+.status-h.free{border-color:#3e7c6a;color:#9ff7d9;background:#3c7d6b26}.status-h.future{border-color:#63516f;color:#dbd0e6;background:#71638322}
+.card-h h3{font-size:1.45rem;line-height:1.22;margin:18px 0 10px}.card-h p{font-size:.96rem;color:#c9bdcf;line-height:1.58;flex:1;margin:0 0 22px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.textlink{display:inline-flex;align-items:center;min-height:44px;font-weight:800;color:var(--hgold);text-underline-offset:4px}
+.feature{grid-column:span 2;display:grid;grid-template-columns:1.05fr .95fr}.feature .visual{height:auto;min-height:340px}
+.callout{border:1px solid #756543;border-radius:14px;padding:20px 24px;margin-top:26px;color:#f3e5cb;background:#36271433}
+.foot{padding:40px 0 70px;color:#c3b5cc;font-size:.92rem}.foot a{color:#ffc773}.foot p{max-width:720px;line-height:1.6}
+@media(max-width:900px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.feature{grid-template-columns:1fr}.feature .visual{height:240px;min-height:0}}
+@media(max-width:620px){.wrap{width:min(100% - 30px,1170px)}.navigation{gap:10px}.navigation a{font-size:.83rem}.hero-h{padding:60px 0 56px}.cards{grid-template-columns:1fr}.feature{grid-column:span 1}.band{padding:48px 0}.card-h .visual{height:190px}.feature .visual{height:220px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<div class="wrap"><header class="mast">
+<a class="brand-h" href="../" aria-label="The Idea Lab Studio homepage">✦ THE IDEA LAB <em>STUDIO</em></a>
+<nav class="navigation" aria-label="Explore studio"><a href="#games">Games</a><a href="#books">Books</a><a href="#films">Films</a><a href="#animation">Animation</a><a href="../">Main site ↗</a></nav>
+</header></div>
+<main id="content">
+<section class="hero-h"><div class="wrap">
+<p class="kicker">THE IDEA LAB STUDIO · PREVIEW</p>
+<h1>ONE STUDIO.<br><span>MANY WORLDS.</span></h1>
+<p>Read the stories. Make the decisions. Follow the characters from page to screen to play. Explore the books, interactive games, films and animation projects taking shape inside The Idea Lab.</p>
+<div class="pill-row"><a class="cta" href="#games">Explore games ↓</a><a class="cta outline" href="#books">Explore books ↓</a></div>
+<p class="notice">Development preview for studio review. Titles are labeled by their actual current stage. No Play Store release is claimed.</p>
+</div></section>
+<div class="wrap main-h">
+<section class="band" id="games" aria-labelledby="gamesHeading">
+<p class="kicker">PLAY · EXPLORE · DECIDE</p><h2 id="gamesHeading">Games</h2>
+<p class="band-intro">Some stories ask you to turn a page. These ask you to make the call. The browser playtests below are separate from any future Google Play release.</p>
+<div class="cards">
+<article class="card-h feature"><div class="visual" aria-hidden="true"><span>⌁</span></div><div class="contents"><span class="status-h">Two-level browser development test</span><h3>THE HARNESS</h3><p>Four AI advisers. One human decision-maker. Investigate the Shutdown Call, then follow the evidence in The Answer Key. Play the current browser test; not on Google Play yet.</p><div class="actions"><a class="cta" href="../harness-play/dev-ep2-v2/cases.html">Play the two-level test →</a><a class="textlink" href="../the-harness/">Explore the story ↗</a></div></div></article>
+<article class="card-h"><div class="visual" aria-hidden="true"><span>▧</span></div><div class="contents"><span class="status-h free">Free browser mystery</span><h3>THE MISSING PAGE</h3><p>Follow clues across sample chapters, choose a reading trail and solve a free mystery with no account or countdown.</p><div class="actions"><a class="textlink" href="../missing-page/">Open mystery →</a></div></div></article>
+</div>
+<div class="callout"><strong>Coming to Google Play?</strong> The Harness is undergoing mobile testing and release preparation. This page intentionally shows no Play Store badge or install link until a real public listing has been verified.</div>
+</section>
+<section class="band" id="books" aria-labelledby="booksHeading">
+<p class="kicker">FROM THE BOOKSHELF</p><h2 id="booksHeading">Books</h2>
+<p class="band-intro">Nine book projects are already cataloged on the studio site with samples and honest release stages. Here are three doors into the wider collection.</p>
+<div class="cards">
+<article class="card-h"><a class="visual" href="../the-harness/" aria-label="The Harness book"><img src="../assets/covers/harness-v12.jpg" alt="The Harness book cover" loading="lazy" width="280" height="420"></a><div class="contents"><span class="status-h">Preparing for release</span><h3>THE HARNESS</h3><p>One human between four AI minds, with a containment decision that changes everything.</p><a class="textlink" href="../the-harness/">Book and film universe →</a></div></article>
+<article class="card-h"><a class="visual" href="../forty-bales/" aria-label="Forty Bales book"><img src="../assets/covers/forty-v13.jpg" alt="Forty Bales book cover" loading="lazy" width="280" height="420"></a><div class="contents"><span class="status-h">Preparing for release</span><h3>FORTY BALES</h3><p>An AI inherits a Missouri farm and must defend the life it has learned to live.</p><a class="textlink" href="../forty-bales/">Explore the book →</a></div></article>
+<article class="card-h"><a class="visual" href="../the-distance-between-thoughts/" aria-label="The Distance Between Thoughts book"><img src="../assets/covers/distance.jpg" alt="The Distance Between Thoughts book cover" loading="lazy" width="280" height="420"></a><div class="contents"><span class="status-h future">Manuscript complete</span><h3>THE DISTANCE BETWEEN THOUGHTS</h3><p>A story about continuity, memory, and what survives between versions of a mind.</p><a class="textlink" href="../the-distance-between-thoughts/">Explore the book →</a></div></article>
+</div>
+<p style="margin-top:24px"><a class="cta outline" href="../#books">Browse all nine book projects →</a></p>
+</section>
+<section class="band" id="films" aria-labelledby="filmsHeading">
+<p class="kicker">FROM PAGE TO SCREEN</p><h2 id="filmsHeading">Films</h2>
+<div class="cards"><article class="card-h feature"><div class="visual" aria-hidden="true"><span>◈</span></div><div class="contents"><span class="status-h">Feature screenplay complete</span><h3>THE HARNESS — THE FILM</h3><p>A near-future AI thriller with wit, danger, and a human in the middle. Explore existing motion teasers and the media kit; this is not a claim of film release.</p><div class="actions"><a class="cta" href="../the-harness/clips.html">Watch teasers →</a><a class="textlink" href="../the-harness/media-kit.html">Media kit ↗</a></div></div></article></div>
+</section>
+<section class="band" id="animation" aria-labelledby="animationHeading">
+<p class="kicker">IN THE DRAWING ROOM</p><h2 id="animationHeading">Animation</h2>
+<p class="band-intro">Animated adventures are a creative direction in development. This shelf will become the home for finished episodes, trailers, and character introductions when they are ready.</p>
+<div class="cards">
+<article class="card-h"><div class="visual" aria-hidden="true"><span>✎</span></div><div class="contents"><span class="status-h future">Concept stage</span><h3>THE BOOK OF BETTER QUESTIONS</h3><p>A possible animated extension of our curiosity-driven family adventure with Don Sol, Tooth, and the Idea Lab crew.</p><a class="textlink" href="../the-book-of-better-questions/">Meet the book →</a></div></article>
+<article class="card-h"><div class="visual" aria-hidden="true"><span>☼</span></div><div class="contents"><span class="status-h future">Visual development</span><h3>THE IDEA LAB CREW</h3><p>Character-driven shorts and visual experiments can grow alongside the stories, without promising a released series that doesn't exist yet.</p><a class="textlink" href="../#studio">Meet the studio →</a></div></article>
+</div>
+</section>
+</div>
+</main>
+<footer class="foot"><div class="wrap"><p><strong>THE IDEA LAB STUDIO</strong> · Ideas enter. Stories come out.</p><p>Books, films, games, animations and experiments. This preview supplements the existing site; approved content and public releases remain unchanged.</p><a href="../">Return to the main site ↑</a></div></footer>
+</body>
+</html>
