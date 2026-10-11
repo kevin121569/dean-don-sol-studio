@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#100e19">
+<title>Meet Don Sol — The Idea Lab Studio | Development Preview</title>
+<meta name="description" content="A playful, interactive studio concierge introducing The Idea Lab Studio's books, games, film and animation projects.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<style>
+:root{color-scheme:dark;--bg:#100e19;--ink:#f8f0e5;--muted:#c9bfd0;--gold:#ffc46d;--mint:#a3efd5;--panel:#201a2d;--line:#584966}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+a{color:inherit;text-underline-offset:4px}
+button{font:inherit}
+a:focus-visible,button:focus-visible{outline:3px solid var(--mint);outline-offset:4px}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:16px;top:-100px;background:#fff;color:#111;padding:9px 16px;border-radius:5px;z-index:99}
+.skip:focus{top:10px}
+.wrap{max-width:1180px;margin:auto;width:calc(100% - 40px)}
+header.site-head{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;flex-wrap:wrap}
+.brand{font-size:.82rem;font-weight:900;letter-spacing:.14em;text-decoration:none;text-transform:uppercase}
+.brand span{color:var(--gold)}
+nav{display:flex;flex-wrap:wrap;gap:8px 19px}
+nav a{font-size:.85rem;font-weight:700;text-decoration:none;color:#ded2e4}
+nav a:hover{color:var(--gold)}
+.previewline{border-top:1px solid #4e405d;border-bottom:1px solid #4e405d;background:#201628;padding:8px 0;color:#d8c7e1;font-size:.76rem;letter-spacing:.06em;text-align:center}
+.hero{position:relative;isolation:isolate;background:radial-gradient(ellipse at 19% 42%,#6c452c55,transparent 41%),radial-gradient(ellipse at 76% 35%,#46326c88,transparent 44%),#110e1c;border-bottom:1px solid #3f3453;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;background-image:radial-gradient(#ffffff89 .8px,transparent 1px),radial-gradient(#ffc38066 .7px,transparent 1px);background-size:41px 43px,71px 67px;background-position:0 0,15px 18px;mask-image:linear-gradient(90deg,#000,transparent 84%)}
+.hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr);gap:clamp(24px,4vw,65px);align-items:center;padding:72px 0 90px}
+.eyebrow{color:var(--gold);font-size:.74rem;letter-spacing:.19em;font-weight:900;text-transform:uppercase}
+h1,h2{font-family:Impact,"Arial Narrow",system-ui,sans-serif;font-weight:900;text-transform:uppercase;letter-spacing:.012em;line-height:.96}
+h1{font-size:clamp(3.7rem,8vw,7.15rem);margin:17px 0 25px}
+h1 em{font-style:normal;color:var(--gold)}
+.lede{font-size:clamp(1.02rem,1.85vw,1.22rem);line-height:1.7;max-width:585px;color:#e8dceb}
+.intro-text{color:#c0b5c9;font-size:.9rem;max-width:550px}
+.quick-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.primary,.secondary,.tertiary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;gap:7px;border-radius:999px;padding:12px 20px;font-weight:800;text-decoration:none;cursor:pointer;transition:background .15s,transform .15s,border-color .15s}
+.primary{background:var(--gold);color:#24160e;border:1px solid var(--gold)}
+.secondary{background:#211a2d;color:#f4ebf3;border:1px solid #8c7299}
+.tertiary{background:transparent;color:#e7daea;border:1px solid #584966}
+.primary:hover,.secondary:hover,.tertiary:hover{transform:translateY(-2px)}
+.stage{position:relative;min-height:575px;border-radius:32px;background:radial-gradient(circle at 50% 42%,#58446b55,transparent 52%),linear-gradient(145deg,#2a2239,#14111d);border:1px solid #6d517f;box-shadow:0 30px 70px #05030a88;overflow:hidden;isolation:isolate}
+.stage:before{content:"";position:absolute;left:6%;right:6%;top:9%;height:72%;border-radius:50%;border:1px solid #997cad77;transform:rotate(-13deg)}
+.stage:after{content:"";position:absolute;left:15%;right:15%;top:14%;height:60%;border-radius:50%;border:1px dashed #efb96066;transform:rotate(29deg)}
+.stage-label{position:absolute;z-index:5;left:20px;top:15px;right:20px;font-weight:800;letter-spacing:.15em;font-size:.7rem;color:#dfc7ed;text-align:center;text-transform:uppercase}
+.sun-container{position:absolute;left:50%;top:46%;width:min(80%,400px);aspect-ratio:1;transform:translate(-50%,-50%);z-index:3;animation:sunFloat 6s ease-in-out infinite alternate}
+.sun-svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 14px 32px #d989353a)}
+.sun-rays{transform-origin:200px 200px;animation:sunSpin 44s linear infinite}
+.sun-face{filter:drop-shadow(0 14px 20px #05030b44)}
+.sun-glasses{transform-origin:200px 205px;transition:transform .35s cubic-bezier(.22,.7,.22,1)}
+.sun-mouth-smile,.sun-mouth-talk,.sun-mouth-grin{transition:opacity .18s ease}
+.sun-mouth-talk,.sun-mouth-grin{opacity:0}
+.stage.is-greeting .sun-glasses{transform:translateY(-7px) rotate(-5deg)}
+.stage.is-greeting .sun-mouth-smile{opacity:0}
+.stage.is-greeting .sun-mouth-talk{opacity:1}
+.stage.is-cheeky .sun-glasses{transform:rotate(6deg) translateY(-3px)}
+.stage.is-cheeky .sun-mouth-smile{opacity:0}
+.stage.is-cheeky .sun-mouth-grin{opacity:1}
+.stage.is-greeting .sun-face{animation:sunPulse .6s ease-in-out 2 alternate}
+.stage.is-cheeky .sun-container{animation:sunWiggle .7s ease-in-out 1}
+.stage-sig{position:absolute;bottom:70px;left:0;right:0;text-align:center;font-size:.72rem;font-weight:900;letter-spacing:.18em;color:#fed094;z-index:5}
+.stage-tagline{position:absolute;bottom:20px;left:20px;right:20px;font-size:.76rem;color:#cbbbd2;text-align:center;z-index:5}
+.bubble{position:absolute;right:9px;top:60px;max-width:185px;z-index:6;background:#fff8dc;color:#312039;padding:13px 15px;border-radius:17px 18px 4px 17px;box-shadow:0 8px 17px #03020a55;font-weight:800;font-size:.82rem;transform:rotate(3deg)}
+.bubble:after{content:"";position:absolute;right:15px;bottom:-11px;border:6px solid transparent;border-top-color:#fff8dc}
+.sparkwrap{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+.spark{position:absolute;width:7px;height:7px;border-radius:50%;background:#f9d18a;box-shadow:0 0 16px 5px #fac06e5c;animation:sparkRise 6s ease-in-out infinite alternate}
+.spark:nth-child(1){left:15%;top:31%;animation-delay:-2s}
+.spark:nth-child(2){right:16%;top:49%;animation-delay:-4s;background:#a8fae3}
+.spark:nth-child(3){left:28%;bottom:26%;animation-delay:-1s}
+.spark:nth-child(4){right:30%;bottom:19%;animation-delay:-3.5s;background:#c7abff}
+.concierge{padding:63px 0 80px}
+.concierge-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:23px}
+h2{font-size:clamp(2.7rem,5vw,4.5rem);margin:10px 0}
+.concierge-heading p{max-width:520px;color:var(--muted)}
+.console{border:1px solid #735883;background:linear-gradient(125deg,#251b32,#18131f);border-radius:24px;display:grid;grid-template-columns:.95fr 1.05fr;overflow:hidden;box-shadow:0 18px 45px #05030d55}
+.console-left{padding:clamp(24px,3vw,38px);border-right:1px solid #513f61}
+.dialogue-label{font-size:.77rem;letter-spacing:.14em;font-weight:800;text-transform:uppercase;color:var(--gold)}
+.dialogue{font-size:clamp(1.12rem,2vw,1.37rem);line-height:1.58;min-height:120px;margin:15px 0;color:#ffedeb}
+.option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.option-grid button{min-height:62px;padding:12px;border-radius:11px;border:1px solid #6b5379;background:#30253c;color:#f6ecf5;font-weight:800;cursor:pointer;text-align:left}
+.option-grid button:hover,.option-grid button[aria-pressed="true"]{border-color:var(--gold);background:#4d3244;color:#fff6e7}
+.console-right{padding:clamp(24px,3vw,38px);background:radial-gradient(circle at 80% 10%,#7c5e7733,transparent 52%)}
+.feature-card{display:grid;grid-template-columns:125px minmax(0,1fr);align-items:center;gap:22px}
+.feature-art{display:flex;width:125px;height:180px;align-items:center;justify-content:center;border-radius:10px;background:linear-gradient(135deg,#3b2c4e,#191824);border:1px solid #66516d;overflow:hidden}
+.feature-art img{width:100%;height:100%;object-fit:cover}
+.feature-art .art-glyph{font-size:4rem;color:#ffca86}
+.feature-tag{color:#b9f4db;font-size:.73rem;text-transform:uppercase;font-weight:900;letter-spacing:.08em}
+.feature-title{font-size:clamp(1.35rem,2.7vw,2.25rem);font-weight:900;line-height:1.1;margin:10px 0}
+.feature-summary{font-size:.93rem;color:#cbbfce;line-height:1.6;margin:12px 0 17px}
+.feature-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:27px}
+.feature-links a{min-height:48px}
+.feature-links .primary{max-width:100%}
+.quick-trail{padding-top:22px;margin-top:24px;border-top:1px solid #554365;color:#c9b9cf;font-size:.85rem}
+.quick-trail a{color:#ffcf8c}
+.tour-note{margin:19px 0 0;color:#ad9fba;font-size:.83rem}
+.worlds{padding:30px 0 90px}
+.worlds h2{margin-top:8px}
+.worlds-intro{color:var(--muted);max-width:670px;margin-bottom:24px}
+.world-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.world{background:linear-gradient(145deg,#261f35,#1a1523);border:1px solid #62516f;border-radius:16px;padding:21px;display:flex;flex-direction:column;gap:12px;min-height:220px}
+.world h3{font-size:1.3rem;margin:0;line-height:1.18}
+.world p{font-size:.87rem;line-height:1.5;color:#c7b9ce;flex:1;margin:0}
+.world a{color:#ffd494;font-weight:850;text-decoration:none}
+.world a:hover{text-decoration:underline}
+footer{padding:29px 0 50px;border-top:1px solid #4d3d59;color:#c7b9cc;font-size:.82rem}
+footer a{color:#ffd294}
+@keyframes sunFloat{to{transform:translate(-50%,calc(-50% - 12px))}}
+@keyframes sunSpin{to{transform:rotate(360deg)}}
+@keyframes sunPulse{to{transform:scale(1.03)}}
+@keyframes sunWiggle{25%{transform:translate(-50%,-50%) rotate(-3deg)}75%{transform:translate(-50%,-50%) rotate(3deg)}}
+@keyframes sparkRise{to{transform:translateY(-20px);opacity:.4}}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;padding:45px 0 65px}.stage{min-height:440px;max-width:600px;width:100%;margin:auto}.sun-container{width:min(70%,350px)}.console{grid-template-columns:1fr}.console-left{border-right:0;border-bottom:1px solid #513f61}.world-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.wrap{width:calc(100% - 30px)}.site-head{padding:16px 0}.hero-grid{padding:40px 0 55px}h1{font-size:clamp(3.3rem,15vw,5.9rem)}.stage{min-height:345px;border-radius:21px}.sun-container{width:72%;top:49%}.bubble{font-size:.66rem;max-width:137px;padding:8px;top:48px;right:7px}.stage-sig{bottom:52px}.stage-tagline{bottom:11px;font-size:.63rem}.concierge{padding:48px 0 58px}.console{border-radius:17px}.console-left,.console-right{padding:22px}.option-grid button{min-height:60px;font-size:.88rem}.feature-card{grid-template-columns:90px 1fr;gap:13px}.feature-art{width:90px;height:135px}.feature-title{font-size:1.44rem}.feature-summary{font-size:.87rem}.world-grid{grid-template-columns:1fr}.world{min-height:175px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}.stage.is-greeting .sun-face{animation:none!important}.stage.is-cheeky .sun-container{animation:none!important}.primary:hover,.secondary:hover,.tertiary:hover{transform:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap"><header class="site-head"><a class="brand" href="../" aria-label="Return to The Idea Lab Studio home">✦ THE IDEA LAB <span>STUDIO</span></a>
+<nav aria-label="Studio sections"><a href="../#books">Books</a><a href="../harness-play/dev-ep2-v2/cases.html">Play</a><a href="../the-harness/clips.html">Films</a><a href="../worlds-preview-v2/#animation">Animation</a><a href="../worlds-preview-v2/#portal">Wormhole</a></nav></header></div>
+<div class="previewline">INTERACTIVE STUDIO HOST · V1 DEVELOPMENT PREVIEW · NOT A STORE RELEASE</div>
+<main id="main">
+<section class="hero"><div class="wrap hero-grid">
+<div><p class="eyebrow">MEET YOUR STUDIO HOST</p><h1>GOOD STORIES.<br><em>STRANGE IDEAS.</em><br>BRIGHT COMPANY.</h1>
+<p class="lede">I'm Don Sol. Around here we write books, make games, dream up films, and occasionally turn innocent punctuation into a character with opinions.</p>
+<p class="intro-text">You don't need a map. Just tell me whether you feel like reading, playing, watching—or getting your mind a little bent.</p>
+<div class="quick-actions"><a class="primary" href="#concierge">Let Don Sol show you around ↓</a><a class="secondary" href="../worlds-preview-v2/#portal">Enter Curley's wormhole ↗</a></div>
+</div>
+<div class="stage" data-stage role="img" aria-label="Animated Don Sol character, a smiling golden sun in dark sunglasses, floating with a warm halo and sparkling stars.">
+<div class="stage-label">THE IDEA LAB · WELCOME DESK</div><div class="sparkwrap" aria-hidden="true"><i class="spark"></i><i class="spark"></i><i class="spark"></i><i class="spark"></i></div>
+<div class="bubble" data-bubble aria-hidden="true">Welcome to the Lab. Watch your step.</div>
+<div class="sun-container" aria-hidden="true">
+<svg class="sun-svg" viewBox="0 0 400 400" focusable="false">
+<defs>
+<radialGradient id="sunGold" cx=".35" cy=".28" r=".9"><stop offset="0" stop-color="#fff3b9"/><stop offset=".47" stop-color="#ffd16d"/><stop offset=".8" stop-color="#ffae38"/><stop offset="1" stop-color="#e87b36"/></radialGradient>
+<linearGradient id="shades" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#252037"/><stop offset="1" stop-color="#080c17"/></linearGradient>
+</defs>
+<g class="sun-rays" fill="#ffc660">
+<rect x="193" y="10" width="14" height="47" rx="7"/><rect x="193" y="343" width="14" height="47" rx="7"/>
+<rect x="343" y="193" width="47" height="14" rx="7"/><rect x="10" y="193" width="47" height="14" rx="7"/>
+<rect x="193" y="10" width="14" height="47" rx="7" transform="rotate(45 200 200)"/><rect x="193" y="343" width="14" height="47" rx="7" transform="rotate(45 200 200)"/>
+<rect x="343" y="193" width="47" height="14" rx="7" transform="rotate(45 200 200)"/><rect x="10" y="193" width="47" height="14" rx="7" transform="rotate(45 200 200)"/>
+</g>
+<g class="sun-face">
+<circle cx="200" cy="200" r="146" fill="url(#sunGold)" stroke="#ffe9ab" stroke-width="6"/>
+<ellipse cx="147" cy="267" rx="30" ry="10" fill="#eb8b5266"/><ellipse cx="252" cy="267" rx="30" ry="10" fill="#eb8b5266"/>
+<g class="sun-glasses">
+<path d="M88 174L98 222Q148 258 180 218L188 176Q145 160 88 174ZM212 176L219 218Q254 258 302 222L312 174Q255 160 212 176Z" fill="url(#shades)" stroke="#312438" stroke-width="6" stroke-linejoin="round"/>
+<path d="M180 190Q199 179 218 190" stroke="#262339" stroke-width="9" stroke-linecap="round" fill="none"/>
+<path d="M88 177L68 169M312 177L332 169" stroke="#312438" stroke-width="8" stroke-linecap="round"/>
+<path d="M103 183Q126 180 138 188" stroke="#ffffff55" stroke-width="8" stroke-linecap="round" fill="none"/>
+<path d="M227 186Q247 177 273 183" stroke="#ffffff55" stroke-width="8" stroke-linecap="round" fill="none"/>
+</g>
+<path class="sun-mouth-smile" d="M156 267Q202 316 246 266" stroke="#8e442e" stroke-width="13" stroke-linecap="round" fill="none"/>
+<ellipse class="sun-mouth-talk" cx="202" cy="283" rx="27" ry="22" fill="#813a32"/><path class="sun-mouth-grin" d="M150 274Q201 330 253 271Z" fill="#8f4732" stroke="#8f4732" stroke-width="5"/>
+</g>
+</svg></div>
+<div class="stage-sig">DON SOL · CHIEF TROUBLEMAKER</div>
+<div class="stage-tagline">A little sunshine. A lot of unexpected storytelling.</div>
+</div></div></section>
+<section class="concierge wrap" id="concierge" aria-labelledby="conciergeTitle">
+<div class="concierge-heading"><div><p class="eyebrow">THE DON SOL CONCIERGE</p><h2 id="conciergeTitle">WHAT BRINGS YOU IN?</h2></div>
+<p>Choose a door and I'll point you toward something real—not an empty promise or a “coming soon” button pretending to be a product.</p></div>
+<div class="console">
+<div class="console-left"><span class="dialogue-label">DON SOL IS SAYING</span>
+<p class="dialogue" data-dialogue aria-live="polite">Welcome to the studio, cousin. Pick a world and I'll show you the good stuff. Tooth insists I mention that he inspected the buttons.</p>
+<div class="option-grid" role="group" aria-label="Choose what to explore">
+<button type="button" data-choice="books" aria-pressed="false">📚 I want to read</button>
+<button type="button" data-choice="games" aria-pressed="false">🎮 I want to play</button>
+<button type="button" data-choice="films" aria-pressed="false">🎬 I want to watch</button>
+<button type="button" data-choice="animation" aria-pressed="false">✏️ Show me animation</button>
+</div>
+<div class="quick-actions"><button type="button" class="secondary" data-meet>Meet Don Sol</button><button type="button" class="tertiary" data-surprise>Surprise me ↻</button></div>
+</div>
+<div class="console-right" aria-label="Recommended studio destination">
+<div class="feature-card"><div class="feature-art" data-art><img src="../assets/covers/harness-v12.jpg" alt="Cover of The Harness" width="125" height="180"></div>
+<div><span class="feature-tag" data-status>Playable browser development test</span>
+<h3 class="feature-title" data-title>The Harness — Game</h3>
+<p class="feature-summary" data-description>Make the call. Play the current two-level browser experience while the Android release remains in development.</p></div></div>
+<div class="feature-links"><a class="primary" data-action href="../harness-play/dev-ep2-v2/cases.html">Play the browser game →</a><a class="secondary" data-related href="../the-harness/">Explore the related book ↗</a></div>
+<p class="quick-trail">Want the whole studio? <a href="../#books">Browse the books</a> · <a href="../worlds-preview-v2/#portal">Explore Curley's wormhole</a> · <a href="../the-harness/clips.html">Watch film teasers</a></p>
+</div></div>
+<p class="tour-note">Don Sol's dialogue is on-screen text, not synthetic speech. Animation is decorative and respects reduced-motion preferences. The destination links work without this guided interface.</p>
+</section>
+<section class="worlds wrap" aria-labelledby="worldsTitle">
+<p class="eyebrow">EVERY WORLD HAS ANOTHER DOOR</p><h2 id="worldsTitle">DISCOVER THE STUDIO</h2>
+<p class="worlds-intro">We're building an interconnected creative company: novels, playable stories, film development, and future animated adventures. Explore what's available today.</p>
+<div class="world-grid">
+<article class="world"><h3>Books</h3><p>Nine projects in the studio catalog, with free excerpts and clear publishing statuses.</p><a href="../#books">Browse the catalog ↗</a></article>
+<article class="world"><h3>Games</h3><p>Play The Harness browser test and our free reading mystery. The Play Store release isn't available yet.</p><a href="../worlds-preview-v2/#games">Find a game ↗</a></article>
+<article class="world"><h3>Films</h3><p>Watch existing Harness motion teasers and explore the feature-film material.</p><a href="../the-harness/clips.html">Watch the teasers ↗</a></article>
+<article class="world"><h3>Animation</h3><p>Meet the characters and see the concepts behind our future animated projects.</p><a href="../worlds-preview-v2/#animation">Explore concepts ↗</a></article>
+</div>
+</section>
+</main>
+<footer><div class="wrap"><strong>THE IDEA LAB STUDIO</strong> · Ideas enter. Stories come out. · This is an unlisted review preview. <a href="../">Back to the main studio site</a>.</div></footer>
+<script>
+(() => {
+  'use strict';
+  const $ = (q) => document.querySelector(q);
+  const stage = $('[data-stage]');
+  const dialogue = $('[data-dialogue]');
+  const bubble = $('[data-bubble]');
+  const choiceButtons = Array.from(document.querySelectorAll('[data-choice]'));
+  const art = $('[data-art]');
+  const title = $('[data-title]');
+  const status = $('[data-status]');
+  const description = $('[data-description]');
+  const action = $('[data-action]');
+  const related = $('[data-related]');
+  const locations = {
+    books: {
+      line: 'Books it is! There are nine doors on this shelf. Start with The Harness if you like an intelligent mystery with jokes in dangerous places.',
+      bubble: 'Excellent choice. Pages rarely bite.',
+      tag: 'Novel · Preparing for release', title: 'The Harness — Novel',
+      description: 'Four AI minds. One human carrying their questions. Start with a free excerpt and find the wider story universe.',
+      image: '../assets/covers/harness-v12.jpg', alt: 'Cover of The Harness',
+      href: '../the-harness/', cta: 'Read the free excerpt →',
+      related: '../#books', relatedText: 'Browse all nine books ↗', expression: 'greeting'
+    },
+    games: {
+      line: 'Games! Excellent. In The Harness you get four AI advisers, a difficult decision, and the pleasure of knowing Tooth will disagree with you.',
+      bubble: 'Tooth has demanded a rematch.',
+      tag: 'Playable browser development test', title: 'The Harness — Game',
+      description: 'Make the call. Play the current two-level browser experience while the Android release remains in development.',
+      image: '../assets/covers/harness-v12.jpg', alt: 'Cover of The Harness',
+      href: '../harness-play/dev-ep2-v2/cases.html', cta: 'Play the browser game →',
+      related: '../the-harness/', relatedText: 'Explore the related book ↗', expression: 'cheeky'
+    },
+    films: {
+      line: 'A movie fan! The Harness is a feature screenplay, and you can already watch our motion teasers. Nobody has asked Tooth to direct. Yet.',
+      bubble: 'Lights. Camera. HAAAAAAAAAH!',
+      tag: 'Film in development · Teasers available', title: 'The Harness — Film',
+      description: 'A human, four AIs and a question no reset can answer. See our existing motion teasers.',
+      image: '../assets/covers/harness-v12.jpg', alt: 'Cover artwork for The Harness',
+      href: '../the-harness/clips.html', cta: 'Watch film teasers →',
+      related: '../the-harness/media-kit.html', relatedText: 'Open the media kit ↗', expression: 'greeting'
+    },
+    animation: {
+      line: 'Cartoons, then! Percy the Parenthesis Princess can organize anything except Tooth’s paperwork. Meet the ideas for our animated worlds.',
+      bubble: 'Percy says we need brackets.',
+      tag: 'Animation concepts · In development', title: 'The Book of Better Questions',
+      description: 'Curiosity, imagination, and a cast of expressive studio characters. Explore the book behind our animation ideas.',
+      image: '../assets/covers/questions-v12.jpg', alt: 'Cover of The Book of Better Questions',
+      href: '../the-book-of-better-questions/', cta: 'Meet the book and characters →',
+      related: '../worlds-preview-v2/#animation', relatedText: 'Explore animation concepts ↗', expression: 'cheeky'
+    }
+  };
+  let selected = null;
+  let timer = null;
+  let surpriseIndex = 0;
+  function express(kind) {
+    stage.classList.remove('is-greeting', 'is-cheeky');
+    if (timer) window.clearTimeout(timer);
+    void stage.offsetWidth;
+    stage.classList.add(kind === 'cheeky' ? 'is-cheeky' : 'is-greeting');
+    timer = window.setTimeout(() => stage.classList.remove('is-greeting', 'is-cheeky'), 920);
+  }
+  function choose(key) {
+    if (!Object.prototype.hasOwnProperty.call(locations,key)) return;
+    const item = locations[key];
+    selected = key;
+    dialogue.textContent = item.line;
+    bubble.textContent = item.bubble;
+    title.textContent = item.title;
+    status.textContent = item.tag;
+    description.textContent = item.description;
+    art.replaceChildren();
+    const img = document.createElement('img');
+    img.src = item.image;
+    img.alt = item.alt;
+    img.width = 125;
+    img.height = 180;
+    img.loading = 'lazy';
+    art.appendChild(img);
+    action.href = item.href;
+    action.textContent = item.cta;
+    related.href = item.related;
+    related.textContent = item.relatedText;
+    choiceButtons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.choice === key)));
+    express(item.expression);
+  }
+  choiceButtons.forEach(b => b.addEventListener('click', () => choose(b.dataset.choice)));
+  $('[data-meet]').addEventListener('click', () => {
+    dialogue.textContent = 'I am Don Sol, your excessively enthusiastic tour guide. We make books, games, movies and cartoons. Tooth handles quality control. Against all odds, the place is still standing.';
+    bubble.textContent = 'Welcome aboard, cousin!';
+    express('greeting');
+  });
+  $('[data-surprise]').addEventListener('click', () => {
+    const keys = ['games','animation','books','films'];
+    choose(keys[surpriseIndex % keys.length]);
+    surpriseIndex += 1;
+  });
+})();
+</script>
+</body>
+</html>
