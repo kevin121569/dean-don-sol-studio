@@ -24,8 +24,8 @@ function tone(){
    assert.equal(await page.locator('#voicePlay').isDisabled(),true);
    if(vp.width>500){
     await page.locator('#beginFilm').click();
-    await page.waitForFunction(()=>document.querySelector('#entranceFilm').currentTime>.3,{timeout:12000});
-    await page.waitForFunction(()=>!document.querySelector('#seatedPortrait').hidden,{timeout:16000});
+    await page.waitForFunction(()=>document.querySelector('#entranceFilm').currentTime>.3,null,{timeout:15000});
+    await page.waitForFunction(()=>!document.querySelector('#seatedPortrait').hidden,null,{timeout:15000});
    }else{
     await page.locator('#seatedButton').click();
     await page.locator('#seatedPortrait').waitFor({state:'visible'});
