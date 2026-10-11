@@ -32,7 +32,7 @@ export const STATIC_IDS = Object.freeze([
   'soundButton', 'audioDialog', 'audioTitle', 'soundEnabled', 'volVoice', 'volMusic', 'volSfx', 'narrationNote', 'audioClose',
   'introDialog', 'introTitle', 'introSubtitle', 'introProgress', 'introSkip', 'introNext',
   // app.js
-  'scene-title', 'roles-title', 'btn-start', 'progress', 'evidence-title', 'advisors-title', 'btn-consult-all', 'btn-decide',
+  'scene-title', 'mission-goal-title', 'postmortem-context-title', 'roles-title', 'btn-start', 'progress', 'evidence-title', 'advisors-title', 'btn-consult-all', 'btn-decide',
   'choices-title', 'ack', 'btn-submit', 'btn-back', 'submit-hint', 'btn-postmortem',
   'pm-known', 'pm-unknown', 'pm-advisors', 'pm-alts', 'btn-again',
 ]);
