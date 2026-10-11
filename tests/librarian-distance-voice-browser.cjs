@@ -64,6 +64,7 @@ async function main(){
    const initial=await page.locator('#voiceStatus').innerText();
    assert.ok(initial.includes('No recording'));
    assert.equal(await page.locator('#localPlayer').isVisible(),false);
+   await page.screenshot({path:path.join(dir,'distance-voice-first-view-'+size.width+'.png'),fullPage:true});
    await page.locator('#playAudition').click();
    await page.waitForFunction(()=>window.__qaSpoken?.length===5,null,{timeout:8000});
    assert.deepEqual(await page.evaluate(()=>window.__qaSpoken),text.map(x=>x.trim()),'Sentence cue order follows locked dialogue');
