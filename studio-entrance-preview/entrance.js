@@ -65,7 +65,7 @@
   window.addEventListener('hashchange',()=>view(location.hash==='#kids'?'kids':location.hash==='#adult'?'adult':'home',true));
   function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   const cards=document.getElementById('adultBooks');
-  cards.innerHTML=books.map(b=>`<article class="book-tile"><div class="cover-wrap"><img src="${b.cover}" alt="Cover of ${escapeHtml(b.title)}" loading="lazy" width="120" height="180"></div><div class="tile-text"><h3>${escapeHtml(b.title)}</h3><p>${escapeHtml(b.summary)}</p><div class="tile-actions"><button type="button" data-book="${b.id}" aria-label="Hear The Librarian introduce ${escapeHtml(b.title)}">His introduction</button><a href="${b.sample}" aria-label="Read a free sample of ${escapeHtml(b.title)}">Read sample ↗</a></div></div></article>`).join('');
+  cards.innerHTML=books.map(b=>`<article class="book-tile"><div class="cover-wrap"><img src="${b.cover}" alt="Cover of ${escapeHtml(b.title)}" loading="lazy" width="120" height="180"></div><div class="tile-text"><h3>${escapeHtml(b.title)}</h3><p>${escapeHtml(b.summary)}</p><div class="tile-actions"><button type="button" data-book="${b.id}" aria-label="Read The Librarian’s introduction to ${escapeHtml(b.title)}">His introduction</button><a href="${b.sample}" aria-label="Read a free sample of ${escapeHtml(b.title)}">Read sample ↗</a></div></div></article>`).join('');
   cards.addEventListener('click',e=>{
     const b=e.target.closest('[data-book]');if(!b)return;
     const book=books.find(x=>x.id===b.dataset.book);if(!book)return;
