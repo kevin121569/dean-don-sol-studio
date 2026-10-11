@@ -55,7 +55,7 @@ async function main(){
    await ctx.addInitScript(mockScript,{uk:true});
    const page=await ctx.newPage();const errs=[],outside=[];
    page.on('pageerror',e=>errs.push(e.message));
-   page.on('request',r=>{if(!r.url().startsWith(base))outside.push(r.url())});
+   page.on('request',r=>{if(/^https?:/.test(r.url())&&!r.url().startsWith(base))outside.push(r.url())});
    await page.goto(base+'/librarian-distance-voice-rehearsal-v1/',{waitUntil:'domcontentloaded'});
    assert.equal(await page.locator('#lines [data-line]').count(),5);
    const text=await page.locator('#lines [data-line]').allTextContents();
