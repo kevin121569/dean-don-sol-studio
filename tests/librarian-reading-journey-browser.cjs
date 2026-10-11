@@ -86,6 +86,11 @@ async function testJourney(page,base,viewport){
   await page.locator('#adultWorld [data-enter="kids"]').click();
   assert.equal(await note.isVisible(),false,'adult suggestion disappears in the kids world');
   await page.locator('#kidsWorld').waitFor({state:'visible'});
+  // Returning from the kids world must not restart the Librarian's film.
+  await page.locator('#kidsWorld [data-enter="adult"]').click();
+  await page.locator('#adultWorld').waitFor({state:'visible'});
+  assert.equal(await page.locator('#libraryArrivalStill').isVisible(),true,'the Librarian stays seated after a world switch');
+  assert.equal(await page.locator('#libraryFilm').evaluate(el=>el.paused),true,'no repeated autoplay after leaving and returning');
   check(errors.length===0,'no JS exceptions: '+errors.join(' | '));
   const docWidth=await page.evaluate(()=>document.documentElement.scrollWidth);
   assert.ok(docWidth<=viewport.width+2,'No horizontal page overflow at '+viewport.width+'px: '+docWidth);
