@@ -393,9 +393,9 @@ function postmortem() {
     : '<p class="muted">No special investigation awards this time. You can replay and discover more.</p>';
   const trustText = a => !a.consulted ? 'You didn’t ask them.' : `You chose: ${TRUST_LABELS[a.trust]}.`;
   return `
-  <section class="panel mission-report" aria-labelledby="mission-report-title">
+  <section class="panel mission-report" aria-labelledby="scene-title">
     <p class="mission-status">${esc(report.label)} · EPISODE ONE</p>
-    <h1 id="mission-report-title" tabindex="-1">${esc(report.heading)}</h1>
+    <h1 id="scene-title" tabindex="-1">${esc(report.heading)}</h1>
     <p>${esc(report.mission)}</p>
     <div class="mission-stats" role="group" aria-label="Investigation progress">
       <p><strong>${report.evidence.done} / ${report.evidence.total}</strong><span>Evidence records read</span></p>
@@ -408,9 +408,9 @@ function postmortem() {
     <p class="mission-caution">${esc(report.note)}</p>
     <p class="muted">${esc(report.replay)}</p>
   </section>
-  <section aria-labelledby="scene-title">
+  <section aria-labelledby="postmortem-context-title">
     <p class="eyebrow">Episode 1 · What you learned</p>
-    <h1 id="scene-title" tabindex="-1">What happened, and what didn't</h1>
+    <h2 id="postmortem-context-title">What happened, and what didn't</h2>
     <p class="lede">You chose: <b>${esc(pm.decision.label)}</b>. ${pm.uncertaintyAcknowledged ? 'You said some things were still unknown.' : 'You didn’t say whether anything was still unknown.'}</p>
   </section>
   <div class="grid-2">
