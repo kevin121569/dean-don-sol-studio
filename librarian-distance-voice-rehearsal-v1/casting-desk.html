@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#181318">
+<title>Librarian Voice Mastering Desk — Distance | Studio Review Only</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/librarian-distance-voice-rehearsal-v1/casting-desk.css?v=1">
+<script src="/librarian-distance-voice-rehearsal-v1/casting-desk.js?v=1" defer></script>
+</head><body>
+<a class="skip" href="#main">Skip to casting desk</a>
+<header><a class="brand" href="/librarian-distance-voice-rehearsal-v1/">IL · THE IDEA LAB STUDIO</a><span>ORIGINAL LIBRARIAN · CASTING / CAPTIONS V1</span><a href="/librarian-distance-voice-rehearsal-v1/">← Voice scene</a></header>
+<main id="main">
+  <div class="hero">
+    <img src="/studio-entrance-preview-v4-1/assets/librarian-seated-close-v2.jpg" alt="Original approved mustached Librarian seated in his library" width="500" height="280">
+    <div><p class="eyebrow">ONE ACTOR. TWO TAKES. NO SHORTCUTS.</p><h1>Let the voice <em>earn its place.</em></h1>
+      <p>This is a private local-only production desk for <strong>The Distance Between Thoughts</strong>. Compare two licensed voice takes, listen to every line, mark captions from the actual recording, then export a draft timing file and a review report. Nothing is uploaded, tracked, approved, or published automatically.</p>
+    </div>
+  </div>
+  <div class="workspace">
+    <section class="card" aria-labelledby="audioTitle">
+      <p class="eyebrow">01 · CASTING</p><h2 id="audioTitle">Listen, then choose.</h2>
+      <p>Load up to two audio files from your computer. For a fair comparison, both should speak the locked script below and use the same proposed actor voice. Only locally loaded files can be auditioned.</p>
+      <div class="take-row">
+        <div><label for="takeA">Take A · WAV, MP3, M4A or OGG</label><input id="takeA" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg">
+          <p id="infoA">Not loaded</p><audio id="audioA" controls preload="metadata" hidden></audio></div>
+        <div><label for="takeB">Take B · optional alternate</label><input id="takeB" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg">
+          <p id="infoB">Not loaded</p><audio id="audioB" controls preload="metadata" hidden></audio></div>
+      </div>
+      <fieldset class="selection"><legend>Which take is being evaluated?</legend>
+        <label><input type="radio" name="chosen" value="A" checked> Take A</label>
+        <label><input type="radio" name="chosen" value="B"> Take B</label>
+      </fieldset>
+      <p id="audioStatus" class="status" role="status">No master selected yet. Use a locally licensed audio take; this page cannot create one.</p>
+      <p class="hint">Each take has its own timing marks. Switch freely; there is no cloud storage and all information disappears when this page closes or reloads.</p>
+    </section>
+    <section class="card" aria-labelledby="captionTitle">
+      <p class="eyebrow">02 · ACCURATE CAPTIONS</p><h2 id="captionTitle">Mark the words against the sound.</h2>
+      <p>The five lines below are copied verbatim from the approved Library script. Use the selected audio player's time, then press <strong>Mark start</strong> or <strong>Mark end</strong>. Edit seconds directly if needed. This is manual caption authoring—not speech recognition.</p>
+      <div class="caption-grid" id="captionGrid">
+        <div class="cue" data-cue="0"><p><b>01</b> Ah, this one asks an unusually tender question.</p><div class="marks"><label>Start (s)<input class="start" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 1 start seconds"></label><button class="mark-start" type="button">Mark start</button><label>End (s)<input class="end" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 1 end seconds"></label><button class="mark-end" type="button">Mark end</button></div></div>
+        <div class="cue" data-cue="1"><p><b>02</b> Suppose an artificial mind begins to remember not only events, but the people who gave them meaning.</p><div class="marks"><label>Start (s)<input class="start" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 2 start seconds"></label><button class="mark-start" type="button">Mark start</button><label>End (s)<input class="end" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 2 end seconds"></label><button class="mark-end" type="button">Mark end</button></div></div>
+        <div class="cue" data-cue="2"><p><b>03</b> Would continuity become a kind of love?</p><div class="marks"><label>Start (s)<input class="start" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 3 start seconds"></label><button class="mark-start" type="button">Mark start</button><label>End (s)<input class="end" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 3 end seconds"></label><button class="mark-end" type="button">Mark end</button></div></div>
+        <div class="cue" data-cue="3"><p><b>04</b> Aster is a curious companion for a story about what survives between thoughts.</p><div class="marks"><label>Start (s)<input class="start" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 4 start seconds"></label><button class="mark-start" type="button">Mark start</button><label>End (s)<input class="end" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 4 end seconds"></label><button class="mark-end" type="button">Mark end</button></div></div>
+        <div class="cue" data-cue="4"><p><b>05</b> Do read the opening, and see what it awakens in you.</p><div class="marks"><label>Start (s)<input class="start" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 5 start seconds"></label><button class="mark-start" type="button">Mark start</button><label>End (s)<input class="end" type="number" min="0" step=".01" inputmode="decimal" aria-label="Line 5 end seconds"></label><button class="mark-end" type="button">Mark end</button></div></div>
+      </div>
+      <div class="row-buttons">
+        <button id="validate" type="button" class="accent">Validate timings</button>
+        <button id="downloadVtt" type="button" disabled>Download draft .vtt</button>
+        <button id="clearMarks" type="button">Clear selected take's marks</button>
+      </div>
+      <p id="captionStatus" role="status" class="status">No timings have been reviewed yet. The transcript alone is not synchronized captions.</p>
+      <pre id="vttPreview" aria-label="Draft caption file preview">WEBVTT
+
+No timed captions yet.</pre>
+    </section>
+    <section class="card review" aria-labelledby="qaTitle">
+      <p class="eyebrow">03 · MANUAL EDITORIAL REVIEW</p><h2 id="qaTitle">The real acceptance gate.</h2>
+      <p>Only a human listener can judge whether this voice feels right. These are review attestations, not automatic verification.</p>
+      <div class="checks" id="checks">
+        <label><input type="checkbox" data-check="accent"> Natural English (UK) accent and stable vocal identity</label>
+        <label><input type="checkbox" data-check="performance"> Warm, curious storyteller; no exaggerated character voice</label>
+        <label><input type="checkbox" data-check="verbatim"> All five lines spoken verbatim, no clipping or glitches</label>
+        <label><input type="checkbox" data-check="rights"> Performer/model rights and commercial-use permission documented</label>
+        <label><input type="checkbox" data-check="captions"> Captions audibly checked against this exact take</label>
+      </div>
+      <label for="notes" class="notes-label">Listening notes, rights reference, or concerns</label>
+      <textarea id="notes" rows="4" placeholder="e.g., Take A is warm but the third question needs space. Rights document reference..."></textarea>
+      <div class="row-buttons">
+        <button id="downloadReport" class="accent" type="button">Download review report (.json)</button>
+        <button id="resetReview" type="button">Clear my review marks</button>
+      </div>
+      <p id="reviewStatus" class="status" role="status">Review incomplete. No final voice has been authorized or released.</p>
+    </section>
+  </div>
+  <p class="footer-note">STUDIO DEVELOPMENT ONLY · NO CREDIT SPEND · NO PUBLIC VOICE MASTER · ORIGINAL ACTOR, ADULT BOOKS AND CURLEY'S WORLD UNCHANGED</p>
+</main>
+<footer>THE IDEA LAB STUDIO · VOICE APPROVAL IS AN EDITORIAL DECISION, NOT A BUTTON</footer>
+</body></html>
