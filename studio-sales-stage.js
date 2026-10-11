@@ -59,7 +59,7 @@ function updateScene(){
  const image=prop.querySelector('img');image.src=bookCover?.getAttribute('src')||'';
  prop.hidden=script[0]!=='Curley';
  msg.textContent='Press play to hear '+script[0]+' with a device voice.';
- play.textContent='▶ Hear '+script[0]+' pitch this book';
+ play.textContent='▶ Try device narration of '+script[0]+'\'s pitch';
  dialog.classList.remove('sales-curley-replay');
  if(script[0]==='Curley'){void dialog.offsetWidth;dialog.classList.add('sales-curley-replay');}
 }
@@ -86,7 +86,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden&&activeUtte
 function openSales(t,audio){
  const card=findCard(t),button=card?.querySelector('.sg-meet-button');
  if(!button)return;
- button.click(); // Existing card listener opens the stage, refreshes the pitch, and voices it on user action.
+ button.click(); // Existing card listener opens the staged scripted pitch. Narration stays opt-in.
 }
 const hero=document.querySelector('.hero .hero-actions');
 if(hero){
@@ -103,7 +103,7 @@ cards.forEach(card=>{
  const btn=card.querySelector('.sg-meet-button'),t=card.querySelector('.book-title')?.textContent.trim();
  if(!btn||!scripts[t])return;
  const who=scripts[t][0];
- btn.textContent='▶ Hear '+who+' pitch this book';
+ btn.textContent='🎬 See '+who+' pitch this book';
  btn.addEventListener('click',updateScene);
  if(who==='Curley'){
   const cover=card.querySelector('.cover');
@@ -116,10 +116,10 @@ document.addEventListener('click',e=>{
 const showcase=document.createElement('section');
 showcase.className='sales-showcase';
 showcase.setAttribute('aria-label','Don Sol and Curley sell the books');
-showcase.innerHTML='<div class="sales-head"><p class="eyebrow">THE BOOKSTORE HAS CHARACTERS</p><h3>Hear the story behind the cover.</h3><p>Don Sol pulls up a chair. Curley slithers toward the children’s shelf. They have something to tell you before you read the first page.</p></div>'+
+showcase.innerHTML='<div class="sales-head"><p class="eyebrow">THE BOOKSTORE HAS CHARACTERS</p><h3>Meet the story behind the cover.</h3><p>Don Sol pulls up a chair. Curley slithers toward the children’s shelf. They have something to tell you before you read the first page.</p></div>'+
 '<div class="sales-pair">'+
-'<article class="sales-person sales-person-don"><div class="sales-art"><img src="/assets/characters/don-sol-idealable-v3.svg" alt="Don Sol, the white-haired, white-bearded cartoon storyteller" width="898" height="610"><span class="sales-bubble">“Four AIs. One reset switch. What would YOU do?”</span></div><div class="sales-person-copy"><strong>😎 Don Sol · Your storyteller</strong><p>Come hear the AI thriller I want you to read.</p><button type="button" data-sales-title="The Harness">▶ Hear Don Sol pitch The Harness</button></div></article>'+
-'<article class="sales-person sales-person-curley"><div class="sales-art"><img class="sales-books" src="/assets/covers/questions-v12.jpg" alt="The Book of Better Questions book cover" width="200" height="280"><svg class="sales-worm" viewBox="0 0 320 220" aria-hidden="true" focusable="false"><path d="M20 183Q5 129 50 111Q101 102 121 154Q131 193 92 197Q64 199 76 169Q97 136 160 160Q214 183 228 95" fill="none" stroke="#357366" stroke-width="38" stroke-linecap="round"/><path d="M20 183Q5 129 50 111Q101 102 121 154Q131 193 92 197Q64 199 76 169Q97 136 160 160Q214 183 228 95" fill="none" stroke="#8eecbb" stroke-width="27" stroke-linecap="round"/><ellipse cx="237" cy="72" rx="45" ry="42" fill="#a6f0c1" stroke="#327768" stroke-width="4"/><circle cx="221" cy="61" r="6" fill="#173332"/><circle cx="250" cy="61" r="6" fill="#173332"/><path d="M220 84Q237 96 254 81" fill="none" stroke="#317260" stroke-width="5" stroke-linecap="round"/><path d="M278 84L304 96L296 101" stroke="#f292a8" stroke-width="4" fill="none" stroke-linecap="round"/></svg><span class="sales-bubble">“Pssst! Wanna crawl into a book?”</span></div><div class="sales-person-copy"><strong>🐍 Curley · The bookworm</strong><p>Adventure, questions and a book worth burrowing into.</p><button type="button" data-sales-title="The Book of Better Questions">▶ Hear Curley pitch this book</button></div></article></div>';
+'<article class="sales-person sales-person-don"><div class="sales-art"><img src="/assets/characters/don-sol-idealable-v3.svg" alt="Don Sol, the white-haired, white-bearded cartoon storyteller" width="898" height="610"><span class="sales-bubble">“Four AIs. One reset switch. What would YOU do?”</span></div><div class="sales-person-copy"><strong>😎 Don Sol · Your storyteller</strong><p>Pull up a chair. I’ll tell you about our AI thriller.</p><button type="button" data-sales-title="The Harness">🎬 See Don Sol pitch The Harness</button></div></article>'+
+'<article class="sales-person sales-person-curley"><div class="sales-art"><img class="sales-books" src="/assets/covers/questions-v12.jpg" alt="The Book of Better Questions book cover" width="200" height="280"><svg class="sales-worm" viewBox="0 0 320 220" aria-hidden="true" focusable="false"><path d="M20 183Q5 129 50 111Q101 102 121 154Q131 193 92 197Q64 199 76 169Q97 136 160 160Q214 183 228 95" fill="none" stroke="#357366" stroke-width="38" stroke-linecap="round"/><path d="M20 183Q5 129 50 111Q101 102 121 154Q131 193 92 197Q64 199 76 169Q97 136 160 160Q214 183 228 95" fill="none" stroke="#8eecbb" stroke-width="27" stroke-linecap="round"/><ellipse cx="237" cy="72" rx="45" ry="42" fill="#a6f0c1" stroke="#327768" stroke-width="4"/><circle cx="221" cy="61" r="6" fill="#173332"/><circle cx="250" cy="61" r="6" fill="#173332"/><path d="M220 84Q237 96 254 81" fill="none" stroke="#317260" stroke-width="5" stroke-linecap="round"/><path d="M278 84L304 96L296 101" stroke="#f292a8" stroke-width="4" fill="none" stroke-linecap="round"/></svg><span class="sales-bubble">“Pssst! Wanna crawl into a book?”</span></div><div class="sales-person-copy"><strong>🐍 Curley · The bookworm</strong><p>Adventure, questions and a book worth burrowing into.</p><button type="button" data-sales-title="The Book of Better Questions">🎬 See Curley pitch this book</button></div></article></div>';
 shelf.insertBefore(showcase,shelf.querySelector('.filters')||grid);
 showcase.addEventListener('click',e=>{
  const b=e.target.closest('[data-sales-title]');
