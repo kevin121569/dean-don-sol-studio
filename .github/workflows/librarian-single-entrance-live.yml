@@ -1,0 +1,26 @@
+name: Librarian seamless scene handoff QA
+on:
+  push:
+    branches:
+      - feature/librarian-single-entrance-handoff-2026-10-11
+    paths:
+      - tests/librarian-single-entrance-live.cjs
+      - .github/workflows/librarian-single-entrance-live.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium browser
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify the approved live Library handoff
+        run: node tests/librarian-single-entrance-live.cjs

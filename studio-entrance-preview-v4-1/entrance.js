@@ -53,13 +53,27 @@
   video.addEventListener('ended',()=>{stageCue.textContent='Now, shall we find you a story?';});
   stopButton.addEventListener('click',stopVoice);
   pitchHear.addEventListener('click',()=>{if(selectedBook)speak(selectedBook.pitch)});
+  // One continuous visit: following the First Words welcome should not replay his entrance.
+  // No cookies, storage or visitor profiling: this opt-in URL flag is consumed on navigation.
+  const cameFromWelcome=new URLSearchParams(location.search).get('arrival')==='seated';
+  const alreadySeatedPhoto=document.getElementById('libraryArrivalStill');
+  let arrivalFlagUsed=false;
   function view(which,fromNavigation=false){
     if(!['adult','kids'].includes(which))which='home';
     stopVoice();activeView=which;
     threshold.hidden=which!=='home';adult.hidden=which!=='adult';kids.hidden=which!=='kids';
     document.body.dataset.world=which;
-    if(which==='adult'&&!reduced.matches){try{video.currentTime=0;video.play().catch(()=>{});}catch(_){}}
-    else {video.pause();try{video.currentTime=0}catch(_){}}
+    const continuation=which==='adult' && cameFromWelcome && !arrivalFlagUsed && fromNavigation;
+    if(continuation)arrivalFlagUsed=true;
+    alreadySeatedPhoto.hidden=!continuation;
+    if(continuation){
+      video.pause();
+      stageCue.textContent='Welcome back. What sort of story calls to you?';
+    } else if(which==='adult'&&!reduced.matches){
+      try{video.currentTime=0;video.play().catch(()=>{});}catch(_){}
+    } else {
+      video.pause();try{video.currentTime=0}catch(_){}
+    }
     if(!fromNavigation)history.replaceState(null,'',which==='home'?location.pathname:'#'+which);
     window.scrollTo({top:0,behavior:'instant'});
     const head=which==='adult'?document.getElementById('adultHeading'):which==='kids'?document.getElementById('kidsHeading'):document.getElementById('thresholdTitle');
@@ -67,7 +81,7 @@
   }
   document.querySelectorAll('[data-enter]').forEach(b=>b.addEventListener('click',()=>view(b.dataset.enter)));
   document.querySelectorAll('[data-home]').forEach(b=>b.addEventListener('click',()=>view('home')));
-  document.getElementById('replayFilm').addEventListener('click',()=>{video.currentTime=0;video.play().catch(()=>{})});
+  document.getElementById('replayFilm').addEventListener('click',()=>{alreadySeatedPhoto.hidden=true;video.currentTime=0;video.play().catch(()=>{})});
   window.addEventListener('hashchange',()=>view(location.hash==='#kids'?'kids':location.hash==='#adult'?'adult':'home',true));
   function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   const cards=document.getElementById('adultBooks');
