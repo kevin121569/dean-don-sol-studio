@@ -273,3 +273,42 @@ dialog.intro::backdrop { background: #000; }
 @keyframes c1-flow { to { stroke-dashoffset: -120; } }
 @keyframes c1-halo { from { opacity: .9; transform: scale(.6); } to { opacity: 0; transform: scale(2.4); } }
 @keyframes c1-scan { from { background-position: 0 -20%; } to { background-position: 0 120%; } }
+
+
+/* ===== Mission report R1: honest, readable progress without points ===== */
+.mission-goal { border-left: 4px solid var(--warn); }
+.mission-goal h2 { margin-top: 0; }
+.mission-report {
+  border: 1px solid var(--ok);
+  background: linear-gradient(145deg, #123028 0%, var(--panel) 65%);
+  overflow-wrap: anywhere;
+}
+.mission-report h1 { font-size: clamp(1.65rem, 5.5vw, 2.3rem); margin: .4rem 0; }
+.mission-report h2 { font-size: 1.06rem; margin: 1.2rem 0 .55rem; }
+.mission-status {
+  font: 800 .85rem/1.35 var(--mono);
+  color: #9de9b8;
+  letter-spacing: .14em;
+}
+.mission-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 16px 0; }
+.mission-stats p {
+  margin: 0; padding: 14px;
+  background: #071b1dcc;
+  border: 1px solid #6b988580;
+  border-radius: 10px;
+  display: grid; gap: 3px;
+}
+.mission-stats strong { font: 800 clamp(1.35rem, 5vw, 1.8rem)/1.15 var(--mono); color: #d7ffe9; }
+.mission-stats span { font-size: .86rem; color: var(--ink); }
+.mission-honours {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px;
+  padding: 0; margin: .5rem 0 1rem; list-style: none;
+}
+.mission-honours li { display: grid; gap: 4px; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel-2); }
+.mission-honours b { color: var(--warn); }
+.mission-honours span { color: var(--ink); font-size: .92rem; }
+.mission-caution { border-top: 1px solid var(--line); padding-top: 12px; }
+@media (max-width: 390px) { .mission-stats { grid-template-columns: 1fr; } }
+@media (forced-colors: active) {
+  .mission-goal, .mission-report, .mission-stats p, .mission-honours li { border: 1px solid CanvasText; }
+}
