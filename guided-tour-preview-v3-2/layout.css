@@ -136,3 +136,42 @@
 @media(prefers-reduced-motion:reduce){
  .sg-dialog.v3-adult .sg-story{scroll-behavior:auto!important}
 }
+
+/* Keep the set as atmosphere BELOW the genuine approved close-up after the camera cut.
+   Never invent seated footage: the chair is a stage prop under the portrait. */
+.sg-dialog.v3-seated.v3-adult .v3-studio-scene{
+  visibility:visible!important;opacity:1!important;
+  z-index:0!important;pointer-events:none!important;
+}
+.sg-dialog.v3-seated.v3-adult .v3-actor-entrance,
+.sg-dialog.v3-seated.v3-adult .v3-actor-caption,
+.sg-dialog.v3-seated.v3-adult .v3-advance{display:none!important}
+.sg-dialog.v3-seated.v3-adult .sg-chair{display:none!important}
+.sg-dialog.v3-seated.v3-adult .v3-chair-back{
+  width:53%;right:21%;height:31%;bottom:7%;opacity:.83;
+}
+.sg-dialog.v3-seated.v3-adult .v3-chair-front{
+  width:54%;right:19%;height:17%;bottom:3%;opacity:.9;
+}
+.sg-dialog.v3-seated.v3-adult .v3-book-prop{
+  right:6%;bottom:8%;height:23%;max-height:155px;
+  width:26%;max-width:130px;z-index:8;
+}
+.sg-dialog.v3-seated.v3-adult .v3-books{top:58%;width:39%;height:15%;opacity:.6}
+.sg-dialog.v3-seated.v3-adult .v3-stage-title{
+  top:12px;left:18px;right:70px;letter-spacing:.11em;
+  font-size:.73rem;opacity:.94;
+}
+@media(min-width:771px){
+  .sg-dialog.v3-seated.v3-adult .sg-head-art{
+    top:13%!important;left:9%!important;width:82%!important;
+  }
+}
+@media(max-width:770px){
+  .sg-dialog.v3-seated.v3-adult .v3-chair-back,
+  .sg-dialog.v3-seated.v3-adult .v3-chair-front,
+  .sg-dialog.v3-seated.v3-adult .v3-book-prop{display:none!important}
+  .sg-dialog.v3-seated.v3-adult .v3-stage-title{
+    top:5px;left:8px;right:40px;font-size:.57rem
+  }
+}
