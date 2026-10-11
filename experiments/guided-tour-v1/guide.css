@@ -1,0 +1,37 @@
+/* Don Sol Guided Tour — experiment. No changes to existing main catalog required. */
+.tg-companion{position:fixed;right:21px;bottom:116px;z-index:45;width:124px;pointer-events:none;transform-origin:center bottom;transition:transform .7s cubic-bezier(.22,.7,.28,1),right .7s ease,bottom .7s ease;filter:drop-shadow(0 12px 18px #08040ab0)}
+.tg-companion.is-traveling{bottom:45vh;right:17%;transform:scale(.85) rotate(-7deg)}
+.tg-face{position:relative;display:block;width:110px;height:98px;overflow:hidden;border-radius:22px;border:2px solid #ffdc9b;background:#412b35;box-shadow:0 0 0 6px #fac6821e}
+.tg-face img{width:100%;height:100%;object-fit:cover;object-position:center}
+.tg-companion:not(.is-traveling) .tg-face{animation:tg-bob 5s ease-in-out infinite alternate}
+.tg-cloud{position:absolute;left:-18px;right:0;bottom:-18px;height:28px;border-radius:65% 30% 60% 50%;background:linear-gradient(#e9ddff,#9eafd4);opacity:.76;z-index:-1;filter:blur(2px)}
+.tg-companion .tg-bubble{position:absolute;bottom:105px;left:-43px;max-width:175px;background:#fdf3e8;border:1px solid #efd09d;border-radius:17px 17px 17px 3px;padding:8px 11px;box-shadow:0 9px 19px #0008;color:#302233;font:800 .73rem/1.25 system-ui}
+.tg-companion.is-traveling .tg-bubble{background:#ffdb9d}
+.tg-companion.is-traveling:after{content:"✦ · ✦ · ✦";position:absolute;top:64%;right:97%;color:#f2c685;font-size:1.1rem;white-space:nowrap;opacity:.84;animation:tg-trail .5s ease-in-out infinite alternate}
+.tg-chooser{position:fixed;right:18px;bottom:205px;z-index:60;width:min(354px,calc(100vw - 26px));border:1px solid #c296a8;border-radius:19px;background:linear-gradient(150deg,#38253f,#171323);color:#fcf2ec;padding:18px;box-shadow:0 28px 60px #05030be0}
+.tg-chooser[hidden]{display:none!important}
+.tg-chooser h2{font:900 1.75rem/1.1 Impact,system-ui;margin:6px 0 10px}
+.tg-chooser p{font-size:.88rem;color:#e0d2e3;margin:9px 0;line-height:1.5}
+.tg-chooser label{display:block;margin:11px 0 4px;font-weight:800;font-size:.83rem;color:#ffd5a1}
+.tg-chooser select{width:100%;min-height:48px;background:#272033;color:#fff;border:1px solid #9c80a9;border-radius:9px;padding:12px;line-height:1.3;font-size:.95rem}
+.tg-buttons{display:flex;gap:8px;margin-top:15px;flex-wrap:wrap}
+.tg-buttons button{min-height:46px;border:1px solid #f3bb75;background:#facc8a;color:#261a2a;padding:9px 16px;border-radius:20px;font-weight:900;cursor:pointer}
+.tg-buttons button.tg-secondary{background:transparent;color:#f9e9f2;border-color:#8b748d}
+.tg-chooser button:focus-visible,.tg-chooser select:focus-visible,.tg-film-trigger:focus-visible{outline:3px solid #9ff0d3;outline-offset:3px}
+.tg-status{position:fixed;left:50%;top:20px;transform:translateX(-50%);z-index:80;max-width:92vw;background:#fff5dc;color:#312238;padding:10px 16px;border-radius:40px;border:2px solid #f6c88d;font:800 .86rem system-ui;box-shadow:0 8px 32px #000a;text-align:center}
+.tg-status[hidden]{display:none!important}
+.tg-current-card{outline:4px solid #ffcb8a!important;outline-offset:6px!important;scroll-margin-top:100px}
+.sg-dialog .tg-film-trigger{position:absolute;top:68px;right:15px;z-index:22;background:#ffd294;color:#281e2a;border:1px solid #e4a76b;border-radius:24px;padding:10px 13px;font:900 .78rem system-ui;cursor:pointer}
+.tg-film-dialog{position:fixed;inset:0;margin:auto;width:min(880px,calc(100vw - 20px));max-height:94dvh;padding:0;border:1px solid #cc9fb0;border-radius:17px;background:#1b1426;color:#f6e8f2;overflow:auto}
+.tg-film-dialog::backdrop{background:#070410d9}
+.tg-film-head{padding:19px 24px 12px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.tg-film-head h2{font:900 1.7rem/1 Impact,system-ui;margin:0}
+.tg-film-close{border:1px solid #bba6c9;border-radius:100%;background:#38283c;color:#fff;font-size:1.6rem;width:43px;height:43px;cursor:pointer}
+.tg-film-frame{position:relative;aspect-ratio:16/9;background:#161019}
+.tg-film-frame iframe{border:0;width:100%;height:100%}
+.tg-film-note{padding:15px 22px 23px;color:#d2c6da;line-height:1.6;font-size:.85rem}
+.tg-film-note a{color:#ffd592}
+@keyframes tg-bob{to{transform:translateY(-7px)}}
+@keyframes tg-trail{to{opacity:.4;transform:translateX(-8px)}}
+@media(max-width:650px){.tg-companion{right:8px;bottom:82px;width:70px}.tg-face{width:68px;height:66px;border-radius:14px}.tg-cloud{bottom:-9px}.tg-companion .tg-bubble{bottom:68px;left:-97px;max-width:135px;font-size:.64rem}.tg-companion.is-traveling{bottom:40vh;right:18%;transform:scale(.7)}.tg-chooser{right:7px;bottom:155px;padding:14px}.sg-dialog .tg-film-trigger{top:65px;right:10px;font-size:.67rem;max-width:45%;white-space:normal}.tg-film-head h2{font-size:1.25rem}}
+@media(prefers-reduced-motion:reduce){.tg-companion,.tg-face,.tg-companion:after{transition:none!important;animation:none!important}.tg-companion.is-traveling{bottom:116px;right:21px;transform:none!important}}
