@@ -27,6 +27,7 @@
     stops: {title:'When Fighting Stops Working', next:'fight',
       thought:'To understand the roots of resilience, here is a lived account of the difficult road on which it was learned.'}
   };
+  const openedThisVisit = new Set();
   let pending = null;
   let suggestion = null;
 
@@ -65,6 +66,7 @@
   function show(bookId) {
     if (adult.hidden || !books[bookId]) return;
     const source = books[bookId];
+    if (openedThisVisit.has(source.next)) return; // Never pitch a sample they already opened.
     const next = books[source.next];
     suggestion = source.next;
     copy.textContent = 'Welcome back from the sample of ' + source.title + '. ' +
@@ -77,6 +79,7 @@
   desk.addEventListener('close', () => {
     const last = bookFromReader();
     if (!last || adult.hidden) return;
+    openedThisVisit.add(last);
     hide();
     if (pitch.open) {
       pending = last; // Let the original pitch return path finish before speaking up.
