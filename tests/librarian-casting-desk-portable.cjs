@@ -18,7 +18,8 @@ assert.ok(!/<\/style/i.test(css),'Avoid closing style in embedded CSS');
 const packed=h
  .replace('<link rel="icon" href="/favicon.svg" type="image/svg+xml">','')
  .replace('<link rel="stylesheet" href="/librarian-distance-voice-rehearsal-v1/casting-desk.css?v=1">','<style>'+css+'</style>')
- .replace('<script src="/librarian-distance-voice-rehearsal-v1/casting-desk.js?v=1" defer></script>','<script>'+js+'</script>')
+ .replace('<script src="/librarian-distance-voice-rehearsal-v1/casting-desk.js?v=1" defer></script>','')
+ .replace('</body>','<script>'+js+'</script></body>')
  .replace('/studio-entrance-preview-v4-1/assets/librarian-seated-close-v2.jpg','data:image/jpeg;base64,'+approvedImg.toString('base64'))
  .replaceAll('href="/librarian-distance-voice-rehearsal-v1/"','href="#main"');
 assert.ok(!/src="\/|href="\/|src="http|href="http/.test(packed),'Portable HTML must have no external dependencies');
