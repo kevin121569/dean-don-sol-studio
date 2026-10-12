@@ -46,3 +46,8 @@ Results: A/B source-branch QA PASS at 1440×900 and 390×844; **offline `file://
 Use: download HTML, double-click to open locally in a desktop browser, load WAV/MP3/OGG/M4A via Take A/B to audition and manually time captions. No voice file is bundled, generated or sent over the network. A physical phone or owner-performance signoff is not implied by Chromium testing.
 
 The initial offline build failed because its inlined script executed in the `<head>` before the document's controls existed. This packaging issue was fixed by placing it before `</body>`; the final run is green. No deployed files or previous voice scene work changed.
+
+### Studio platform correction — Google Flow only
+Owner confirmed **Google Flow, not Runway**, is the approved cinematic production platform for The Librarian and our studio motion work. Do not submit to Runway, use Runway voices/assets, suggest a platform switch, or incur Runway credits. Preserve original approved Librarian actor and official Google Flow master/shot framing. Existing offline voice casting desk is platform-neutral and does not call any inference service or use credits.
+
+Before running any Flow scene or Google-affiliated speech generation, verify the selected workspace's capabilities, sound/voice support, permission and projected credit charge; do not assume Flow can synthesize approved British dialogue or guarantee lip sync. Keep a written exact-script, silent-footage and caption/recording ledger. No charge or generation without explicit cost permission where required. Do not publish or merge until separate editorial and release approval.
