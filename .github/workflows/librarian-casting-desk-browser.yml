@@ -6,6 +6,7 @@ on:
     paths:
       - librarian-distance-voice-rehearsal-v1/casting-desk.*
       - tests/librarian-casting-desk-browser.cjs
+      - tests/librarian-casting-desk-portable.cjs
       - .github/workflows/librarian-casting-desk-browser.yml
   workflow_dispatch:
 permissions:
@@ -25,6 +26,15 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Test A/B workflow against actual branch HTML
         run: node tests/librarian-casting-desk-browser.cjs
+      - name: Package and QA genuinely offline single-file casting desk
+        run: node tests/librarian-casting-desk-portable.cjs
+      - name: Archive portable offline casting desk
+        uses: actions/upload-artifact@v4
+        with:
+          name: librarian-casting-desk-portable-offline-html
+          path: qa-artifacts/LIBRARIAN_DISTANCE_VOICE_CASTING_DESK_OFFLINE_V1.html
+          if-no-files-found: error
+          retention-days: 30
       - name: Archive rehearsal-only screenshots
         if: always()
         uses: actions/upload-artifact@v4
