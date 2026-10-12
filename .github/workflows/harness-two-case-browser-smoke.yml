@@ -1,0 +1,36 @@
+name: Harness Kate two-case browser smoke (review only)
+on:
+  push:
+    branches:
+      - review/harness-kate-two-case-browser-qa-2026-10-11
+  pull_request:
+    paths:
+      - 'harness-play/tests/test_kate_two_case_browser.py'
+      - 'harness-play/kate-cinematic-test-2026-10-11/**'
+      - '.github/workflows/harness-two-case-browser-smoke.yml'
+jobs:
+  two-case-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Chromium automation
+        run: |
+          python -m pip install 'playwright==1.56.0'
+          python -m playwright install --with-deps chromium
+      - name: Run the actual two episodes through Chromium at mobile and desktop sizes
+        run: python harness-play/tests/test_kate_two_case_browser.py
+        env:
+          HARNESS_QA_OUT: harness-browser-QA
+      - name: Preserve screenshots and machine-readable test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-kate-two-case-QA
+          path: harness-browser-QA/
+          if-no-files-found: warn
