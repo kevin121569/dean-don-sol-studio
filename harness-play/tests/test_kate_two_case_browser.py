@@ -114,6 +114,13 @@ def run_case(browser, mode, viewport, case):
         check(ep,mode,"real evidence console populated",page.locator("button[data-evidence]").count()>=3)
         snap(page,ep+"_"+mode+"_evidence.png")
         finish(page,ep,mode,award,False)
+        if ep == "episode2":
+            # The source previously called this a copied Episode 001 prototype.
+            # Read what the player sees after action; keep the test scoped to copy.
+            footnote = page.locator("#sceneDebrief .micro").inner_text()
+            check(ep,mode,"Episode 2 footer identifies its own case",
+                  "Episode 2 development preview" in footnote and "Episode 001" not in footnote,
+                  footnote)
         page.locator("#replayButton").click()
         page.locator("#sceneTitle").wait_for(state="visible")
         check(ep,mode,"replay returns to title",page.locator("#sceneTitle").is_visible())
