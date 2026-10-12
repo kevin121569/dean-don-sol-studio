@@ -37,18 +37,32 @@ def see_report(page, id):
 
 def finish(page, ep, mode, award, thorough=False):
     if thorough:
-        for _ in range(12):
-            unread=page.locator("button[data-evidence]:not(.read)")
-            if not unread.count(): break
-            unread.first.click()
         advisers=page.locator("[data-consult]")
         ids=list(dict.fromkeys(advisers.evaluate_all("(els)=>els.map(e=>e.dataset.consult)")))
         check(ep,mode,"four distinct adviser controls",len(ids)==4,str(ids))
-        for id in ids: page.locator('[data-consult="'+id+'"]').first.click()
-        for _ in range(12):
-            unread=page.locator("button[data-evidence]:not(.read)")
-            if not unread.count(): break
-            unread.first.click()
+        # An adviser can change advice only after newly revealed evidence is opened.
+        # Episode 2: BOY reveals the origin audit; AFTER reading it, asking TOOTH
+        # again reveals a separate independent harbor-gauge record. Repeat until
+        # the investigation reaches a fixed point; never fabricate any evidence.
+        prior=-1
+        for cycle in range(7):
+            for _ in range(12):
+                unread=page.locator("button[data-evidence]:not(.read)")
+                if not unread.count(): break
+                unread.first.click()
+            for id in ids:
+                page.locator('[data-consult="'+id+'"]').first.click()
+            for _ in range(12):
+                unread=page.locator("button[data-evidence]:not(.read)")
+                if not unread.count(): break
+                unread.first.click()
+            count=page.locator("button[data-evidence].read").count()
+            if count==prior: break
+            prior=count
+        else:
+            raise AssertionError("Evidence/adviser cycle did not converge")
+        check(ep,mode,"all genuinely discoverable records inspected",
+              page.locator("button[data-evidence]:not(.read)").count()==0 and prior>=5,str(prior))
     page.locator("#goDecision").click()
     page.locator("#sceneDecision").wait_for(state="visible")
     options=page.locator("button[data-decision]")
