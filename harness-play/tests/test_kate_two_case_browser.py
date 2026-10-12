@@ -66,6 +66,12 @@ def finish(page, ep, mode, award, thorough=False):
     page.locator("#showDebrief").click()
     page.locator("#sceneDebrief").wait_for(state="visible")
     report=see_report(page,award)
+    if thorough:
+        # The authored completion widget refreshes on a zero-delay callback. A prior
+        # replay can leave the old (unearned) report visible for one event loop turn.
+        # Wait for the freshly updated report, not the already-mounted old panel.
+        page.locator("#"+award).filter(has_text="Evidence Detective").wait_for(state="visible",timeout=8000)
+        report=page.locator("#"+award).inner_text()
     check(ep,mode,"Mission Complete presented","MISSION COMPLETE" in report.upper())
     if thorough:
         check(ep,mode,"Evidence Detective earned","EVIDENCE DETECTIVE" in report.upper())
