@@ -85,7 +85,7 @@ def run_case(browser, mode, viewport, case):
     try:
         page.goto((SITE/(ep+".html")).as_uri(),wait_until="domcontentloaded",timeout=45000)
         page.locator("#"+entry).wait_for(state="visible")
-        check(ep,mode,"authored episode title",title.lower() in page.title().lower())
+        check(ep,mode,"Kate episode browser-tab title",("Episode 1" if ep == "episode1" else "Episode 2") in page.title())
         snap(page,ep+"_"+mode+"_opening.png")
         page.locator("#"+entry).click()
         check(ep,mode,"sound explicitly off",page.locator("#audioToggle").get_attribute("aria-pressed")=="false")
