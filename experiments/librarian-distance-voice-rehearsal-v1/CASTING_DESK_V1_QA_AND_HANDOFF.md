@@ -36,3 +36,13 @@ Feature-branch static files served on localhost in GitHub CI, Chromium tested at
 7. Preserve Curley V2, children's world, all novel sample sources, Harness game source and Android builds.
 
 **Verdict:** PASS for the feature-branch voice-production tool and browser testing; HOLD for actual recorded/approved narration, captions certification, live stage deployment and production release.
+
+### Portability completion — OFFLINE CHROMIUM PASS
+The same branch now includes `tests/librarian-casting-desk-portable.cjs`, which packages the review desk HTML, CSS, JavaScript and **original approved portrait bytes** into one portable, self-contained `LIBRARIAN_DISTANCE_VOICE_CASTING_DESK_OFFLINE_V1.html` with no external dependencies.
+
+Final verified CI: https://github.com/kevin121569/dean-don-sol-studio/actions/runs/38186546520
+Results: A/B source-branch QA PASS at 1440×900 and 390×844; **offline `file://` Chromium PASS** at both resolutions; original embedded actor image loads; five real script cues visible; no external HTTP(S) calls or JS errors. Artifact name `librarian-casting-desk-portable-offline-html` downloadable in GitHub Actions. Source output size **159,141 bytes**; SHA-256 verified after download to model workspace **81dcb6ec836ce3579e15040ad7ec26dc89c942ba0437374d22ba28b4669fce38**.
+
+Use: download HTML, double-click to open locally in a desktop browser, load WAV/MP3/OGG/M4A via Take A/B to audition and manually time captions. No voice file is bundled, generated or sent over the network. A physical phone or owner-performance signoff is not implied by Chromium testing.
+
+The initial offline build failed because its inlined script executed in the `<head>` before the document's controls existed. This packaging issue was fixed by placing it before `</body>`; the final run is green. No deployed files or previous voice scene work changed.
