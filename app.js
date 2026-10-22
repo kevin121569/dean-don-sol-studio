@@ -4,30 +4,8 @@
   const books = window.IL_BOOKS || [];
   const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-  // The Harness has moved from recovery into release preparation.
-  const harnessCard = $('.book a[href="/the-harness/"]')?.closest('.book');
-  if (harnessCard) {
-    const status = $('.status', harnessCard);
-    if (status) {
-      status.textContent = 'Preparing for release';
-      status.className = 'status ready';
-    }
-    const copy = $('.book-copy', harnessCard);
-    const paragraphs = copy ? $$('p', copy).filter(p => !p.classList.contains('genre')) : [];
-    if (paragraphs[0]) paragraphs[0].textContent = 'A salesman becomes the human bridge between four differently brilliant AI systems, then has to decide what survives when security forces the team through a reset nobody can prove is harmless.';
-    const actions = $('.book-actions', harnessCard);
-    if (actions) actions.innerHTML = '<a class="btn primary small" href="/samples/harness.html" aria-label="Read an excerpt from The Harness">Read excerpt</a><a class="btn ghost small" href="/the-harness/">About the book</a>';
-  }
-
-  // Better Questions cleared official EPUBCheck 5.4.0; retailer upload / processed preview is next.
-  const questionsCard = $('.book a[href="/the-book-of-better-questions/"]')?.closest('.book');
-  if (questionsCard) {
-    const status = $('.status', questionsCard);
-    if (status) {
-      status.textContent = 'Ready for retailer upload';
-      status.className = 'status ready';
-    }
-  }
+  // Publishing statuses are rendered from the current catalog HTML/data.
+  // Do not overwrite them here; this script only handles interaction.
 
   // Keep the homepage film section current without forcing a full static rebuild.
   const film = $('#film');
@@ -64,7 +42,7 @@
   }
   menu.onclick = () => setMenu(mobile.hidden);
   mobile.onclick = e => { if (e.target.closest('a')) setMenu(false); };
-  const toothLines = ['Don calls this a studio. I call it nine deadlines wearing a trench coat.', 'The domain works. Apparently standards are optional.', 'I reviewed the catalog. Several books contain feelings. Unfortunate.', 'Ask Sol for a recommendation. Then ask me why he is wrong.'];
+  const toothLines = ['Don calls this a studio. I call it ten books wearing a trench coat.', 'The domain works. Apparently standards are optional.', 'I reviewed the catalog. Several books contain feelings. Unfortunate.', 'Ask Sol for a recommendation. Then ask me why he is wrong.'];
   $('#toothBtn').onclick = () => { $('#heroSpeech').textContent = toothLines[Math.floor(Math.random() * toothLines.length)]; };
   const aiNames = $$('.win b').map(b => b.textContent);
   const replies = ['I have an idea. Show the others.', 'I have questions. Send them back to Don.', 'Let’s check what could go wrong.', 'I have the context. Here is another angle.'];
