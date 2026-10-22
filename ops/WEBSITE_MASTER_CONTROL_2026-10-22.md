@@ -88,3 +88,16 @@ No copy/art changes.
 - No new paid services, purchases, model traffic, or production secrets.
 - No claim is "live" until publicly verified.
 - Stop when lane deliverable is complete; do not wander into another agent's task.
+
+## Current coordination status
+
+| Agent | Lane | Status | Master Control action when report arrives |
+|---|---|---|---|
+| Dot | Integration QA / dispatch | WAITING ON REPORT | Triage route/status defects; assign only uncovered repairs |
+| Tooth | UX / copy red-team | WAITING ON REPORT | Accept/reject copy changes; prevent scope creep |
+| Boy | Link / content inventory | WAITING ON REPORT | Repair broken links/assets; capture exact retailer URLs |
+| Astra | Visual / brand pass | WAITING ON REPORT | Approve targeted visual fixes; preserve canonical art |
+| 006 | Technical regression / security | WAITING ON REPORT | Fix reproducible defects first; security/accessibility outrank polish |
+| Don Sol | Master Control / integration | ACTIVE | Merge findings, deconflict lanes, update main, issue next tasks |
+
+**Reporting rule:** Kevin may relay each agent's output directly to Don Sol in chat. Master Control will determine disposition, merge order, and follow-up. Kevin does not need to coordinate agents manually.
