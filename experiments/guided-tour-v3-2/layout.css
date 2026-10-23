@@ -1,0 +1,177 @@
+/* Story Room V3.2 - 2026-10-11
+   Based on user's second REAL screen recording: CSS sticky inside the entire scrolling
+   modal was not sticky in the shipped browser. Make stage and story sibling panes,
+   and scroll ONLY the story. The outer dialog stays at a fixed height.
+   IMPORTANT: only applies to Don Sol adult scenes; Curley's dialog is unchanged. */
+.sg-dialog.v3-adult{
+  width:min(1040px,calc(100vw - 30px));
+  height:min(790px,calc(100dvh - 36px));
+  max-height:calc(100dvh - 36px);
+  overflow:hidden!important;
+  display:block!important;
+  overscroll-behavior:contain;
+  position:fixed;
+}
+.sg-dialog.v3-adult .sg-dialog-shell{
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr)!important;
+  align-items:stretch!important;
+  overflow:hidden!important;
+}
+.sg-dialog.v3-adult .sg-stage{
+  position:relative!important;
+  top:auto!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:100%!important;
+  align-self:stretch!important;
+  overflow:hidden!important;
+  overscroll-behavior:none;
+  background:radial-gradient(circle at 47% 34%,#79564180,#1a1529 70%);
+  border-right:1px solid #745a76;
+}
+.sg-dialog.v3-adult .sg-story{
+  height:100%!important;
+  max-height:100%!important;
+  min-height:0!important;
+  flex:1 1 auto!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  justify-content:flex-start!important;
+  padding:clamp(20px,2.6vw,35px)!important;
+  scroll-padding-top:24px;
+}
+.sg-dialog.v3-adult .sg-close{
+  position:absolute!important;
+  z-index:35!important;
+  top:10px!important;
+  right:10px!important;
+  float:none!important;
+  margin:0!important;
+  display:grid!important;
+}
+.sg-dialog.v3-adult .sg-head-art{
+  top:24%!important;
+  left:9%!important;
+  width:83%!important;
+  height:auto!important;
+  max-height:none!important;
+  border-radius:18px!important;
+}
+.sg-dialog.v3-adult .tg-video-note{
+  position:absolute!important;
+  bottom:18px!important;
+  top:auto!important;
+  left:18px!important;
+  right:18px!important;
+  width:fit-content!important;
+  max-width:calc(100% - 36px)!important;
+  font-size:.73rem!important;
+  z-index:15;
+}
+.sg-dialog.v3-adult .v3-studio-scene{height:100%}
+.sg-dialog.v3-adult .v3-talk-card{scroll-margin-top:16px}
+.sg-dialog.v3-adult .v3-playback-caption{margin-top:12px}
+.sg-dialog.v3-adult .sg-story h2{padding-right:30px}
+.sg-dialog.v3-adult .sg-line,
+.sg-dialog.v3-adult .tg-film-trigger,
+.sg-dialog.v3-adult .sales-voice{display:none!important}
+@media(max-width:770px){
+  .sg-dialog.v3-adult{
+    width:calc(100vw - 12px)!important;
+    height:calc(100dvh - 12px)!important;
+    max-height:calc(100dvh - 12px)!important;
+    border-radius:14px!important;
+  }
+  .sg-dialog.v3-adult .sg-dialog-shell{
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  .sg-dialog.v3-adult .sg-stage{
+    flex:0 0 clamp(165px,29dvh,245px)!important;
+    height:clamp(165px,29dvh,245px)!important;
+    max-height:245px!important;
+    min-height:165px!important;
+    border-right:0!important;
+    border-bottom:1px solid #896a7f!important;
+    box-shadow:0 8px 18px #05020ab0;
+    z-index:5;
+  }
+  .sg-dialog.v3-adult .sg-story{
+    flex:1 1 auto!important;
+    height:auto!important;
+    max-height:none!important;
+    min-height:0!important;
+    padding:16px 15px 23px!important;
+    scrollbar-gutter:auto;
+    overflow-y:auto!important;
+  }
+  .sg-dialog.v3-adult .sg-head-art{
+    width:min(56%,320px)!important;
+    top:1%!important;
+    left:27%!important;
+    max-height:72%!important;
+  }
+  .sg-dialog.v3-adult .tg-video-note{
+    bottom:5px!important;left:9px!important;right:55px!important;
+    max-width:calc(100% - 64px)!important;
+    font-size:.61rem!important;
+  }
+  .sg-dialog.v3-adult .sg-story h2{font-size:clamp(1.65rem,6vw,2rem)}
+  .sg-dialog.v3-adult .sg-close{
+    background:#342239!important;
+    color:#fff6e4!important;
+    top:7px!important;right:7px!important;width:40px!important;height:40px!important;
+  }
+}
+@media(max-height:600px) and (min-width:771px){
+ .sg-dialog.v3-adult{height:calc(100dvh - 12px);max-height:calc(100dvh - 12px)}
+ .sg-dialog.v3-adult .sg-head-art{top:18%!important;width:72%!important;left:14%!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .sg-dialog.v3-adult .sg-story{scroll-behavior:auto!important}
+}
+
+/* Keep the set as atmosphere BELOW the genuine approved close-up after the camera cut.
+   Never invent seated footage: the chair is a stage prop under the portrait. */
+.sg-dialog.v3-seated.v3-adult .v3-studio-scene{
+  visibility:visible!important;opacity:1!important;
+  z-index:0!important;pointer-events:none!important;
+}
+.sg-dialog.v3-seated.v3-adult .v3-actor-entrance,
+.sg-dialog.v3-seated.v3-adult .v3-actor-caption,
+.sg-dialog.v3-seated.v3-adult .v3-advance{display:none!important}
+.sg-dialog.v3-seated.v3-adult .sg-chair{display:none!important}
+.sg-dialog.v3-seated.v3-adult .v3-chair-back{
+  width:53%;right:21%;height:31%;bottom:7%;opacity:.83;
+}
+.sg-dialog.v3-seated.v3-adult .v3-chair-front{
+  width:54%;right:19%;height:17%;bottom:3%;opacity:.9;
+}
+.sg-dialog.v3-seated.v3-adult .v3-book-prop{
+  right:6%;bottom:8%;height:23%;max-height:155px;
+  width:26%;max-width:130px;z-index:8;
+}
+.sg-dialog.v3-seated.v3-adult .v3-books{top:58%;width:39%;height:15%;opacity:.6}
+.sg-dialog.v3-seated.v3-adult .v3-stage-title{
+  top:12px;left:18px;right:70px;letter-spacing:.11em;
+  font-size:.73rem;opacity:.94;
+}
+@media(min-width:771px){
+  .sg-dialog.v3-seated.v3-adult .sg-head-art{
+    top:13%!important;left:9%!important;width:82%!important;
+  }
+}
+@media(max-width:770px){
+  .sg-dialog.v3-seated.v3-adult .v3-chair-back,
+  .sg-dialog.v3-seated.v3-adult .v3-chair-front,
+  .sg-dialog.v3-seated.v3-adult .v3-book-prop{display:none!important}
+  .sg-dialog.v3-seated.v3-adult .v3-stage-title{
+    top:5px;left:8px;right:40px;font-size:.57rem
+  }
+}
