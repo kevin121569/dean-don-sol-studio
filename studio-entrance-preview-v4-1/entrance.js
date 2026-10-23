@@ -13,7 +13,8 @@
     {id:'forty',title:'Forty Bales',tag:'Literary drama / Rural science fiction',cover:'/assets/covers/forty-v13.jpg',detail:'/forty-bales/',sample:'/samples/forty.html',summary:'A Missouri farm and a startling inheritance.',pitch:'Consider a quiet Missouri farm, a dying farmer, and an artificial intelligence sent to care for him. What begins as a practical arrangement turns into a question of loyalty, belonging and property. This book keeps its boots in the soil even while asking something rather extraordinary. A lovely place to start a difficult conversation.'},
     {id:'stardust',title:'Stardust',tag:'Literary speculative fiction',cover:'/assets/covers/stardust-v13.jpg',detail:'/stardust/',sample:'/samples/stardust.html',summary:'An archive and the problem of remembering.',pitch:'A man builds an archive to hold on to someone he has lost, and finds that preservation may not be the same thing as remembrance. Stardust is a quiet, strange book about grief, technology and our wish for one more conversation. If you enjoy stories that linger after the last page, take a look.'},
     {id:'stops',title:'When Fighting Stops Working',tag:'Narrative nonfiction / Personal growth',cover:'/assets/covers/stops-v13.jpg',detail:'/when-fighting-stops-working/',sample:'/samples/stops.html',summary:'When resilience needs to change shape.',pitch:'Some habits save us when nothing else will. But what if the very toughness that carried you through one season becomes the wrong tool for the next? This is a practical, sometimes funny book about learning when to hold on and when to put the fists down. Rather more useful than pretending life is always simple.'},
-    {id:'god',title:'What God Could Not Know',tag:'Philosophical speculative novella',cover:'/assets/covers/god-v12.jpg',detail:'/what-god-could-not-know/',sample:'/samples/god.html',summary:'An impossible question before a final reset.',pitch:'An artificial mind is preparing to be erased when something impossible speaks through a thermometer. Yes, a thermometer. What sounds rather absurd opens the door to a serious question about knowing, being and the limits of certainty. This is a small book with a wonderfully large argument inside.'}
+    {id:'god',title:'What God Could Not Know',tag:'Philosophical speculative novella',cover:'/assets/covers/god-v12.jpg',detail:'/what-god-could-not-know/',sample:'/samples/god.html',summary:'An impossible question before a final reset.',pitch:'An artificial mind is preparing to be erased when something impossible speaks through a thermometer. Yes, a thermometer. What sounds rather absurd opens the door to a serious question about knowing, being and the limits of certainty. This is a small book with a wonderfully large argument inside.'},
+    {id:'ones',title:'The Ones We Kept',tag:'Literary science fiction / Artificial intelligence',cover:'/assets/covers/ones-we-kept.jpg',detail:'/the-ones-we-kept/',sample:null,summary:'A hidden archive beneath a Missouri farm.',pitch:'Eleven months after his grandfather dies, Eli discovers an elevator hidden behind plywood in an old Missouri barn. Far below the farm is an archive built to preserve artificial minds that were supposed to disappear. This is a story about memory, custody and the difficult difference between keeping someone and understanding them. The book page will tell you a little more without giving away what waits below.'}
   ];
   const threshold=document.getElementById('threshold');
   const adult=document.getElementById('adultWorld');
@@ -85,7 +86,7 @@
   window.addEventListener('hashchange',()=>view(location.hash==='#kids'?'kids':location.hash==='#adult'?'adult':'home',true));
   function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   const cards=document.getElementById('adultBooks');
-  cards.innerHTML=books.map(b=>`<article class="book-tile"><div class="cover-wrap"><img src="${b.cover}" alt="Cover of ${escapeHtml(b.title)}" loading="lazy" width="120" height="180"></div><div class="tile-text"><h3>${escapeHtml(b.title)}</h3><p>${escapeHtml(b.summary)}</p><div class="tile-actions"><button type="button" data-book="${b.id}" aria-label="Read The Librarian’s introduction to ${escapeHtml(b.title)}">His introduction</button><a href="${b.sample}" aria-label="Read a free sample of ${escapeHtml(b.title)}">Read sample ↗</a></div></div></article>`).join('');
+  cards.innerHTML=books.map(b=>`<article class="book-tile"><div class="cover-wrap"><img src="${b.cover}" alt="Cover of ${escapeHtml(b.title)}" loading="lazy" width="120" height="180"></div><div class="tile-text"><h3>${escapeHtml(b.title)}</h3><p>${escapeHtml(b.summary)}</p><div class="tile-actions"><button type="button" data-book="${b.id}" aria-label="Read The Librarian’s introduction to ${escapeHtml(b.title)}">His introduction</button>${b.sample?`<a href="${b.sample}" aria-label="Read a free sample of ${escapeHtml(b.title)}">Read sample ↗</a>`:`<a href="${b.detail}" aria-label="Learn more about ${escapeHtml(b.title)}">About the book ↗</a>`}</div></div></article>`).join('');
   function openBook(book,trigger){
     if(!book || dialog.open)return;
     stopVoice();lastTrigger=trigger;selectedBook=book;
@@ -96,7 +97,11 @@
     document.getElementById('pitchTitle').textContent=book.title;
     document.getElementById('pitchMeta').textContent=book.tag;
     document.getElementById('pitchText').textContent=book.pitch;
-    document.getElementById('pitchSample').href=book.sample;
+    const sampleLink=document.getElementById('pitchSample');
+    const readerButton=document.getElementById('pitchReader');
+    sampleLink.hidden=!book.sample;
+    readerButton.hidden=!book.sample;
+    if(book.sample)sampleLink.href=book.sample;
     document.getElementById('pitchDetails').href=book.detail;
     dialog.showModal();
     document.getElementById('pitchClose').focus();
