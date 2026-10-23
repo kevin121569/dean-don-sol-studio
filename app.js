@@ -14,7 +14,7 @@
     const lede = filmCopy ? $('.lede-sm', filmCopy) : null;
     if (lede) lede.textContent = 'Four AIs. One human in the middle. A containment system that may save everyone by erasing the thing nobody knows how to measure.';
     const statusRow = $('.status-row', film);
-    if (statusRow) statusRow.innerHTML = '<span class="status ready">Feature screenplay complete</span><span class="status ready">Novel submitted to Google Play</span>';
+    if (statusRow) statusRow.innerHTML = '<span class="status ready">Feature screenplay complete</span><span class="status ready">Novel submitted to Google Play Books</span>';
     const reel = $('#reel');
     if (reel) reel.innerHTML = '<article class="frame"><h3>GOOD LUCK WITH THAT</h3><p>A backhoe reverses through the future while one wall survives long enough to keep the joke.</p></article><article class="frame"><h3>HUMAN API</h3><p>Boy finds. Tooth verifies. Darth attacks. Don orchestrates. Kevin decides.</p></article><article class="frame"><h3>SERVER 4</h3><p>No one is sure. Somebody still has to pull the plug.</p></article><article class="frame"><h3>THE BOOK IS BACK</h3><p><a class="btn primary small" href="/the-harness/clips.html">Watch motion teasers</a> <a class="btn ghost small" href="/samples/harness.html">Read excerpt</a></p></article>';
   }
