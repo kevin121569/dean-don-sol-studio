@@ -7,3 +7,14 @@ Public launch repository for the **DEAN + DON SOL** creative studio by Kevin Dea
 This is a static, self-contained site built for GitHub Pages. The current launch build includes the ten-book catalog, Don Sol concierge, The Harness film section and tone reel, Human API interaction, story sorter, Idea Lab with local pinning, sampler preview, mobile navigation, keyboard handling, accessibility metadata, social/search metadata, a manifest, robots file, and a custom 404 page.
 
 Once GitHub Pages is enabled for the repository, the site can publish directly from the `main` branch root.
+
+
+## Canonical public routes
+
+- `/library/` — adult Library landing.
+- `/library/reading-room/` — Librarian reading experience.
+- `/kids/` — family/Kids landing.
+- `/kids/world/` — canonical Kids’ World experience.
+- `/games/` — games index.
+- `/worlds/` — canonical studio Worlds route; use `/worlds/#animation` for the animation section.
+- `/worlds-preview-v2/` — development preview only; not the canonical public Kids/Worlds path.
