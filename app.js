@@ -89,9 +89,9 @@
   // Recommendations are drawn from this local catalog, with no API calls.
   const scrim = $('#scrim'), panel = $('#concierge'), answer = $('#answer');
   let returnFocus;
-  const conciergeTriggers = $('[data-open-concierge]');
+  const conciergeTrigger = $('[data-open-concierge]');
   function setConciergeExpanded(expanded) {
-    conciergeTriggers.forEach(button => button.setAttribute('aria-expanded', String(expanded)));
+    conciergeTrigger.setAttribute('aria-expanded', String(expanded));
   }
   function open() {
     returnFocus = document.activeElement; scrim.hidden = panel.hidden = false;
@@ -102,7 +102,7 @@
     scrim.hidden = panel.hidden = true; setConciergeExpanded(false);
     document.body.style.overflow = ''; returnFocus?.focus();
   }
-  conciergeTriggers.forEach(button => { button.onclick = open; });
+  conciergeTrigger.onclick = open;
   $('#closeConcierge').onclick = close; scrim.onclick = close;
   document.addEventListener('keydown', e => {
     if (panel.hidden) return;
