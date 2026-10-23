@@ -91,62 +91,23 @@ No copy/art changes.
 
 ## Current coordination status
 
-| Agent | Lane | Status | Master Control action when report arrives |
+| Agent | Lane | Status | Master Control disposition |
 |---|---|---|---|
-| Dot | Integration QA / dispatch | WAITING ON REPORT | Triage route/status defects; assign only uncovered repairs |
-| Tooth | UX / copy red-team | WAITING ON REPORT | Accept/reject copy changes; prevent scope creep |
-| Boy | Link / content inventory | WAITING ON REPORT | Repair broken links/assets; capture exact retailer URLs |
-| Astra | Visual / brand pass | WAITING ON REPORT | Approve targeted visual fixes; preserve canonical art |
-| 006 | Technical regression / security | WAITING ON REPORT | Fix reproducible defects first; security/accessibility outrank polish |
-| Don Sol | Master Control / integration | ACTIVE | Merge findings, deconflict lanes, update main, issue next tasks |
+| Dot | Integration QA / dispatch | REPORT RECEIVED | Current-route defects triaged; public architecture and 10-book catalog already supersede stale findings |
+| Tooth | UX / copy red-team | REPORT RECEIVED | Public copy cleanup accepted selectively; reader-facing technical/staging language removed |
+| Boy | Link / content inventory | REPORT RECEIVED | Fight direct retailer link fixed; Stardust direct-link propagation remains open |
+| Astra | Visual / brand pass | PARTIAL | Cover issue fixed; visible mobile/brand pass still needs an actual rendered-browser review |
+| 006 | Technical regression / security | REPORT RECEIVED | No exposed secrets; Don Sol keyboard/focus fix merged; tighter Reading Desk sandbox preserved |
+| Don Sol | Master Control / integration | ACTIVE | Integration fixes merged; awaiting visual mobile QA and Stardust direct product URL |
 
-**Reporting rule:** Kevin may relay each agent's output directly to Don Sol in chat. Master Control will determine disposition, merge order, and follow-up. Kevin does not need to coordinate agents manually.
-
-## Audit disposition — 2026-10-22 evening
-
-Received combined DOT / TOOTH / BOY / ASTRA / 006 read-only audit.
-
-### Accepted and acted on
-- Public Librarian route promoted to `/library/reading-room/`.
-- Public Kids World route promoted to `/kids/world/`.
-- Library hub no longer exposes internal QA wording.
-- Homepage first-visit copy clarified.
-- Homepage release-status legend added.
-- New public routes added to sitemap.
-- Fight Your Way Through uses verified direct Google Play product URL.
-- Stardust dead-end search CTA removed while direct store URL propagates.
-
-### Rejected as stale / already fixed before audit
-- “9 book projects” / missing The Ones We Kept.
-- Missing `/library/`, `/kids/`, `/games/`, `/film/`, `/animation/` routes.
-- Fight Your Way Through shown as “Preparing for release”.
-- Ask Don Sol missing focus trap / aria-expanded.
-- Reading Desk iframe missing sandbox.
-- Better Questions public SHA/EPUBCheck technical copy.
-- Stale downloads HOLD language.
-
-### Still open
-- Replace current 240×360 The Ones We Kept web JPG with higher-resolution approved raster at same path.
-- Visible-browser mobile/keyboard visual QA still needed.
-- Capture Stardust exact public Google Play product URL once exposed.
-- Recompress heavy social `og-image.png` when doing performance polish.
-
-Master Control rule: do not reopen rejected stale findings without fresh reproduction against current live/source state.
-
-## Librarian closeout — PR #59 / #60
-
-Status: **CLOSED / PASS**
-
-Verified merged:
-- PR #59 — Finish the public Librarian experience — merged as `539edfc67434f33d3dbda5e31619cb141c9ce672`
-- PR #60 — Correct Librarian sample availability copy — merged as `fefd36e7b0d7aa4b72b65cc9b64005cd4ea10646`
-
-Accepted state:
-- Public robot/device voice controls removed.
-- All nine adult/general titles represented.
-- Eight real samples preserved.
-- The Ones We Kept does not claim a sample that does not exist.
-- Librarian voice performance pack committed for future human recording.
-- Library/dialog/sample/homepage/script regression reported PASS.
-
-Next Librarian upgrade is optional production polish: recorded human performance. It is **not** a website launch blocker.
+### Master Control decisions after combined audit
+- Rewrote stale /downloads/ page from current catalog truth.
+- Removed internal QA/staging language from public Library-facing copy.
+- Created clean /library/reading-room/ route and canonicalized the old preview to it.
+- Kept development-world preview out of search indexing while preserving access from Kids/Animation.
+- Removed EPUB packaging/hash jargon from Better Questions reader-facing page.
+- Clarified The Harness: novel submitted to Google Play; screenplay complete.
+- Added a plain-language homepage description and a catalog status legend.
+- Added keyboard focus trapping, Escape-to-close, aria-controls and aria-expanded behavior to Ask Don Sol.
+- Preserved the Reading Desk's tighter sandbox; did not add allow-scripts without a demonstrated need.
+- Remaining open: rendered mobile/visual QA, exact Stardust public product URL, real automated reader-list provider.
