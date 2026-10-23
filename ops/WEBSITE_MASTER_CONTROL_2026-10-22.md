@@ -101,3 +101,34 @@ No copy/art changes.
 | Don Sol | Master Control / integration | ACTIVE | Merge findings, deconflict lanes, update main, issue next tasks |
 
 **Reporting rule:** Kevin may relay each agent's output directly to Don Sol in chat. Master Control will determine disposition, merge order, and follow-up. Kevin does not need to coordinate agents manually.
+
+## Audit disposition — 2026-10-22 evening
+
+Received combined DOT / TOOTH / BOY / ASTRA / 006 read-only audit.
+
+### Accepted and acted on
+- Public Librarian route promoted to `/library/reading-room/`.
+- Public Kids World route promoted to `/kids/world/`.
+- Library hub no longer exposes internal QA wording.
+- Homepage first-visit copy clarified.
+- Homepage release-status legend added.
+- New public routes added to sitemap.
+- Fight Your Way Through uses verified direct Google Play product URL.
+- Stardust dead-end search CTA removed while direct store URL propagates.
+
+### Rejected as stale / already fixed before audit
+- “9 book projects” / missing The Ones We Kept.
+- Missing `/library/`, `/kids/`, `/games/`, `/film/`, `/animation/` routes.
+- Fight Your Way Through shown as “Preparing for release”.
+- Ask Don Sol missing focus trap / aria-expanded.
+- Reading Desk iframe missing sandbox.
+- Better Questions public SHA/EPUBCheck technical copy.
+- Stale downloads HOLD language.
+
+### Still open
+- Replace current 240×360 The Ones We Kept web JPG with higher-resolution approved raster at same path.
+- Visible-browser mobile/keyboard visual QA still needed.
+- Capture Stardust exact public Google Play product URL once exposed.
+- Recompress heavy social `og-image.png` when doing performance polish.
+
+Master Control rule: do not reopen rejected stale findings without fresh reproduction against current live/source state.
