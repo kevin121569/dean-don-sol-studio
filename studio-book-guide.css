@@ -46,7 +46,7 @@
 .sg-links .sg-secondary{color:#f4e8f2;background:transparent;border-color:#847195}
 .sg-footnote{font-size:.76rem;color:#bca9c4;margin-top:9px}
 .sg-curley-tag{color:#d9f9c9}
-.sg-hero-helper{position:absolute;bottom:210px;right:18px;z-index:12;color:#271627;background:#ffcc87;border-radius:20px;border:1px solid #f6dfb3;min-height:42px;padding:8px 14px;font:900 .82rem system-ui;cursor:pointer}
+.sg-hero-helper{position:absolute;bottom:225px;right:18px;z-index:12;color:#271627;background:#ffcc87;border-radius:20px;border:1px solid #f6dfb3;min-height:42px;padding:8px 14px;font:900 .82rem system-ui;cursor:pointer}
 .sg-hero-helper:focus-visible{outline:3px solid var(--sg-mint);outline-offset:3px}
 @keyframes sgEnter{from{opacity:0;transform:translateY(25px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes sgCharacterEnter{from{opacity:0;transform:translateX(250px) scale(.75)}to{opacity:1;transform:translateX(0) scale(1)}}
