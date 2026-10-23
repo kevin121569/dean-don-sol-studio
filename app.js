@@ -39,6 +39,7 @@
     menu.setAttribute('aria-expanded', String(open));
     menu.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     menu.textContent = open ? '✕' : '☰';
+    document.body.classList.toggle('mobile-menu-open', open);
   }
   menu.onclick = () => setMenu(mobile.hidden);
   mobile.onclick = e => { if (e.target.closest('a')) setMenu(false); };
@@ -96,10 +97,12 @@
   function open() {
     returnFocus = document.activeElement; scrim.hidden = panel.hidden = false;
     setConciergeExpanded(true);
+    document.body.classList.add('concierge-open');
     document.body.style.overflow = 'hidden'; $('#closeConcierge').focus();
   }
   function close() {
     scrim.hidden = panel.hidden = true; setConciergeExpanded(false);
+    document.body.classList.remove('concierge-open');
     document.body.style.overflow = ''; returnFocus?.focus();
   }
   conciergeTrigger.onclick = open;
@@ -118,7 +121,8 @@
   $('#choices').onclick = e => {
     const button = e.target.closest('[data-pick]'); if (!button) return;
     const book = button.dataset.pick === 'random' ? choose(books) : books.find(b => b.id === button.dataset.pick);
-    answer.innerHTML = `<b>${esc(book.title)}</b><p>${esc(book.blurb)}</p><span class="status ${esc(book.group)}">${esc(book.status)}</span><div class="book-actions"><a class="btn primary small" href="/${book.slug}/">Explore this book</a></div>`;
+    const retailer = book.storeUrl ? `<a class="btn ghost small" href="${esc(book.storeUrl)}" target="_blank" rel="noopener">Buy on ${esc(book.retailer || 'retailer')}</a>` : '';
+    answer.innerHTML = `<b>${esc(book.title)}</b><p>${esc(book.blurb)}</p><span class="status ${esc(book.group)}">${esc(book.status)}</span><div class="book-actions"><a class="btn primary small" href="/${book.slug}/">Explore this book</a>${retailer}</div>`;
   };
   $('#year').textContent = new Date().getFullYear();
 })();
