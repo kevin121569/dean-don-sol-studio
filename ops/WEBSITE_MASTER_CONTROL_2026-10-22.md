@@ -132,3 +132,21 @@ Received combined DOT / TOOTH / BOY / ASTRA / 006 read-only audit.
 - Recompress heavy social `og-image.png` when doing performance polish.
 
 Master Control rule: do not reopen rejected stale findings without fresh reproduction against current live/source state.
+
+## Librarian closeout — PR #59 / #60
+
+Status: **CLOSED / PASS**
+
+Verified merged:
+- PR #59 — Finish the public Librarian experience — merged as `539edfc67434f33d3dbda5e31619cb141c9ce672`
+- PR #60 — Correct Librarian sample availability copy — merged as `fefd36e7b0d7aa4b72b65cc9b64005cd4ea10646`
+
+Accepted state:
+- Public robot/device voice controls removed.
+- All nine adult/general titles represented.
+- Eight real samples preserved.
+- The Ones We Kept does not claim a sample that does not exist.
+- Librarian voice performance pack committed for future human recording.
+- Library/dialog/sample/homepage/script regression reported PASS.
+
+Next Librarian upgrade is optional production polish: recorded human performance. It is **not** a website launch blocker.
