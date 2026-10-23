@@ -30,3 +30,7 @@
 @media(max-width:850px){.hero,.split,.section-head{grid-template-columns:1fr}.hero{padding-top:55px}.book-detail{grid-template-columns:minmax(200px,.75fr) minmax(0,1.25fr);gap:24px}}
 @media(max-width:620px){.hero h1{font-size:clamp(3rem,15vw,5.4rem)}.book-detail{grid-template-columns:1fr}.detail-art{width:min(100%,360px);margin:auto}.book-nav{gap:12px}.brand{font-size:14px}.topbar{gap:10px}.book-nav a{font-size:13px}.section h2{font-size:clamp(2.45rem,10vw,3.5rem)}}
 @media(prefers-reduced-motion:reduce){.ticker .ticker-track{animation:none}}
+
+/* Website working-copy control collision repair. */
+body.concierge-open .fab{visibility:hidden}
+@media(max-width:850px){body.mobile-menu-open .fab{display:none}}
