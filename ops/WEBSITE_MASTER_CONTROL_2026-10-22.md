@@ -111,3 +111,18 @@ No copy/art changes.
 - Added keyboard focus trapping, Escape-to-close, aria-controls and aria-expanded behavior to Ask Don Sol.
 - Preserved the Reading Desk's tighter sandbox; did not add allow-scripts without a demonstrated need.
 - Remaining open: rendered mobile/visual QA, exact Stardust public product URL, real automated reader-list provider.
+
+## Kids World integration repair
+
+Status: **SOURCE FIXED / DEPLOYMENT PROPAGATION TO VERIFY**
+
+Finding:
+- The promoted `/kids/world/` page inherited `../` links from the old `/worlds-preview-v2/` location.
+- At the deeper public route, those links resolved under `/kids/` instead of the site root.
+
+Repair:
+- Rebased moved-page root links from `../` to `../../`.
+- Repointed guide CSS/JS to the preserved `/worlds-preview-v2/` assets.
+- Commit: `e29a7fbd121c097d2c2696ab66e37a068325614d`.
+
+Do not reopen unless the live deployed route still reproduces bad /kids/... targets after propagation.
