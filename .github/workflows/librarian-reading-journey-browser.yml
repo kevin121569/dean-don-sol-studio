@@ -1,0 +1,27 @@
+name: Librarian Reading Journey branch browser QA
+on:
+  push:
+    branches:
+      - feature/librarian-reading-journey-continuity-v1-2026-10-11
+    paths:
+      - tests/librarian-reading-journey-browser.cjs
+      - studio-entrance-preview-v4-1/**
+      - .github/workflows/librarian-reading-journey-browser.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  branch-browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install isolated Chromium runner
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Exercise branch site, original samples and Librarian conversations
+        run: node tests/librarian-reading-journey-browser.cjs
