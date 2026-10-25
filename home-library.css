@@ -1,0 +1,37 @@
+/* Librarian-led adult landing page */
+.librarian-home{background:radial-gradient(circle at 86% 8%,rgba(126,75,63,.24),transparent 30%),linear-gradient(180deg,#120e13,#0a080c 82%)}
+.librarian-home .topbar{background:rgba(18,14,19,.94)}
+.librarian-hero{grid-template-columns:.92fr 1.08fr;gap:clamp(28px,4vw,56px);min-height:700px}
+.librarian-hero .hero-copy{position:relative;z-index:2}
+.librarian-hero h1{font-family:Georgia,"Times New Roman",serif;text-transform:none;font-size:clamp(3.65rem,6.8vw,7.4rem);letter-spacing:-.045em;line-height:.92}
+.librarian-hero h1 span{color:#e7bb79;font-style:italic}
+.librarian-hero .lede{max-width:660px;color:#ded3d3}
+.librarian-stage{position:relative;aspect-ratio:16/10;min-height:0;border:1px solid #725a55;border-radius:26px;background:#070607;overflow:hidden;box-shadow:0 28px 90px #000c}
+.librarian-stage video{display:block;width:100%;height:100%;object-fit:contain;object-position:center;background:#070607}
+.librarian-stage-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 48%,rgba(5,3,5,.94) 100%);pointer-events:none}
+.librarian-stage-copy{position:absolute;left:clamp(18px,3vw,34px);right:clamp(18px,3vw,34px);bottom:clamp(16px,2.5vw,28px);z-index:2}
+.librarian-stage-copy span{color:#e7bb79;font-size:.72rem;font-weight:900;letter-spacing:.16em}
+.librarian-stage-copy p{margin:.45rem 0 .8rem;max-width:560px;font:italic clamp(1rem,1.5vw,1.25rem)/1.45 Georgia,serif;color:#fff8ef}
+.librarian-stage-copy button{min-height:44px;border:1px solid #a98369;border-radius:999px;background:rgba(18,11,14,.82);color:#f7eadf;padding:9px 14px;font-weight:800;cursor:pointer}
+.librarian-stage-copy button:focus-visible,.kids-portal-link:focus-visible{outline:3px solid var(--mint);outline-offset:4px}
+.kids-portal-link{display:flex;align-items:center;gap:13px;max-width:650px;margin-top:24px;padding:14px 16px;border:1px solid #695877;border-radius:16px;background:linear-gradient(135deg,rgba(61,43,78,.72),rgba(27,23,39,.82));text-decoration:none}
+.kids-portal-link>span:first-child{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--sun),var(--hot));color:#24130b;font-size:1.4rem}
+.kids-portal-link span:last-child{display:grid;gap:2px}
+.kids-portal-link strong{color:#fff}
+.kids-portal-link small{color:#d6c9df}
+.librarian-home #books{background:linear-gradient(180deg,rgba(39,28,42,.28),transparent)}
+@media(max-width:850px){
+ .librarian-hero{grid-template-columns:1fr;min-height:auto}
+ .librarian-stage{order:-1;aspect-ratio:16/10}
+ .librarian-hero h1{font-size:clamp(3.2rem,13vw,5.6rem)}
+}
+@media(max-width:560px){
+ .librarian-stage{width:100%;border-radius:18px}
+ .librarian-stage-copy p{font-size:.95rem}
+ .librarian-stage-copy button{width:100%}
+ .kids-portal-link{align-items:flex-start}
+}
+@media(prefers-reduced-motion:reduce){
+ .librarian-stage video{display:none}
+ .librarian-stage{background:url('/studio-entrance-preview-v4-1/assets/librarian-seated-close-v2.jpg') center/contain no-repeat #070607}
+}
