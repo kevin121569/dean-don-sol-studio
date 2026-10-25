@@ -1,0 +1,26 @@
+name: Librarian First Words live web QA
+on:
+  push:
+    branches:
+      - feature/librarian-first-words-cinematic-rehearsal-v1-2026-10-11
+    paths:
+      - tests/librarian-first-words-live.cjs
+      - .github/workflows/librarian-first-words-live.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-rehearsal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Playwright Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Exercise real cinematic entrance, voice fallback and local audition
+        run: node tests/librarian-first-words-live.cjs
