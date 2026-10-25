@@ -43,8 +43,6 @@
   }
   menu.onclick = () => setMenu(mobile.hidden);
   mobile.onclick = e => { if (e.target.closest('a')) setMenu(false); };
-  const toothLines = ['Don calls this a studio. I call it eleven books wearing a trench coat.', 'The domain works. Apparently standards are optional.', 'I reviewed the catalog. Several books contain feelings. Unfortunate.', 'Ask Sol for a recommendation. Then ask me why he is wrong.'];
-  $('#toothBtn').onclick = () => { $('#heroSpeech').textContent = toothLines[Math.floor(Math.random() * toothLines.length)]; };
   const aiNames = $$('.win b').map(b => b.textContent);
   const replies = ['I have an idea. Show the others.', 'I have questions. Send them back to Don.', 'Let’s check what could go wrong.', 'I have the context. Here is another angle.'];
   let pastes = 0, autoplayStopped = false, timer;
@@ -87,50 +85,18 @@
     pins = pins.slice(0, 6);
     $('#pins').innerHTML = pins.map(item => `<div class="pin-item">${esc(item)}</div>`).join('');
   };
-  // Recommendations are drawn from this local catalog, with no API calls.
-  const scrim = $('#scrim'), panel = $('#concierge'), answer = $('#answer');
-  let returnFocus;
-  const conciergeTrigger = $('[data-open-concierge]');
-  function setConciergeExpanded(expanded) {
-    conciergeTrigger.setAttribute('aria-expanded', String(expanded));
+  const librarianFilm = $('#librarianHeroFilm');
+  const librarianReplay = $('#librarianHeroReplay');
+  if (librarianFilm && librarianReplay) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reducedMotion.matches) librarianFilm.pause();
+    librarianReplay.onclick = () => {
+      try { librarianFilm.currentTime = 0; librarianFilm.play().catch(() => {}); } catch (_) {}
+    };
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) librarianFilm.pause();
+    });
   }
-  function open() {
-    returnFocus = document.activeElement; scrim.hidden = panel.hidden = false;
-    setConciergeExpanded(true);
-    document.body.classList.add('concierge-open');
-    document.body.style.overflow = 'hidden'; $('#closeConcierge').focus();
-  }
-  function close() {
-    scrim.hidden = panel.hidden = true; setConciergeExpanded(false);
-    document.body.classList.remove('concierge-open');
-    document.body.style.overflow = ''; returnFocus?.focus();
-  }
-  conciergeTrigger.onclick = open;
-  $('#closeConcierge').onclick = close; scrim.onclick = close;
-  document.addEventListener('keydown', e => {
-    if (panel.hidden) return;
-    if (e.key === 'Escape') { e.preventDefault(); close(); }
-    if (e.key === 'Tab') {
-      const controls = $$('button,a[href]', panel), first = controls[0], last = controls.at(-1);
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
-  });
-  const routes = [
-    {id:'librarian',label:'Find my next book',heading:'Ask the Librarian',text:'Choose a mood and receive two hand-curated, spoiler-free suggestions from the adult and general catalog.',href:'/library/reading-room/#adult',cta:'Enter the Reading Room'},
-    {id:'catalog',label:'Browse all 11 books',heading:'The complete catalog',text:'See every current Idea Lab title, including the children’s book and the newest addition, You Called Me Astra.',href:'/#books',cta:'Browse all books'},
-    {id:'kids',label:'Explore Kids’ World',heading:'Kids’ World',text:'Meet Curley and the cartoon crew, read the children’s book, and explore games and animation in development.',href:'/kids/world/',cta:'Enter Kids’ World'},
-    {id:'games',label:'Play a game',heading:'Games',text:'See the playable browser experiences and development cases currently available from the studio.',href:'/games/',cta:'Explore games'},
-    {id:'film',label:'Watch film work',heading:'Film',text:'Visit the cinematic side of the studio for film materials, clips and works in development.',href:'/film/',cta:'Explore film'},
-    {id:'animation',label:'See animation',heading:'Animation',text:'Meet the animated characters and see the current development work.',href:'/animation/',cta:'Explore animation'}
-  ];
-  $('#choices').innerHTML = routes.map(route => `<button type="button" data-route="${route.id}" aria-pressed="false">${route.label}</button>`).join('');
-  $('#choices').onclick = e => {
-    const button = e.target.closest('[data-route]'); if (!button) return;
-    const route = routes.find(item => item.id === button.dataset.route); if (!route) return;
-    for (const choice of document.querySelectorAll('#choices [data-route]')) choice.setAttribute('aria-pressed', String(choice === button));
-    answer.innerHTML = `<b>${esc(route.heading)}</b><p>${esc(route.text)}</p><div class="book-actions"><a class="btn primary small" href="${esc(route.href)}">${esc(route.cta)}</a></div>`;
-  };
   $('#year').textContent = new Date().getFullYear();
 })();
 
