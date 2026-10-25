@@ -43,7 +43,7 @@
   }
   menu.onclick = () => setMenu(mobile.hidden);
   mobile.onclick = e => { if (e.target.closest('a')) setMenu(false); };
-  const toothLines = ['Don calls this a studio. I call it ten books wearing a trench coat.', 'The domain works. Apparently standards are optional.', 'I reviewed the catalog. Several books contain feelings. Unfortunate.', 'Ask Sol for a recommendation. Then ask me why he is wrong.'];
+  const toothLines = ['Don calls this a studio. I call it eleven books wearing a trench coat.', 'The domain works. Apparently standards are optional.', 'I reviewed the catalog. Several books contain feelings. Unfortunate.', 'Ask Sol for a recommendation. Then ask me why he is wrong.'];
   $('#toothBtn').onclick = () => { $('#heroSpeech').textContent = toothLines[Math.floor(Math.random() * toothLines.length)]; };
   const aiNames = $$('.win b').map(b => b.textContent);
   const replies = ['I have an idea. Show the others.', 'I have questions. Send them back to Don.', 'Let’s check what could go wrong.', 'I have the context. Here is another angle.'];
