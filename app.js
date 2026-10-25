@@ -31,7 +31,7 @@
       card.hidden = button.dataset.filter !== 'all' && card.dataset.shelf !== button.dataset.filter;
     });
     const count = $$('.book:not([hidden])', $('#bookGrid')).length;
-    $('#filterResult').textContent = button.dataset.filter === 'all' ? `Showing all ${count} books.` : `Showing ${count} ${count === 1 ? 'book' : 'books'} in ${button.textContent.toLowerCase()}.`;
+    $('#filterResult').textContent = button.dataset.filter === 'all' ? `Showing all ${count} adult and general books. The eleventh title is in Kids’ World.` : `Showing ${count} ${count === 1 ? 'book' : 'books'} in ${button.textContent.toLowerCase()}.`;
   });
   const mobile = $('#mobileNav'), menu = $('#menu');
   function setMenu(open) {
