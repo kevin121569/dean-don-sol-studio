@@ -53,7 +53,7 @@
   const fab=document.querySelector('.fab[data-open-concierge]');
   if(fab){fab.innerHTML='<span aria-hidden="true">😎</span> Ask Don Sol';}
   const note=document.createElement('p'); note.className='sg-catalog-note';
-  note.innerHTML='<strong>Meet the characters behind the stories.</strong> Ask Don Sol to introduce any book—or let Curley guide you through our family adventure. The introductions are optional; all normal book links still work.';
+  note.innerHTML='<strong>Meet the characters behind the stories.</strong> Don Sol hosts optional scripted introductions here, and Curley guides our family adventure. For a personal book recommendation, <a href="/library/reading-room/#adult">ask the Librarian</a>.';
   root.parentElement.insertBefore(note,root);
   const dialog=document.createElement('dialog');dialog.className='sg-dialog';dialog.id='studioStoryStage';dialog.setAttribute('aria-labelledby','sgBookTitle');
   dialog.innerHTML=`
