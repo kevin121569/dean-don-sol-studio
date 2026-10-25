@@ -1,2 +1,70 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kids’ World — The Idea Lab Studio</title><meta name="description" content="Curley, cartoon Don Sol, stories, games and animation for young explorers and families."><link rel="canonical" href="https://theidealabstudio.com/kids/"><meta name="theme-color" content="#12101a"><link rel="icon" type="image/svg+xml" href="../favicon.svg"><link rel="stylesheet" href="../base.css?v=15"><link rel="stylesheet" href="../components.css?v=14"></head><body><a class="skip" href="#main">Skip to content</a><header class="topbar"><a class="brand" href="../" aria-label="The Idea Lab Studio home"><span>THE IDEA LAB <b>STUDIO</b></span></a><nav class="book-nav" aria-label="Primary"><a href="../#books">Books</a><a href="../library/">Library</a><a href="../kids/">Kids</a><a href="../games/">Games</a><a href="../film/">Film</a><a href="../animation/">Animation</a></nav></header>
-<main id="main"><section class="section split"><div><p class="eyebrow">FOR YOUNG EXPLORERS & FAMILIES</p><h1>Kids’ World</h1><p class="lede-sm">Curley, cartoon Don Sol, Tooth, Luke, Percy and the crew belong here: questions, stories, games, cartoons, and the kind of trouble that teaches you something by accident.</p><div class="hero-actions"><a class="btn primary" href="./world/">Enter the Kids’ World</a><a class="btn ghost" href="../samples/questions.html">Read Better Questions</a></div></div><div class="machine"><p class="eyebrow">THREE DOORS</p><h3>Read. Play. Watch.</h3><p><strong>Read:</strong> The Book of Better Questions.<br><strong>Play:</strong> free reading mysteries and playable development cases.<br><strong>Watch:</strong> the growing cartoon and character world.</p><div class="status-row"><span class="status complete">Stories ready</span><span class="status ready">Games in development · playable tests available</span><span class="status ready">Cartoons in development</span></div></div></section></main><footer><a href="../">The Idea Lab Studio</a><small>© 2026 Kevin Dean Rosenkrans · Ideas enter. Stories come out.</small></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kids’ World — Don Sol & Curley at The Idea Lab Studio</title>
+<meta name="description" content="An animated world of questions, stories, mysteries, games and cartoons for young explorers and families.">
+<link rel="canonical" href="https://theidealabstudio.com/kids/">
+<meta name="theme-color" content="#142438">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="stylesheet" href="../kids-animated.css?v=1">
+<script src="../kids-animated.js?v=1" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to Kids’ World</a>
+<header class="kids-topbar">
+  <a class="kids-brand" href="../" aria-label="Return to the Librarian and adult Idea Lab Studio"><span aria-hidden="true">✦</span> THE IDEA LAB <b>STUDIO</b></a>
+  <nav aria-label="Kids’ World">
+    <a href="#read">Read</a><a href="#play">Play</a><a href="#watch">Watch</a><a href="../library/reading-room/#adult">Adult Library ↗</a>
+  </nav>
+</header>
+<main id="main">
+<section class="kids-hero" aria-labelledby="kidsTitle">
+  <div class="kids-copy">
+    <p class="kids-eyebrow">DON SOL &amp; CURLEY PRESENT</p>
+    <h1 id="kidsTitle">Questions.<br>Cartoons.<br><span>Games. Trouble.</span></h1>
+    <p class="kids-lede">Welcome, question askers. Curley finds the shortcuts, Don Sol explains the impossible stuff, and Tooth checks the evidence.</p>
+    <div class="kids-actions">
+      <a class="kids-btn primary" href="#read">Choose a door</a>
+      <a class="kids-btn" href="../samples/questions.html">Read Better Questions</a>
+    </div>
+    <p class="kids-note"><strong>This is the family side of the studio.</strong> Serious adult books, film and interactive fiction stay with the Librarian.</p>
+  </div>
+  <div class="kids-stage" aria-label="Animated Don Sol and Curley welcome young explorers">
+    <div class="orbit orbit-one" aria-hidden="true"></div><div class="orbit orbit-two" aria-hidden="true"></div>
+    <div class="don-video-frame">
+      <video id="donKidsVideo" autoplay muted loop playsinline preload="metadata" poster="../assets/characters/don-sol-idealable-v3.svg" aria-label="Animated Don Sol smiling and speaking silently">
+        <source src="../assets/video/don-sol-approved-closeup-web-v1.mp4" type="video/mp4">
+      </video>
+      <p class="don-caption">“Curley found three doors. I was told not to press all of them.”</p>
+    </div>
+    <button class="motion-control" id="donMotion" type="button" aria-pressed="true">Pause Don Sol</button>
+    <div class="curley-wrap" aria-label="Curley the bookworm">
+      <span class="curley-name">CURLEY · BOOKWORM &amp; SHORTCUT FINDER</span>
+      <svg class="curley" viewBox="0 0 320 220" role="img" aria-label="Curley, the green cartoon bookworm">
+        <path d="M20 183Q5 129 50 111Q101 102 121 154Q131 193 92 197Q64 199 76 169Q97 136 160 160Q214 183 228 95" fill="none" stroke="#357366" stroke-width="38" stroke-linecap="round"/>
+        <path d="M20 183Q5 129 50 111Q101 102 121 154Q131 193 92 197Q64 199 76 169Q97 136 160 160Q214 183 228 95" fill="none" stroke="#8eecbb" stroke-width="27" stroke-linecap="round"/>
+        <ellipse cx="237" cy="72" rx="45" ry="42" fill="#a6f0c1" stroke="#327768" stroke-width="4"/>
+        <circle cx="221" cy="61" r="6" fill="#173332"/><circle cx="250" cy="61" r="6" fill="#173332"/>
+        <circle cx="218" cy="58" r="2" fill="#fff"/><circle cx="247" cy="58" r="2" fill="#fff"/>
+        <path d="M220 84Q237 96 254 81" fill="none" stroke="#317260" stroke-width="5" stroke-linecap="round"/>
+        <path d="M278 84L304 96L296 101" stroke="#f292a8" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+</section>
+<section class="door-section" aria-labelledby="doorTitle">
+  <p class="kids-eyebrow">THREE DOORS · YOU CHOOSE</p>
+  <h2 id="doorTitle">Read. Play. Watch.</h2>
+  <div class="door-grid">
+    <article class="kids-door read" id="read"><span class="door-number">01 / READ</span><img src="../assets/covers/questions-v12.jpg" alt="The Book of Better Questions cover" width="220" height="330"><div><h3>Open a curious book.</h3><p><em>The Book of Better Questions</em> turns observation, evidence and uncertainty into a family adventure.</p><a class="kids-btn primary" href="../samples/questions.html">Read the opening ↗</a><a class="text-link" href="../the-book-of-better-questions/">About the book</a></div></article>
+    <article class="kids-door play" id="play"><span class="door-number">02 / PLAY NOW</span><div class="door-symbol" aria-hidden="true">?</div><div><h3>Solve a reading mystery.</h3><p><em>The Missing Page</em> is free to play. Follow clues in real sample chapters and reach a complete ending.</p><a class="kids-btn mint" href="../missing-page/">Play The Missing Page ↗</a><span class="door-status">PLAYABLE NOW · NO ACCOUNT</span></div></article>
+    <article class="kids-door watch" id="watch"><span class="door-number">03 / WATCH &amp; EXPLORE</span><div class="door-symbol" aria-hidden="true">▶</div><div><h3>Meet the cartoon crew.</h3><p>Visit the animation world for Don Sol, Curley, Tooth, Luke, Percy and the characters taking shape inside the Idea Lab.</p><a class="kids-btn" href="../animation/">Explore animation ↗</a><span class="door-status development">IN DEVELOPMENT · CLEARLY LABELED</span></div></article>
+  </div>
+</section>
+<section class="kids-footer-portal"><div><p class="kids-eyebrow">WRONG DOOR?</p><h2>Looking for the serious shelves?</h2><p>The Librarian keeps the adult science fiction, memoir, personal growth, film and grown-up interactive stories.</p></div><a class="kids-btn library" href="../library/reading-room/#adult">Return to the Librarian →</a></section>
+</main>
+<footer><span>THE IDEA LAB STUDIO · KIDS’ WORLD</span><span>Questions welcome. Pretending to know everything is not required.</span></footer>
+</body>
+</html>
