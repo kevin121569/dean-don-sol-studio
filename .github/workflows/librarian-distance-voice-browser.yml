@@ -1,0 +1,35 @@
+name: Librarian Distance voice scene branch QA
+on:
+  push:
+    branches:
+      - feature/librarian-distance-voice-rehearsal-v1-2026-10-11
+    paths:
+      - librarian-distance-voice-rehearsal-v1/**
+      - tests/librarian-distance-voice-browser.cjs
+      - .github/workflows/librarian-distance-voice-browser.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium for local-branch test
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Test exact dialogue and audition safety in real browser
+        run: node tests/librarian-distance-voice-browser.cjs
+      - name: Archive test screenshots (rehearsal, not production footage)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: librarian-distance-voice-qa-screenshots
+          path: qa-artifacts/*.png
+          if-no-files-found: ignore
+          retention-days: 14

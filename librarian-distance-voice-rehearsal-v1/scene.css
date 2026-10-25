@@ -1,0 +1,67 @@
+/* The Librarian — book-specific cinematic voice rehearsal. Original seated actor. */
+:root{color-scheme:dark;--ink:#fff3e5;--muted:#d5bfaf;--gold:#ebc38e;--line:#876a54;--body:#141118}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-width:320px;background:radial-gradient(ellipse at 25% -5%,#422b32,transparent 55%),linear-gradient(140deg,#17141a,#100e14 72%);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed}
+button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #fff4d4;outline-offset:4px}
+.skip{position:absolute;top:-100px;left:15px;background:#eac391;color:#20161c;padding:12px;z-index:100}
+.skip:focus{top:15px}
+.sitebar{display:flex;align-items:center;gap:18px;justify-content:space-between;min-height:76px;padding:16px clamp(17px,4vw,62px);border-bottom:1px solid #795c5377;background:#100e15dd}
+.wordmark{text-decoration:none;font-weight:900;letter-spacing:.04em;font-size:.83rem;display:flex;align-items:center;gap:8px}
+.wordmark em{font-style:normal;color:var(--gold)}
+.mark{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--gold);border-radius:8px;color:var(--gold);font:700 1rem Georgia,serif}
+.studio-tag{font-size:.66rem;letter-spacing:.12em;color:var(--gold);font-weight:850}
+.back{text-decoration:none;color:var(--muted);font-size:.81rem;font-weight:750}
+.back:hover,.actions a:hover{text-decoration:underline}
+main{max-width:1480px;margin:auto;padding:clamp(24px,4.5vw,66px) clamp(16px,4vw,58px) 24px}
+.intro{max-width:1000px;margin-bottom:40px}
+.eyebrow,.tiny{font-size:.67rem;line-height:1.45;letter-spacing:.18em;font-weight:850;color:var(--gold)}
+h1,h2,p,figure{margin-top:0}
+h1{font:650 clamp(3rem,6.6vw,6rem)/1.05 Georgia,serif;letter-spacing:-.06em;margin:14px 0 18px;text-wrap:balance}
+h1 i,h2 i{font-weight:400;color:var(--gold)}
+.intro>p{font:1.12rem/1.65 Georgia,serif;color:var(--muted);max-width:760px;margin:0}
+.scene{display:grid;grid-template-columns:minmax(0,1.13fr) minmax(0,.87fr);gap:clamp(22px,3vw,52px);align-items:start}
+.stage{position:sticky;top:26px;min-width:0}
+.portrait{position:relative;margin:0;border:1px solid #a9805b;border-radius:20px;overflow:hidden;box-shadow:0 30px 65px #0009;background:#211e22}
+.portrait:before{content:"";display:block;padding-top:64%}
+.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.portrait:after{content:"";position:absolute;inset:46% 0 0;background:linear-gradient(transparent,#100b13d9);pointer-events:none}
+.corner{position:absolute;z-index:1;bottom:18px;left:22px;right:15px;display:grid;gap:8px;text-shadow:0 2px 9px #000}
+.corner strong{font:italic 1.6rem Georgia,serif}
+.now-caption{padding:22px 24px;margin-top:16px;border-radius:15px;background:linear-gradient(140deg,#33252b,#1f1a23);border:1px solid var(--line);min-height:150px}
+.now-caption p{font:italic clamp(1.2rem,2vw,1.55rem)/1.5 Georgia,serif;margin:10px 0 0}
+.visual-note{font-size:.77rem;color:#b9aa9f;margin:12px 0 0}
+.performance{padding:clamp(22px,3vw,39px);border:1px solid #83604f;border-radius:20px;background:linear-gradient(160deg,#292025,#19171d);box-shadow:0 22px 45px #08080c75;min-width:0}
+.scene-label{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.scene-number{font-size:.66rem;font-weight:800;color:#a99788}
+h2{font:650 clamp(2.4rem,3.7vw,3.9rem)/1.09 Georgia,serif;letter-spacing:-.035em;margin:18px 0}
+.intro-copy{font-size:.88rem;line-height:1.62;color:var(--muted);margin-bottom:20px}
+.dialogue{border-left:2px solid #8f775f;padding-left:18px}
+.dialogue p{font:1.02rem/1.62 Georgia,serif;margin:0 0 12px;padding:6px 9px;transition:background .3s ease}
+.dialogue p.active{background:#68422a86;border-radius:8px;color:#fff8e9;box-shadow:inset 3px 0 var(--gold)}
+.controls,.actions{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 8px}
+.controls button,.actions button,.actions a{min-height:46px;border-radius:28px;padding:11px 15px;font-weight:800;font-size:.79rem;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;text-align:center}
+.primary,.sample{background:var(--gold);color:#24191b;border:1px solid #e8be81}
+.secondary,.quiet{background:transparent;border:1px solid #baa083;color:#f2dfc7}
+.status{font-size:.8rem;color:#e1cbb5;min-height:22px;line-height:1.5;margin:12px 0}
+.master{border-top:1px solid #6e5653;margin-top:22px;padding-top:20px}
+.master label{display:block;color:#f0dabe;font-weight:700;font-size:.82rem;line-height:1.5}
+.master input{margin:12px 0;display:block;width:100%;max-width:100%;font-size:.75rem;color:var(--muted)}
+.master input::file-selector-button{background:#e4ba87;color:#21151b;border:0;border-radius:9px;padding:9px 12px;font-weight:800;margin-right:10px;cursor:pointer}
+audio{width:100%;margin-top:8px}
+audio[hidden]{display:none!important}
+#fileNote{color:#cdb9ab;font-size:.74rem;line-height:1.5;margin:8px 0}
+.actions{margin-top:20px}
+.actions a{font-size:.81rem}
+.direction{border-top:1px solid #5f4847;margin-top:23px;padding-top:20px;font-size:.84rem;color:#dbc4b3;line-height:1.7}
+.direction summary{font-weight:800;color:#f3d4a5;cursor:pointer}
+.direction p{margin:12px 0}
+.release-note{text-align:center;margin:34px auto 0;color:#c6b4a8;font-size:.69rem;letter-spacing:.1em;line-height:1.8;max-width:900px}
+footer{border-top:1px solid #544048;padding:26px 4vw;display:flex;gap:18px;justify-content:space-between;color:#bca796;font-size:.72rem}
+@media(max-width:1040px){.scene{grid-template-columns:1fr}.stage{position:static}.portrait:before{padding-top:57%}.studio-tag{display:none}}
+@media(max-width:560px){.sitebar{min-height:66px;padding:12px 16px}.wordmark{font-size:.7rem}.mark{width:28px;height:28px}main{padding:26px 14px}.intro{margin-bottom:25px}.intro>p{font-size:1rem}.stage .corner strong{font-size:1.26rem}.performance{padding:20px 16px}.now-caption{min-height:130px;padding:16px}.controls button{width:100%}footer{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
