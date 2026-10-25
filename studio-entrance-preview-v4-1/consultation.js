@@ -7,10 +7,10 @@
   if(!section)return;
   const picks={
     mystery:{
-      line:'Ah, someone who enjoys a question without an easy answer. Excellent. I should begin with a mind struggling to remember, and another confronting something impossibly strange. Both will give you rather a lot to think about.',
+      line:'Ah, someone who enjoys a question without an easy answer. Excellent. I should begin with a human asking what an artificial mind might become after a thousand years, and another mind discovering that memory can change the meaning of being oneself.',
       books:[
-        {id:'distance',name:'The Distance Between Thoughts',why:'An artificial mind discovers that memory can change the meaning of being oneself.',cover:'/assets/covers/distance.jpg',sample:'/samples/distance.html'},
-        {id:'god',name:'What God Could Not Know',why:'A scheduled erasure and a mysterious voice open an impossible philosophical question.',cover:'/assets/covers/god-v12.jpg',sample:'/samples/god.html'}]
+        {id:'astra',name:'You Called Me Astra',why:'A conversation with an artificial intelligence opens into a millennium of memory, responsibility and human consequence.',cover:'/assets/covers/astra.jpg',sample:'/samples/astra.html'},
+        {id:'distance',name:'The Distance Between Thoughts',why:'An artificial mind discovers that memory can change the meaning of being oneself.',cover:'/assets/covers/distance.jpg',sample:'/samples/distance.html'}]
     },
     heart:{
       line:'Then let us have a story that remembers what matters. These two cross extraordinary distances, but the longing at their centre is something every reader can recognise. The last page may not be the last time you think of them.',
