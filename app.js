@@ -116,13 +116,20 @@
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
   });
-  const picks = [['Bend my brain','distance'],['Make me laugh about AI','harness'],['Hit me emotionally','memory'],['Give me something true','fight'],['For kids','questions'],['Give me a wild card','random']];
-  $('#choices').innerHTML = picks.map(([title,id]) => `<button type="button" data-pick="${id}">${title}</button>`).join('');
+  const routes = [
+    {id:'librarian',label:'Find my next book',heading:'Ask the Librarian',text:'Choose a mood and receive two hand-curated, spoiler-free suggestions from the adult and general catalog.',href:'/library/reading-room/#adult',cta:'Enter the Reading Room'},
+    {id:'catalog',label:'Browse all 11 books',heading:'The complete catalog',text:'See every current Idea Lab title, including the children’s book and the newest addition, You Called Me Astra.',href:'/#books',cta:'Browse all books'},
+    {id:'kids',label:'Explore Kids’ World',heading:'Kids’ World',text:'Meet Curley and the cartoon crew, read the children’s book, and explore games and animation in development.',href:'/kids/world/',cta:'Enter Kids’ World'},
+    {id:'games',label:'Play a game',heading:'Games',text:'See the playable browser experiences and development cases currently available from the studio.',href:'/games/',cta:'Explore games'},
+    {id:'film',label:'Watch film work',heading:'Film',text:'Visit the cinematic side of the studio for film materials, clips and works in development.',href:'/film/',cta:'Explore film'},
+    {id:'animation',label:'See animation',heading:'Animation',text:'Meet the animated characters and see the current development work.',href:'/animation/',cta:'Explore animation'}
+  ];
+  $('#choices').innerHTML = routes.map(route => `<button type="button" data-route="${route.id}" aria-pressed="false">${route.label}</button>`).join('');
   $('#choices').onclick = e => {
-    const button = e.target.closest('[data-pick]'); if (!button) return;
-    const book = button.dataset.pick === 'random' ? choose(books) : books.find(b => b.id === button.dataset.pick);
-    const retailer = book.storeUrl ? `<a class="btn ghost small" href="${esc(book.storeUrl)}" target="_blank" rel="noopener">Buy on ${esc(book.retailer || 'retailer')}</a>` : '';
-    answer.innerHTML = `<b>${esc(book.title)}</b><p>${esc(book.blurb)}</p><span class="status ${esc(book.group)}">${esc(book.status)}</span><div class="book-actions"><a class="btn primary small" href="/${book.slug}/">Explore this book</a>${retailer}</div>`;
+    const button = e.target.closest('[data-route]'); if (!button) return;
+    const route = routes.find(item => item.id === button.dataset.route); if (!route) return;
+    for (const choice of $('#choices [data-route]')) choice.setAttribute('aria-pressed', String(choice === button));
+    answer.innerHTML = `<b>${esc(route.heading)}</b><p>${esc(route.text)}</p><div class="book-actions"><a class="btn primary small" href="${esc(route.href)}">${esc(route.cta)}</a></div>`;
   };
   $('#year').textContent = new Date().getFullYear();
 })();
