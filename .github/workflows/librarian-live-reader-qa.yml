@@ -1,0 +1,29 @@
+name: Librarian live reading desk QA
+on:
+  push:
+    branches:
+      - feature/librarian-live-reader-e2e-qa-2026-10-11
+    paths:
+      - ".github/workflows/librarian-live-reader-qa.yml"
+      - "tests/librarian-live-reader-e2e.cjs"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-reader:
+    name: Live HTTPS Reader (desktop and mobile)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Check actual published chapter and reading interactions
+        run: node tests/librarian-live-reader-e2e.cjs
