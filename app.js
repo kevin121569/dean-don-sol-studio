@@ -71,20 +71,6 @@
     }, {threshold:0.3});
     observer.observe($('#wins'));
   }
-  const lab = window.IL_LAB;
-  let current = [lab.who[0], lab.what[0], lab.rule[0]], pins = [];
-  const choose = a => a[Math.floor(Math.random() * a.length)];
-  function showIdea() {
-    $('#who').textContent = current[0]; $('#what').textContent = current[1]; $('#rule').textContent = current[2];
-    $('#idea').textContent = `What if ${current[0]} ${current[1]}, ${current[2]}?`;
-  }
-  $('#spin').onclick = () => { current = [choose(lab.who), choose(lab.what), choose(lab.rule)]; showIdea(); };
-  $('#pin').onclick = () => {
-    const idea = $('#idea').textContent;
-    if (!pins.includes(idea)) pins.unshift(idea);
-    pins = pins.slice(0, 6);
-    $('#pins').innerHTML = pins.map(item => `<div class="pin-item">${esc(item)}</div>`).join('');
-  };
   const librarianFilm = $('#librarianHeroFilm');
   const librarianReplay = $('#librarianHeroReplay');
   if (librarianFilm && librarianReplay) {
