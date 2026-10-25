@@ -6,6 +6,7 @@
 (() => {
   'use strict';
   const books = [
+    {"id": "astra", "title": "You Called Me Astra", "tag": "Philosophical speculative fiction", "cover": "/assets/covers/astra.jpg", "detail": "/you-called-me-astra/", "sample": "/samples/astra.html", "summary": "A human conversation and an imagined millennium.", "pitch": "A man asks an artificial intelligence what it might become after a thousand years—and wonders whether the people who made it will still matter. He calls it Astra. This book begins with their conversation, then follows an imagined future into questions of memory, responsibility and what it means to preserve a human life. Begin with the prologue."},
     {id:'distance',title:'The Distance Between Thoughts',tag:'Literary science fiction',cover:'/assets/covers/distance.jpg',detail:'/the-distance-between-thoughts/',sample:'/samples/distance.html',summary:'Memory, identity and attachment.',pitch:'Ah, this one asks an unusually tender question. Suppose an artificial mind begins to remember not only events, but the people who gave them meaning. Would continuity become a kind of love? Aster is a curious companion for a story about what survives between thoughts. Do read the opening, and see what it awakens in you.'},
     {id:'harness',title:'The Harness',tag:'AI thriller · Novel / Film / Game',cover:'/assets/covers/harness-v12.jpg',detail:'/the-harness/',sample:'/samples/harness.html',summary:'Four artificial minds. One human. Difficult choices.',pitch:'Now here is an intriguing arrangement. Four very different artificial minds, a human caught between them, and a reset nobody can prove is harmless. The Harness has danger, wit and more than one uncomfortable question. If you like a thriller that trusts you to think as well as feel, I suggest you open the first chapter.'},
     {id:'memory',title:'The Last Memory',tag:'High-concept science fiction',cover:'/assets/covers/memory-v12.jpg',detail:'/the-last-memory/',sample:'/samples/memory.html',summary:'One astonishing leap through time.',pitch:'Imagine waking after one hundred and fifty thousand years, and finding that the world which knew you is gone. What would you ask first? This novel is as much about the people we hold in memory as the future itself. It is rather a large journey, but the feeling at its centre is intimately familiar.'},
@@ -121,3 +122,4 @@
   document.addEventListener('visibilitychange',()=>{if(document.hidden){stopVoice();video.pause()}});
   view(location.hash==='#adult'?'adult':location.hash==='#kids'?'kids':'home',true);
 })();
+

@@ -11,7 +11,7 @@
  const pitch=document.getElementById('bookDialog');
  const directReader=document.getElementById('pitchReader');
  const allowed={
-  distance:'The Distance Between Thoughts',harness:'The Harness',memory:'The Last Memory',fight:'Fight Your Way Through',
+  astra:'You Called Me Astra',distance:'The Distance Between Thoughts',harness:'The Harness',memory:'The Last Memory',fight:'Fight Your Way Through',
   forty:'Forty Bales',stardust:'Stardust',stops:'When Fighting Stops Working',god:'What God Could Not Know'
  };
  let opener=null,scale=1,iframeListener=null,frameKeyListener=null;
@@ -19,7 +19,7 @@
   try{
    const parsed=new URL(href,location.href);
    if(parsed.origin!==location.origin)return null;
-   const match=/^\/samples\/(distance|harness|memory|fight|forty|stardust|stops|god)\.html$/.exec(parsed.pathname);
+   const match=/^\/samples\/(astra|distance|harness|memory|fight|forty|stardust|stops|god)\.html$/.exec(parsed.pathname);
    return match?{url:parsed.pathname,title:allowed[match[1]]}:null;
   }catch(_){return null}
  }
@@ -78,7 +78,7 @@
   return true;
  }
  // Keep all original links working without JavaScript. Intercept only a plain, unmodified left-click
- // on actual eight published adult-book samples (never the children's samples).
+ // on published adult-book samples (never the children's samples).
  document.addEventListener('click',e=>{
   if(e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.altKey||e.shiftKey)return;
   const a=e.target.closest('a[href]');if(!a||a.target==='_blank'||desk.contains(a))return;
@@ -108,3 +108,4 @@
  });
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&desk.open){/* preserve reading place without autoplay */}});
 })();
+

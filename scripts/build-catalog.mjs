@@ -27,10 +27,7 @@ else home = home.replace('<div class="book-grid" id="bookGrid"></div>', block);
 home = home.replace(/\s*<!-- Shown only when JavaScript[\s\S]*?<\/noscript>/, '');
 const graph = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/;
 const structured = JSON.parse(home.match(graph)[1]);
-structured['@graph'].find(n => n['@type'] === 'ItemList').itemListElement.forEach((item, i) => {
-  item.item.url = `${origin}/${books[i].slug}/`;
-  item.item.image = `${origin}/${books[i].cover}`;
-});
+structured['@graph'].find(n => n['@type'] === 'ItemList').itemListElement = books.map((b, i) => ({'@type':'ListItem',position:i+1,item:{'@type':'Book',name:b.title,author:{'@id':`${origin}/#author`},url:`${origin}/${b.slug}/`,image:`${origin}/${b.cover}`}}));
 home = home.replace(graph, `<script type="application/ld+json">${json(structured)}</script>`);
 fs.writeFileSync(path.join(root, 'index.html'), home);
 
@@ -49,7 +46,7 @@ for (const b of books) {
 <main id="main"><article class="section book-detail"><div class="detail-art"><img src="../${b.cover}" width="600" height="900" alt="${esc(b.title)} — cover by ${author}"></div><div class="detail-copy"><p class="eyebrow">${esc(b.shelf === 'kids' ? 'FOR KIDS' : b.shelf === 'memoir' ? 'MEMOIR & PERSONAL GROWTH' : 'FICTION')}</p><h1>${esc(b.title)}</h1><p class="byline">By ${author}</p><span class="status ${b.group}">${esc(b.status)}</span><p class="genre">${esc(b.kind)}</p><p class="lede-sm">${esc(b.blurb)}</p>
 ${b.contentNote ? `<p class="content-note">${esc(b.contentNote)}</p>` : ''}
 ${b.id === 'harness' ? '<p>The feature screenplay is complete. The novel has a 38-chapter structure; its missing chapters are being recovered and assembled.</p>' : ''}
-<div class="detail-actions">${b.sample ? `<a class="btn primary" href="../${b.sample}">Read sample</a><a class="pdf-link" href="../${b.samplePdf}" download>Download sample PDF</a>` : '<p class="sample-pending">The opening chapter is being recovered. A novel sample will appear here when it is available.</p>'}</div>
+<div class="detail-actions">${b.sample ? `<a class="btn primary" href="../${b.sample}">Read sample</a>${b.samplePdf ? `<a class="pdf-link" href="../${b.samplePdf}" download>Download sample PDF</a>` : ''}` : '<p class="sample-pending">The opening chapter is being recovered. A novel sample will appear here when it is available.</p>'}</div>
 <div class="reader-contact"><h2>Want to hear more?</h2><p>Ask Don Sol about this book or its release.</p><a href="${email}?subject=${encodeURIComponent(b.title + ' — release news')}">donsol@theidealabstudio.com</a></div></div></article></main>
 <footer><a href="../#books">Explore the catalog</a><small>© ${new Date().getFullYear()} ${author} · The Idea Lab Studio</small></footer></body></html>`;
   const directory = path.join(root, b.slug);
@@ -58,3 +55,4 @@ ${b.id === 'harness' ? '<p>The feature screenplay is complete. The novel has a 3
 }
 fs.writeFileSync(path.join(root, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${origin}/</loc></url>${books.map(b => `<url><loc>${origin}/${b.slug}/</loc></url>`).join('')}</urlset>\n`);
 console.log(`Built ${books.length} static catalog cards and book pages.`);
+
