@@ -26,12 +26,12 @@
     <h1 id="kidsTitle">Questions.<br>Cartoons.<br><span>Games. Trouble.</span></h1>
     <p class="kids-lede">Welcome, question askers. Curley finds the shortcuts, Don Sol explains the impossible stuff, and Tooth checks the evidence.</p>
     <div class="kids-actions">
-      <a class="kids-btn primary" href="#read">Choose a door</a>
+      <a class="kids-btn primary" href="#doors">Choose a door</a>
       <a class="kids-btn" href="../samples/questions.html">Read Better Questions</a>
     </div>
     <p class="kids-note"><strong>This is the family side of the studio.</strong> Serious adult books, film and interactive fiction stay with the Librarian.</p>
   </div>
-  <div class="kids-stage" aria-label="Animated Don Sol and Curley welcome young explorers">
+  <div class="kids-stage" role="group" aria-label="Animated Don Sol and Curley welcome young explorers">
     <div class="orbit orbit-one" aria-hidden="true"></div><div class="orbit orbit-two" aria-hidden="true"></div>
     <div class="don-video-frame">
       <video id="donKidsVideo" autoplay muted loop playsinline preload="metadata" poster="../assets/characters/don-sol-idealable-v3.svg" aria-label="Animated Don Sol smiling and speaking silently">
@@ -39,7 +39,7 @@
       </video>
       <p class="don-caption">“Curley found three doors. I was told not to press all of them.”</p>
     </div>
-    <button class="motion-control" id="donMotion" type="button" aria-pressed="true">Pause Don Sol</button>
+    <button class="motion-control" id="donMotion" type="button" aria-pressed="true" aria-controls="donKidsVideo">Pause Don Sol</button>
     <div class="curley-wrap" aria-label="Curley the bookworm">
       <span class="curley-name">CURLEY · BOOKWORM &amp; SHORTCUT FINDER</span>
       <svg class="curley" viewBox="0 0 320 220" role="img" aria-label="Curley, the green cartoon bookworm">
@@ -54,7 +54,7 @@
     </div>
   </div>
 </section>
-<section class="door-section" aria-labelledby="doorTitle">
+<section class="door-section" id="doors" aria-labelledby="doorTitle">
   <p class="kids-eyebrow">THREE DOORS · YOU CHOOSE</p>
   <h2 id="doorTitle">Read. Play. Watch.</h2>
   <div class="door-grid">
