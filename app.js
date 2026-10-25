@@ -128,7 +128,7 @@
   $('#choices').onclick = e => {
     const button = e.target.closest('[data-route]'); if (!button) return;
     const route = routes.find(item => item.id === button.dataset.route); if (!route) return;
-    for (const choice of $('#choices [data-route]')) choice.setAttribute('aria-pressed', String(choice === button));
+    for (const choice of document.querySelectorAll('#choices [data-route]')) choice.setAttribute('aria-pressed', String(choice === button));
     answer.innerHTML = `<b>${esc(route.heading)}</b><p>${esc(route.text)}</p><div class="book-actions"><a class="btn primary small" href="${esc(route.href)}">${esc(route.cta)}</a></div>`;
   };
   $('#year').textContent = new Date().getFullYear();
