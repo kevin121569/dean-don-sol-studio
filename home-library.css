@@ -32,6 +32,6 @@
  .kids-portal-link{align-items:flex-start}
 }
 @media(prefers-reduced-motion:reduce){
- .librarian-stage video{display:none}
+ .librarian-stage video,.librarian-stage-copy button{display:none}
  .librarian-stage{background:url('/studio-entrance-preview-v4-1/assets/librarian-seated-close-v2.jpg') center/contain no-repeat #070607}
 }
