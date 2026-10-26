@@ -10,6 +10,17 @@ const books = context.window.IL_BOOKS;
 const origin = 'https://theidealabstudio.com';
 const author = 'Kevin Dean Rosenkrans';
 const email = 'mailto:donsol@theidealabstudio.com';
+const staticRoutes = [
+  'missing-page/',
+  'library/',
+  'kids/',
+  'games/',
+  'film/',
+  'animation/',
+  'library/reading-room/',
+  'worlds/',
+  'downloads/'
+];
 const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const json = value => JSON.stringify(value).replace(/</g, '\\u003c');
 const icon = `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
@@ -53,6 +64,19 @@ ${b.id === 'harness' ? '<p>The feature screenplay is complete. The novel has a 3
   fs.mkdirSync(directory, {recursive:true});
   fs.writeFileSync(path.join(directory, 'index.html'), html);
 }
-fs.writeFileSync(path.join(root, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${origin}/</loc></url>${books.map(b => `<url><loc>${origin}/${b.slug}/</loc></url>`).join('')}</urlset>\n`);
+const sitemapRoutes = [
+  '',
+  ...books.map(b => `${b.slug}/`),
+  ...staticRoutes,
+  ...books.filter(b => b.sample).map(b => b.sample)
+];
+const sitemap = [
+  '<?xml version="1.0" encoding="UTF-8"?>',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+  ...sitemapRoutes.map(route => `  <url><loc>${origin}/${route}</loc></url>`),
+  '</urlset>',
+  ''
+].join('\n');
+fs.writeFileSync(path.join(root, 'sitemap.xml'), sitemap);
 console.log(`Built ${books.length} static catalog cards and book pages.`);
 
