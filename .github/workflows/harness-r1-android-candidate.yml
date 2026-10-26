@@ -73,7 +73,7 @@ jobs:
           aab=android/app/build/outputs/bundle/release/app-release.aab
           test -s "$apk"
           test -s "$aab"
-          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust.v34test'"
+          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust.campaign2test'"
           unzip -p "$apk" assets/public/index.html > /tmp/harness-campaign.html
           unzip -p "$apk" assets/public/level-1.html > /tmp/harness-level-1.html
           unzip -p "$apk" assets/public/level-2.html > /tmp/harness-level-2.html
