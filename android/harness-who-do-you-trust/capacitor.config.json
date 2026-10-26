@@ -1,6 +1,6 @@
 {
-  "appId": "com.theidealabstudio.harnesswhodoyoutrust.devicetest",
-  "appName": "Harness Device Test",
+  "appId": "com.theidealabstudio.harnesswhodoyoutrust.v34test",
+  "appName": "Harness V3.4 Test",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

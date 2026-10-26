@@ -1,4 +1,4 @@
-name: Harness graphics and sound Android device test V2
+name: Harness V3.4 v12 exact Android device test
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
-      - name: Check out device-test candidate
+      - name: Check out exact V3.4 candidate
         uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -50,7 +50,7 @@ jobs:
         working-directory: android/harness-who-do-you-trust
         run: npm install --no-audit --no-fund
 
-      - name: Verify and stage locked graphics/audio payload
+      - name: Verify exact V3.4 v12 hash, definitions, avatars and test fixes
         working-directory: android/harness-who-do-you-trust
         run: npm run build:web
 
@@ -66,28 +66,30 @@ jobs:
           chmod +x gradlew
           ./gradlew :app:assembleDebug :app:bundleRelease --no-daemon --max-workers=2 --console=plain
 
-      - name: Verify package, cinematic graphics and embedded audio
+      - name: Verify final APK contains exact child-tested V3.4
         working-directory: android/harness-who-do-you-trust
         run: |
           apk=android/app/build/outputs/apk/debug/app-debug.apk
           aab=android/app/build/outputs/bundle/release/app-release.aab
           test -s "$apk"
           test -s "$aab"
-          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust.devicetest'"
-          unzip -l "$apk" | grep -q 'assets/public/index.html'
-          unzip -p "$apk" assets/public/index.html > /tmp/harness-index.html
-          test "$(wc -c < /tmp/harness-index.html)" -gt 1200000
-          grep -q 'android-graphics-audio-v2' /tmp/harness-index.html
-          grep -q 'data:image/svg+xml;base64' /tmp/harness-index.html
-          grep -q '<audio id="soundtrack"' /tmp/harness-index.html
-          grep -q 'START WITH SOUND' /tmp/harness-index.html
-          grep -q 'id="sceneDebrief"' /tmp/harness-index.html
+          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust.v34test'"
+          unzip -p "$apk" assets/public/index.html > /tmp/harness-v34.html
+          test "$(wc -c < /tmp/harness-v34.html)" -eq 1916208
+          echo '83089e531ae5a88162f54d68cee96bb0146f2bf2fa0793333595c704a66d8b60  /tmp/harness-v34.html' | sha256sum -c -
+          grep -q 'HARNESS V3.4 · Illustrated Master Control v12' /tmp/harness-v34.html
+          grep -q 'YELLOW WORDS ARE TAPPABLE' /tmp/harness-v34.html
+          grep -q 'FOUR CLUES CHECKED' /tmp/harness-v34.html
+          grep -q 'MAKE YOUR CALL' /tmp/harness-v34.html
+          grep -q 'LOOK BACK' /tmp/harness-v34.html
+          grep -q 'class="mc-adviser-card' /tmp/harness-v34.html
+          grep -q 'v12-motorola-audio-scroll-fix' /tmp/harness-v34.html
           sha256sum "$apk" "$aab"
 
-      - name: Upload graphics-and-sound device-test artifacts
+      - name: Upload exact V3.4 v12 device-test artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: harness-device-test-v2-android-candidate
+          name: harness-v34-v12-motorola-test
           path: |
             android/harness-who-do-you-trust/android/app/build/outputs/apk/debug/app-debug.apk
             android/harness-who-do-you-trust/android/app/build/outputs/bundle/release/app-release.aab
