@@ -1,0 +1,89 @@
+name: Harness R1 Android release candidate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - release/harness-android-prep-20261026
+    paths:
+      - 'games/harness-who-do-you-trust/**'
+      - 'android/harness-who-do-you-trust/**'
+      - '.github/workflows/harness-r1-android-candidate.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-build-debug:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - name: Check out release candidate
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install Android 16 build tools
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
+
+      - name: Run R1 web regression suite
+        working-directory: games/harness-who-do-you-trust
+        run: |
+          npm test
+          node tests/astra-audit.mjs
+
+      - name: Install pinned Capacitor toolchain
+        working-directory: android/harness-who-do-you-trust
+        run: npm install --no-audit --no-fund
+
+      - name: Verify and bundle the locked R1 payload
+        working-directory: android/harness-who-do-you-trust
+        run: npm run build:web
+
+      - name: Generate and sync Android project
+        working-directory: android/harness-who-do-you-trust
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Build debug APK and unsigned release bundle
+        working-directory: android/harness-who-do-you-trust/android
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug :app:bundleRelease --no-daemon --max-workers=2 --console=plain
+
+      - name: Verify application identity and embedded story
+        working-directory: android/harness-who-do-you-trust
+        run: |
+          apk=android/app/build/outputs/apk/debug/app-debug.apk
+          aab=android/app/build/outputs/bundle/release/app-release.aab
+          test -s "$apk"
+          test -s "$aab"
+          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust'"
+          unzip -l "$apk" | grep -q 'assets/public/creative/intro-script.json'
+          unzip -l "$apk" | grep -q 'assets/public/creative/mission-report.js'
+          unzip -l "$apk" | grep -q 'assets/public/native/bootstrap.bundle.js'
+          sha256sum "$apk" "$aab"
+
+      - name: Upload device-test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: harness-r1-android-candidate
+          path: |
+            android/harness-who-do-you-trust/android/app/build/outputs/apk/debug/app-debug.apk
+            android/harness-who-do-you-trust/android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30

@@ -1,0 +1,23 @@
+name: Harness mission-report regression checks
+on:
+  push:
+    branches:
+      - feature/harness-mission-report-r1-2026-10-11
+  pull_request:
+    paths:
+      - 'games/harness-who-do-you-trust/**'
+jobs:
+  game-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: games/harness-who-do-you-trust
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run Episode 1, creative, and mission-report regression suite
+        run: node --test tests/*.test.js

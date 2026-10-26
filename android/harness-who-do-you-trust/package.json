@@ -1,0 +1,25 @@
+{
+  "name": "harness-who-do-you-trust-android",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Android Capacitor wrapper for The Harness: Who Do You Trust? Episode 001",
+  "scripts": {
+    "cap:add:android": "npm run build:web && cap add android",
+    "cap:sync": "npm run build:web && cap sync android",
+    "cap:open": "cap open android",
+    "stage:web": "node scripts/build-wrapper.mjs",
+    "bundle:bridge": "esbuild dist/native/bootstrap.js --bundle --platform=browser --format=esm --target=es2022 --outfile=dist/native/bootstrap.bundle.js",
+    "build:web": "npm run stage:web && npm run bundle:bridge"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/preferences": "8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3",
+    "@capacitor/assets": "3.0.5",
+    "esbuild": "0.28.2"
+  }
+}

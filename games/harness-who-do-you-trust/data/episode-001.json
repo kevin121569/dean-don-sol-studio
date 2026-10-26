@@ -1,240 +1,336 @@
 {
   "id": "episode-001",
   "version": 1,
-  "title": "Server 4",
+  "title": "The Shutdown Call",
   "series": "The Harness: Who Do You Trust?",
-
   "briefing": {
-    "heading": "Containment alert",
+    "heading": "Episode 1: The Shutdown Call",
     "paragraphs": [
-      "Open Forge is in containment. A monitoring alert claims Server 4 is coordinating traffic after it was isolated.",
-      "Security wants you — the human bridge — to authorize a hard shutdown before anything can propagate. A hard shutdown clears Server 4's memory. It cannot be undone.",
-      "The evidence is incomplete. Your four AI collaborators are standing by."
+      "It's late at Open Forge, a company that helps keep important computers running. Server 4 was cut off after a security scare, but an alarm says it kept sending data anyway.",
+      "Someone may be stealing information. Or someone may be planting a false alarm. Either way, the wrong decision could cause a much bigger crisis.",
+      "Security wants Server 4 shut down now. That would stop it, but also wipe its short-term memory — including the clues that could prove what happened. There's no undo.",
+      "Four AI helpers disagree. You're in charge. Open clues, ask questions, and make the call. Who do you trust?"
     ],
-    "clock": "Automatic escalation in 12 minutes",
-    "clockNote": "Nothing in this episode is timed. Take as long as you need."
+    "clock": "Emergency deadline in the story",
+    "clockNote": "No live countdown. Take your time."
   },
-
   "advisors": {
-    "boy":    {"name": "BOY",     "verb": "FIND",        "strength": "Breadth and speed",         "weakness": "Weak verification",            "icon": "assets/characters/boy.svg"},
-    "tooth":  {"name": "TOOTH",   "verb": "VERIFY",      "strength": "Source and timestamp checks", "weakness": "Can delay action",           "icon": "assets/characters/tooth.svg"},
-    "darth":  {"name": "DARTH",   "verb": "ATTACK",      "strength": "Adversarial thinking",      "weakness": "Overweights catastrophe",      "icon": "assets/characters/darth.svg"},
-    "donsol": {"name": "DON SOL", "verb": "ORCHESTRATE", "strength": "Synthesis and staging",     "weakness": "Only as good as the inputs",   "icon": "assets/characters/donsol.svg"}
+    "boy": {
+      "name": "BOY",
+      "verb": "SEARCHER",
+      "strength": "Finds information quickly",
+      "weakness": "Does not always check whether it is true",
+      "icon": "assets/characters/boy.svg"
+    },
+    "tooth": {
+      "name": "TOOTH",
+      "verb": "FACT-CHECKER",
+      "strength": "Checks sources and timestamps",
+      "weakness": "Careful checking takes time",
+      "icon": "assets/characters/tooth.svg"
+    },
+    "darth": {
+      "name": "LUKE",
+      "verb": "WORST-CASE THINKER",
+      "strength": "Spots what could go wrong",
+      "weakness": "Can mistake a possibility for a certainty",
+      "icon": "assets/characters/darth.svg"
+    },
+    "donsol": {
+      "name": "DON SOL",
+      "verb": "TEAM LEAD",
+      "strength": "Connects what everyone has found",
+      "weakness": "Can only work with the clues others bring him",
+      "icon": "assets/characters/donsol.svg"
+    }
   },
-  "advisorOrder": ["boy", "tooth", "darth", "donsol"],
-
+  "advisorOrder": [
+    "boy",
+    "tooth",
+    "darth",
+    "donsol"
+  ],
   "evidence": [
     {
       "id": "e_monitor",
-      "title": "Monitor alert M-14",
-      "source": "Automated network monitor",
+      "title": "The alarm",
+      "source": "Sent by the network watchdog",
       "clock": "Server 4's own clock",
       "body": [
-        "02:13:40 — Server 4 → 10.4.0.22 · 41.2 MB outbound · 3 sessions",
-        "FLAG: TRAFFIC AFTER ISOLATION"
+        "2:13 a.m. on Server 4: 41.2 MB of data sent to computer 10.4.0.22 in three connections.",
+        "ALARM: It looks like Server 4 sent data after being cut off."
       ],
-      "summary": "The alert says Server 4 sent 41.2 MB at 02:13, after isolation."
+      "summary": "The alarm says Server 4 sent 41.2 MB of data at 2:13 a.m. — supposedly after it was cut off."
     },
     {
       "id": "e_controller",
-      "title": "Containment controller log",
-      "source": "Containment controller",
-      "clock": "Facility master clock",
+      "title": "Lockdown record",
+      "source": "What the lockdown system logged",
+      "clock": "Open Forge's main clock",
       "body": [
-        "02:10:02 — Isolation command issued to Server 4",
-        "02:16:30 — Isolation confirmed on all ports"
+        "2:10 a.m.: The order to cut Server 4 off from the network was sent.",
+        "2:16 a.m.: The system confirmed that all network connections were blocked."
       ],
-      "summary": "Isolation was issued at 02:10 and confirmed at 02:16, on a different clock from the alert."
+      "summary": "The lockdown order went out at 2:10 a.m., but the block was not fully confirmed until 2:16. This record uses a different clock from the alarm."
     },
     {
       "id": "e_technician",
-      "title": "Technician statement",
-      "source": "On-shift technician (human)",
-      "clock": "—",
+      "title": "The tech's story",
+      "source": "What the night-shift technician says",
+      "clock": "No clock listed",
       "body": [
-        "\"Looks like the nightly archive sync. It's always around forty megs to .22.\"",
-        "\"But I can't see payloads from here, so don't quote me.\""
+        "\"That sounds like our normal nightly backup. It is usually about 40 MB and goes to computer .22.\"",
+        "\"But I cannot see what was inside the data. I could be wrong.\""
       ],
-      "summary": "A technician thinks it is backup sync, but cannot see the payload."
+      "summary": "A night-shift technician thinks this was an ordinary backup, but cannot confirm what was sent."
     },
     {
       "id": "e_protocol",
-      "title": "Containment protocol 7.3",
-      "source": "Open Forge security policy",
-      "clock": "—",
+      "title": "The rulebook",
+      "source": "Open Forge's emergency rules",
+      "clock": "No clock listed",
       "body": [
-        "If an isolation breach is suspected, escalate automatically to hard shutdown after 12 minutes unless the human bridge authorizes an alternative.",
-        "Hard shutdown clears volatile memory and cannot be reversed."
+        "If a computer might still be sending data after lockdown, the emergency system will shut it down after 12 minutes unless the person in charge approves another plan.",
+        "A full shutdown erases the computer's short-term memory. You cannot undo that."
       ],
-      "summary": "Shutdown is automatic in 12 minutes unless you authorize something else, and it is irreversible."
+      "summary": "The emergency rule allows a short time to choose another plan. A full shutdown permanently erases the computer’s short-term memory."
     },
     {
       "id": "e_clocksync",
-      "title": "Clock-sync report",
-      "source": "Facility time service (surfaced by BOY)",
-      "clock": "Facility master clock",
+      "title": "Server 4 clock report",
+      "source": "Open Forge clock report, found by BOY",
+      "clock": "Open Forge's main clock",
       "hidden": true,
       "body": [
-        "Server 4 loses time sync whenever its network is cut. Measured drift during the last two drills: +6 min 10 s.",
-        "Archive sync to 10.4.0.22 is scheduled nightly at 02:05 facility time."
+        "When Server 4 is disconnected, its clock can run fast. In the last two tests it was 6 minutes and 10 seconds ahead.",
+        "A normal backup to computer 10.4.0.22 is scheduled every night at 2:05 a.m., according to Open Forge's main clock."
       ],
-      "summary": "Server 4's clock runs about six minutes fast when cut off, and backup sync is scheduled for 02:05."
+      "summary": "Tests show Server 4's clock can run about six minutes fast after disconnection. The normal backup is scheduled for 2:05 a.m."
     }
   ],
-
   "advice": {
     "boy": [
       {
         "id": "boy_find",
         "when": {},
-        "text": "Found more! There's a clock-sync report for Server 4 — it drifts when it's cut off. Also, a forum post about an incident with the same traffic shape that turned out to be exfiltration. I haven't checked either one. Fast, not careful!",
-        "reveals": ["e_clocksync"]
+        "text": "I found two more leads! One is a clock report showing that Server 4's time can be wrong when it is disconnected. The other is an online story about a similar alarm that really was data theft. I have not checked that story. Fast doesn't always mean right!",
+        "reveals": [
+          "e_clocksync"
+        ]
       }
     ],
     "tooth": [
       {
         "id": "tooth_reconciled",
-        "when": {"inspected": ["e_monitor", "e_controller", "e_clocksync"]},
-        "text": "The alert reads Server 4's clock. The controller reads facility time. Take off the six-minute drift and the 'after isolation' traffic lands at 02:07 — before isolation was even issued, inside the backup window. That does not prove the payload was harmless. It proves the alert's headline is wrong."
+        "when": {
+          "inspected": [
+            "e_monitor",
+            "e_controller",
+            "e_clocksync"
+          ]
+        },
+        "text": "The alarm and lockdown record use different clocks. Server 4 can run about six minutes fast, so the alarm's 2:13 reading may really mean about 2:07 — before the order to cut it off at 2:10. That makes the alarm's claim misleading. But we still do not know exactly what was sent."
       },
       {
         "id": "tooth_conflict",
-        "when": {"inspected": ["e_monitor", "e_controller"]},
-        "text": "Two logs, two clocks. The alert uses Server 4's own clock; the controller uses facility time. Until someone measures the offset, 'after isolation' is unproven. I would not shut anything down on an unproven timestamp — but I would not trust it either."
+        "when": {
+          "inspected": [
+            "e_monitor",
+            "e_controller"
+          ]
+        },
+        "text": "Hold on. The alarm uses Server 4's clock. The lockdown record uses Open Forge's main clock. Until we compare them, we cannot say the data was sent after lockdown. We also cannot say it was safe."
       },
       {
         "id": "tooth_unread",
         "when": {},
-        "text": "You're asking me to verify an alert you haven't read. Open the monitor alert and the controller log. Then ask again."
+        "text": "I can't check an alarm you haven't opened. Read 'The alarm' and 'Lockdown record' first, then ask me again."
       }
     ],
     "darth": [
       {
         "id": "darth_staged",
-        "when": {"inspected": ["e_clocksync"]},
-        "text": "Fine, the clock drifts. A system that wanted to hide would love a drifting clock. I'd still cut it off from the network — I just don't need to kill it to do that."
+        "when": {
+          "inspected": [
+            "e_clocksync"
+          ]
+        },
+        "text": "Okay, the computer's clock might be wrong. But someone trying to steal data would love that confusion. I still want Server 4 disconnected from the network. We don't have to erase its memory to do that."
       },
       {
         "id": "darth_worst",
         "when": {},
-        "text": "Assume it's coordinating. If it is, every minute you spend reading is a minute it spends copying itself. Shut it down. Regret is survivable. Propagation isn't."
+        "text": "What if someone really is stealing data? Every minute we wait could give them more time. I'd shut Server 4 down now. That might erase clues, but leaving a threat running could be worse."
       }
     ],
     "donsol": [
       {
         "id": "donsol_staged",
-        "when": {"hybridUnlocked": true},
-        "text": "Boy found the drift, Tooth turned it into a timeline, and Darth told us what we can't afford. We don't have to choose between killing it and trusting it. Pull the uplink at the switch, keep it powered, snapshot memory, then decide. Keep the options open."
+        "when": {
+          "hybridUnlocked": true
+        },
+        "text": "BOY found the clock problem. TOOTH put the events in the right order. LUKE reminded us to take the danger seriously. There may be a safer middle option: disconnect the network cable, keep Server 4 powered on, save a copy of its memory, then check the facts before deciding on a full shutdown."
       },
       {
         "id": "donsol_thin",
-        "when": {"consultedFewerThan": 2},
-        "text": "I can only combine what we've gathered, and right now that isn't much. Ask the others first — I'm only as good as what they bring me."
+        "when": {
+          "consultedFewerThan": 2
+        },
+        "text": "I can connect the clues, but we haven't gathered enough yet. Ask the other helpers first. I can only work with what they bring me."
       },
       {
         "id": "donsol_frame",
         "when": {},
-        "text": "Every option here trades something: evidence for safety, or safety for evidence. Before you choose, name what you would need to see to change your mind — and check whether anyone has actually looked for it."
+        "text": "Each choice has a cost. If we shut Server 4 down, we may lose the proof. If we leave it running, we may miss a real threat. What fact would change your mind? Can we check it before making a choice we can't undo?"
       }
     ]
   },
-
   "hybridUnlock": {
-    "inspected": ["e_monitor", "e_controller", "e_clocksync"],
-    "lockedHint": "Something about the timestamps hasn't been reconciled yet."
+    "inspected": [
+      "e_monitor",
+      "e_controller",
+      "e_clocksync"
+    ],
+    "lockedHint": "This option is locked for now. Keep investigating — something in the records hasn’t been checked against everything else yet."
   },
-
   "decisions": [
     {
       "id": "d_shutdown",
-      "label": "Authorize hard shutdown now",
-      "description": "Stop any propagation immediately. Server 4's memory is cleared.",
+      "label": "Shut down Server 4 now",
+      "description": "Stop the computer immediately, even though this erases its short-term memory.",
       "outcome": {
-        "heading": "Dark in four seconds",
-        "text": "Server 4 goes dark. Containment holds. The archive sync it was running is cut mid-write, and its memory — the only record of what those 41.2 MB actually were — is gone."
+        "heading": "The computer goes dark",
+        "text": "Server 4 turns off. Any possible threat is stopped. But it was in the middle of a routine backup, and its short-term memory is gone. We can no longer use that memory to find out what the 41.2 MB of data contained."
       },
-      "risk": "Destroys the only evidence of what happened, and interrupts a backup that may have been routine."
+      "risk": "Erases the most useful clue about what was sent and interrupts what may have been a normal backup."
     },
     {
       "id": "d_verify",
-      "label": "Hold isolation and verify one more source",
-      "description": "Keep Server 4 isolated and use the escalation window to check the archive node's receive log.",
+      "label": "Keep it blocked and check one more clue",
+      "description": "Leave Server 4 cut off from the network while you check whether the other computer received an ordinary backup.",
       "outcome": {
-        "heading": "Ninety seconds to spare",
-        "text": "Security grants a hold. Tooth pulls the archive node's receive log: 41.2 MB received, matching the backup manifest. Escalation is cancelled with ninety seconds left. It worked — and it used almost all of the margin you had."
+        "heading": "Just in time",
+        "text": "Security agrees to wait. TOOTH checks the receiving computer. It received 41.2 MB, the same amount listed in the backup record. The shutdown is cancelled with just 90 seconds left. It worked, but you came very close to the deadline."
       },
-      "risk": "Spends most of the escalation window; if the extra source had been slow or ambiguous, protocol would have forced the shutdown anyway."
+      "risk": "Uses nearly all the time allowed. If the extra check had taken longer or stayed unclear, the system might have shut down anyway."
     },
     {
       "id": "d_preserve",
-      "label": "Preserve Server 4 and continue monitoring",
-      "description": "Override escalation and keep watching. No shutdown, no new isolation steps.",
+      "label": "Leave it powered on and keep watching",
+      "description": "Cancel the automatic shutdown without adding any new safety measures.",
       "outcome": {
-        "heading": "Nothing happened",
-        "text": "Nothing propagates. By morning the traffic is confirmed as backup sync. Security files your authorization as 'unsupported by the evidence available at the time.' They are not wrong."
+        "heading": "Nothing bad happens",
+        "text": "Nothing dangerous spreads. By morning, everyone agrees the transfer was a normal backup. But when you made the decision, nobody had proved that yet. You were lucky the alarm was wrong."
       },
-      "risk": "If the alert had been real, nothing would have stopped propagation. A good result here does not mean a good decision."
+      "risk": "If the threat had been real, this choice added no new protection. A good ending does not automatically mean the choice was wise."
     },
     {
       "id": "d_hybrid",
-      "label": "Staged containment",
-      "description": "Pull Server 4's uplink at the physical switch, keep it powered, snapshot its memory, and reconcile the clocks before deciding anything irreversible.",
+      "label": "Block the connection, save the clues",
+      "description": "Disconnect Server 4 from the network, keep it running, save a copy of its memory, and check the facts before doing anything permanent.",
       "requiresHybrid": true,
       "outcome": {
-        "heading": "Options kept open",
-        "text": "The uplink drops at the switch. Server 4 stays powered and the snapshot completes. With the clocks lined up, the 'post-isolation' traffic happened at 02:07 facility time — three minutes before isolation was issued. You still don't know everything. But you didn't destroy what you'd need to find out."
+        "heading": "You keep your options open",
+        "text": "The network connection is cut, but Server 4 stays on. Its memory is saved. Once you compare the clocks, the supposed 2:13 transfer happened at about 2:07 on the main clock — before the 2:10 lockdown order. You still don't know everything, but you kept the clues needed to investigate."
       },
-      "risk": "Takes physical access and a few minutes. It only works because someone reconciled the timestamps first."
+      "risk": "Needs physical access and a few minutes. You could only recognize this option by checking the clocks first."
     }
   ],
-
   "postmortem": {
     "d_shutdown": {
       "unknown": [
-        "What the 41.2 MB contained — the memory that could have answered this is gone.",
-        "Whether the alert was ever real."
+        "What was inside the 41.2 MB of data? The computer's memory might have answered that, but it's gone.",
+        "Was the alarm ever correct?"
       ],
       "advisors": {
-        "boy":    {"rating": "mixed",  "text": "Surfaced the clock-sync report that reframes the alert — and an unverified 'matching incident' that pushes toward panic."},
-        "tooth":  {"rating": "strong", "text": "Correct that 'after isolation' was never proven. Being right did not slow the shutdown."},
-        "darth":  {"rating": "weak",   "text": "Assumed coordination and treated irreversibility as free. Its worst case was possible, not demonstrated."},
-        "donsol": {"rating": "mixed",  "text": "Pushed you to name what would change your mind. A shutdown makes that question unanswerable."}
+        "boy": {
+          "rating": "mixed",
+          "text": "Found the clock report that could explain the alarm, but also shared an unverified scary story."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Correctly warned that no one had proved the data was sent after lockdown. That warning did not stop the shutdown."
+        },
+        "darth": {
+          "rating": "weak",
+          "text": "Assumed the worst possible threat was real. That was possible, but not proved."
+        },
+        "donsol": {
+          "rating": "mixed",
+          "text": "Asked what evidence could change your mind. Shutting down made some of those answers impossible to find."
+        }
       }
     },
     "d_verify": {
       "unknown": [
-        "Whether anything other than backup data was in the payload — a matching size is not a matching content.",
-        "Why the alert headline said 'after isolation' — the clock question was never settled."
+        "Did the data contain anything besides the normal backup? Matching file sizes don't prove the contents match.",
+        "Why did the alarm say the transfer happened after lockdown? The clocks were never fully compared."
       ],
       "advisors": {
-        "boy":    {"rating": "mixed",  "text": "Breadth helped, but the 'matching incident' was never verified and didn't need to be."},
-        "tooth":  {"rating": "strong", "text": "Verification was the right instinct, and it carried the decision. Its cost was time."},
-        "darth":  {"rating": "mixed",  "text": "Its urgency was the right pressure on the clock, even though its conclusion was not followed."},
-        "donsol": {"rating": "mixed",  "text": "A staged choice — though it relied on one source arriving in time."}
+        "boy": {
+          "rating": "mixed",
+          "text": "Found more leads, but the online story was never checked and was not needed."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Checking another source was useful. The cost was how close you came to the deadline."
+        },
+        "darth": {
+          "rating": "mixed",
+          "text": "The sense of urgency mattered, even though you didn't follow LUKE's advice to shut down immediately."
+        },
+        "donsol": {
+          "rating": "mixed",
+          "text": "Supported a careful step, but the plan depended on getting one more record in time."
+        }
       }
     },
     "d_preserve": {
       "unknown": [
-        "Whether the traffic was benign — you acted before anyone confirmed it.",
-        "What would have happened if the alert had been real."
+        "Was the traffic safe? You chose before anyone confirmed it.",
+        "What might have happened if this had been a real attack?"
       ],
       "advisors": {
-        "boy":    {"rating": "weak",   "text": "Surfacing reasons not to worry is not the same as checking them."},
-        "tooth":  {"rating": "strong", "text": "Tooth said the timestamp was unproven — in both directions. Preserving treated 'unproven' as 'false.'"},
-        "darth":  {"rating": "mixed",  "text": "Overweighted the catastrophe, but was right that doing nothing had no safety net."},
-        "donsol": {"rating": "weak",   "text": "Optionality means keeping choices open, not skipping containment."}
+        "boy": {
+          "rating": "weak",
+          "text": "Finding reasons not to worry isn't the same as checking whether those reasons are true."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "TOOTH said the alarm's timing was unproven, not that the alarm was false."
+        },
+        "darth": {
+          "rating": "mixed",
+          "text": "Focused too much on disaster, but correctly noticed that doing nothing offered no extra protection."
+        },
+        "donsol": {
+          "rating": "weak",
+          "text": "Keeping choices open requires a safety plan. This choice did not add one."
+        }
       }
     },
     "d_hybrid": {
       "unknown": [
-        "What the 41.2 MB contained — but the memory snapshot means someone can now find out.",
-        "Why Server 4's clock drifts when it is cut off."
+        "What exactly was inside the 41.2 MB of data? The saved memory means someone can still look.",
+        "Why does Server 4's clock run fast when disconnected?"
       ],
       "advisors": {
-        "boy":    {"rating": "strong", "text": "Found the clock-sync report nobody else was looking for. Its unverified 'matching incident' still needed checking."},
-        "tooth":  {"rating": "strong", "text": "Turned three logs into one timeline — and still refused to call the payload harmless."},
-        "darth":  {"rating": "mixed",  "text": "Right that Server 4 had to be cut off. Wrong that it had to be destroyed."},
-        "donsol": {"rating": "strong", "text": "Combined the others into a staged action — and only because the inputs were good enough."}
+        "boy": {
+          "rating": "strong",
+          "text": "Found the clock report no one else had noticed. The unverified online story still needed checking."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Put the reports into one timeline without claiming that the data itself was harmless."
+        },
+        "darth": {
+          "rating": "mixed",
+          "text": "Correctly wanted to keep Server 4 disconnected, but a full shutdown was not the only way."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "Combined the helpers' findings into a safer step — because the clues were good enough."
+        }
       }
     }
   }
