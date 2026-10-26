@@ -1,4 +1,4 @@
-name: Harness graphics and sound Android device test
+name: Harness graphics and sound Android device test V2
 
 on:
   workflow_dispatch:
@@ -73,7 +73,7 @@ jobs:
           aab=android/app/build/outputs/bundle/release/app-release.aab
           test -s "$apk"
           test -s "$aab"
-          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust'"
+          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust.devicetest'"
           unzip -l "$apk" | grep -q 'assets/public/index.html'
           unzip -p "$apk" assets/public/index.html > /tmp/harness-index.html
           test "$(wc -c < /tmp/harness-index.html)" -gt 1200000
@@ -87,7 +87,7 @@ jobs:
       - name: Upload graphics-and-sound device-test artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: harness-graphics-audio-android-candidate
+          name: harness-device-test-v2-android-candidate
           path: |
             android/harness-who-do-you-trust/android/app/build/outputs/apk/debug/app-debug.apk
             android/harness-who-do-you-trust/android/app/build/outputs/bundle/release/app-release.aab

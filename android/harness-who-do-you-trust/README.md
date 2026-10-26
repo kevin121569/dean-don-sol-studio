@@ -1,15 +1,10 @@
-# Who Do You Trust? — Android graphics and sound device test
+# Harness Device Test — Android graphics and sound build
 
-This folder packages the self-contained Episode 1 cinematic build for physical Android testing.
+This wrapper is intentionally separate from the production game and every earlier test.
 
-- App id: `com.theidealabstudio.harnesswhodoyoutrust`
-- App name: `Who Do You Trust?`
-- Device-test payload: nine story/game screens with embedded scene art and three embedded WAV tracks
-- Sound begins only after the player taps **START WITH SOUND**, in accordance with Android playback rules
-- Web source: one hash-locked, self-contained `www/index.html`
-- Generated Capacitor web root: `dist`
-- Target SDK: Android 16 / API 36 through Capacitor 8
-- No signing keys belong in git
-- Debug builds are for device acceptance only
-
-The build gate rejects the payload if its locked hash changes, if the embedded graphics/audio markers disappear, or if the packaged HTML becomes unexpectedly small. Physical-device confirmation is still required before signing or uploading to Google Play.
+- Test app id: `com.theidealabstudio.harnesswhodoyoutrust.devicetest`
+- Launcher name: **Harness Device Test**
+- It installs beside **Who Do You Trust?** instead of asking Android to update it.
+- It contains nine story/game screens, thirteen embedded SVG graphics, and three embedded WAV tracks.
+- Tap **START WITH SOUND** inside the app to unlock Android audio playback.
+- Debug builds are for physical-device acceptance only and must never be uploaded to the production Play listing.
