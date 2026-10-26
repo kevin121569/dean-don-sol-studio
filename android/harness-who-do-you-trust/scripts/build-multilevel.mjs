@@ -9,6 +9,7 @@ const outDir = outArg ? path.resolve(outArg) : path.join(root, 'campaign');
 
 const source = fs.readFileSync(sourcePath, 'utf8');
 const episode1 = JSON.parse(fs.readFileSync(episode1Path, 'utf8'));
+episode1.title = 'Server 4';
 episode1.advisors.darth = {
   ...episode1.advisors.darth,
   name: 'LUKE',
