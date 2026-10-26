@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
-import { cp, mkdir, readFile, readdir, rm } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,6 +9,9 @@ const root = path.resolve(here, '..');
 const sourceDir = path.join(root, 'www');
 const distDir = path.join(root, 'dist');
 const sourceFile = path.join(sourceDir, 'index.html');
+const episode1File = path.resolve(root, '../../games/harness-who-do-you-trust/data/episode-001.json');
+const campaignBuilder = path.join(here, 'build-multilevel.mjs');
+const campaignValidator = path.join(here, 'validate-multilevel.mjs');
 const expectedGitBlobSha = 'a9baa37b48138e1a5c6cef144474334aa928ab55';
 const expectedSha256 = '83089e531ae5a88162f54d68cee96bb0146f2bf2fa0793333595c704a66d8b60';
 
@@ -20,7 +24,7 @@ const entries = await readdir(sourceDir, { withFileTypes: true });
 const files = entries.filter(entry => entry.isFile()).map(entry => entry.name).sort();
 const directories = entries.filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
 if (JSON.stringify(files) !== JSON.stringify(['index.html']) || directories.length) {
-  throw new Error(`V3.4 payload must contain only the self-contained index.html; found files=${files.join(',')} directories=${directories.join(',')}`);
+  throw new Error(`Locked V3.4 source must contain only index.html; found files=${files.join(',')} directories=${directories.join(',')}`);
 }
 
 const bytes = await readFile(sourceFile);
@@ -56,5 +60,12 @@ if (definitionCount < 20 || jpegCount < 14 || svgCount < 14 || wavCount < 3) {
 
 await rm(distDir, { recursive: true, force: true });
 await mkdir(distDir, { recursive: true });
-await cp(sourceFile, path.join(distDir, 'index.html'));
-console.log(`Android staging complete: exact Harness V3.4 v12 verified (${bytes.length} bytes; ${definitionCount}+ definitions; ${jpegCount + svgCount} graphics; ${wavCount} audio tracks).`);
+for (const [script, args] of [
+  [campaignBuilder, [sourceFile, episode1File, distDir]],
+  [campaignValidator, [distDir]]
+]) {
+  const result = spawnSync(process.execPath, [script, ...args], {stdio: 'inherit'});
+  if (result.status !== 0) throw new Error(`${path.basename(script)} failed with status ${result.status}`);
+}
+
+console.log(`Android staging complete: two-level HARNESS campaign built from locked V3.4 v12 (${bytes.length} bytes; ${definitionCount}+ definitions; ${jpegCount + svgCount} graphics; ${wavCount} audio tracks).`);
