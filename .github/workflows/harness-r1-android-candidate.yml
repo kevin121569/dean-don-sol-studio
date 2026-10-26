@@ -1,4 +1,4 @@
-name: Harness R1 Android release candidate
+name: Harness graphics and sound Android device test
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
-      - name: Check out release candidate
+      - name: Check out device-test candidate
         uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -40,7 +40,7 @@ jobs:
       - name: Install Android 16 build tools
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
 
-      - name: Run R1 web regression suite
+      - name: Run Harness engine regression suite
         working-directory: games/harness-who-do-you-trust
         run: |
           npm test
@@ -50,7 +50,7 @@ jobs:
         working-directory: android/harness-who-do-you-trust
         run: npm install --no-audit --no-fund
 
-      - name: Verify and bundle the locked R1 payload
+      - name: Verify and stage locked graphics/audio payload
         working-directory: android/harness-who-do-you-trust
         run: npm run build:web
 
@@ -66,7 +66,7 @@ jobs:
           chmod +x gradlew
           ./gradlew :app:assembleDebug :app:bundleRelease --no-daemon --max-workers=2 --console=plain
 
-      - name: Verify application identity and embedded story
+      - name: Verify package, cinematic graphics and embedded audio
         working-directory: android/harness-who-do-you-trust
         run: |
           apk=android/app/build/outputs/apk/debug/app-debug.apk
@@ -74,15 +74,20 @@ jobs:
           test -s "$apk"
           test -s "$aab"
           "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust'"
-          unzip -l "$apk" | grep -q 'assets/public/creative/intro-script.json'
-          unzip -l "$apk" | grep -q 'assets/public/creative/mission-report.js'
-          unzip -l "$apk" | grep -q 'assets/public/native/bootstrap.bundle.js'
+          unzip -l "$apk" | grep -q 'assets/public/index.html'
+          unzip -p "$apk" assets/public/index.html > /tmp/harness-index.html
+          test "$(wc -c < /tmp/harness-index.html)" -gt 1200000
+          grep -q 'android-graphics-audio-v2' /tmp/harness-index.html
+          grep -q 'data:image/svg+xml;base64' /tmp/harness-index.html
+          grep -q '<audio id="soundtrack"' /tmp/harness-index.html
+          grep -q 'START WITH SOUND' /tmp/harness-index.html
+          grep -q 'id="sceneDebrief"' /tmp/harness-index.html
           sha256sum "$apk" "$aab"
 
-      - name: Upload device-test artifacts
+      - name: Upload graphics-and-sound device-test artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: harness-r1-android-candidate
+          name: harness-graphics-audio-android-candidate
           path: |
             android/harness-who-do-you-trust/android/app/build/outputs/apk/debug/app-debug.apk
             android/harness-who-do-you-trust/android/app/build/outputs/bundle/release/app-release.aab
