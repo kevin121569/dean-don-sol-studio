@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
-import { spawnSync } from 'node:child_process';
+import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -9,9 +8,6 @@ const root = path.resolve(here, '..');
 const sourceDir = path.join(root, 'www');
 const distDir = path.join(root, 'dist');
 const sourceFile = path.join(sourceDir, 'index.html');
-const episode1File = path.resolve(root, '../../games/harness-who-do-you-trust/data/episode-001.json');
-const campaignBuilder = path.join(here, 'build-multilevel.mjs');
-const campaignValidator = path.join(here, 'validate-multilevel.mjs');
 const expectedGitBlobSha = '87a58a174e1c43471840823cbadb525dfcd877bb';
 const expectedSha256 = '57ec892c224fe6f37bd922773dd33420680541f013f4d4447740f7b2b6686b71';
 
@@ -57,12 +53,40 @@ if (definitionCount < 20 || jpegCount < 14 || svgCount < 14 || wavCount < 3) {
 
 await rm(distDir, {recursive: true, force: true});
 await mkdir(distDir, {recursive: true});
-for (const [script, args] of [
-  [campaignBuilder, [sourceFile, episode1File, distDir]],
-  [campaignValidator, [distDir]]
-]) {
-  const result = spawnSync(process.execPath, [script, ...args], {stdio: 'inherit'});
-  if (result.status !== 0) throw new Error(`${path.basename(script)} failed with status ${result.status}`);
+
+// Preserve Kate's tested v09 as the only game in the Android package. The
+// original locked source above is never edited. This narrow Android-only CSS
+// patch prevents grid children (especially TOOTH) from forcing the adviser
+// column beyond the WebView viewport at phone sizes or high display zoom.
+const androidFitPatch = `
+<!-- HARNESS_ANDROID_STANDALONE_V09 -->
+<style id="harness-android-fit-fix">
+html,body{max-width:100%;overflow-x:hidden}
+.mc-shell,.mc-board,.mc-right,.mc-card,.mc-adviser-grid,.mc-adviser-card,
+.mc-adviser-card>span:not(.arrow){min-width:0}
+.mc-adviser-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mc-adviser-card{width:100%;max-width:100%;overflow:hidden}
+.mc-adviser-card strong,.mc-adviser-card small,.mc-adviser-card em{
+  max-width:100%;overflow-wrap:anywhere;word-break:normal
+}
+@media(max-width:760px){
+  .mc-board,.mc-right{grid-template-columns:minmax(0,1fr)!important}
+  .mc-right{grid-column:auto!important}
+}
+@media(max-width:430px){
+  .mc-adviser-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .mc-adviser-card{grid-template-columns:minmax(0,1fr)!important;padding:7px 5px}
+  .mc-adviser-card img{width:100%;max-width:112px;height:102px}
+}
+</style>`;
+
+if (!html.includes('</head>')) throw new Error('Kate-tested v09 is missing </head>');
+const androidHtml = html.replace('</head>', `${androidFitPatch}\n</head>`);
+await writeFile(path.join(distDir, 'index.html'), androidHtml);
+
+if (!androidHtml.includes('HARNESS_ANDROID_STANDALONE_V09')) throw new Error('Android fit marker missing');
+if (androidHtml.includes('TWO CASES') || androidHtml.includes('COMPLETE LEVEL 1 TO UNLOCK')) {
+  throw new Error('Campaign wrapper contamination detected');
 }
 
-console.log(`Android staging complete: two-level HARNESS campaign built from Kevin's exact Kate-tested v09 file (${bytes.length} bytes; ${definitionCount} definitions; ${jpegCount + svgCount} graphics; ${wavCount} audio tracks).`);
+console.log(`Android staging complete: standalone Kate-tested HARNESS v09 (${bytes.length} locked source bytes; ${definitionCount} definitions; ${jpegCount + svgCount} graphics; ${wavCount} audio tracks).`);
