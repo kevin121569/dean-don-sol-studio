@@ -50,6 +50,15 @@ const campaignCss = `
 .campaign-level-link.secondary{border-color:#3e9ec7;background:#072c45;color:#dff7ff!important}
 .campaign-complete-note{margin:14px 0;padding:13px 15px;border:1px solid #47d596;border-radius:10px;background:#083a2b;color:#dfffee;font-weight:800}
 .topbar nav .campaign-home{display:inline-flex;align-items:center;color:#dff7ff;text-decoration:none;border:1px solid #397fa2;border-radius:7px;padding:8px 10px;font-weight:800}
+/* The locked v12 source expands its wide masthead to the image's full aspect
+   ratio on phones. In the campaign shell that pushes the actual game below
+   the first screen. Keep the art as a compact masthead on mobile instead. */
+@media(max-width:760px){
+  .mc-hero img{width:100%;height:120px!important;min-height:0!important;max-height:120px!important;object-fit:cover!important;object-position:center!important}
+}
+@media(max-width:430px){
+  .mc-hero img{height:104px!important;max-height:104px!important}
+}
 </style>`;
 
 function campaignScript(level, nextFile) {
