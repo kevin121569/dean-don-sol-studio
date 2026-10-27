@@ -59,12 +59,27 @@ if (definitionCount < 20 || jpegCount < 14 || svgCount < 14 || wavCount < 3) {
 await rm(distDir, {recursive: true, force: true});
 await mkdir(distDir, {recursive: true});
 
-// Package the exact approved v12 document. Do not rewrite layout, graphics,
-// audio, interaction code, or copy during Android staging.
-await writeFile(path.join(distDir, 'index.html'), bytes);
+// Package approved v12 without changing layout, graphics, audio, interaction
+// code, or copy. Correct only the stale internal v09 identity inherited by
+// the v12 source so device diagnostics cannot misreport this build.
+function replaceIdentityOnce(text, from, to) {
+  const count = text.split(from).length - 1;
+  if (count !== 1) throw new Error(`Expected one stale identity marker, found ${count}: ${from}`);
+  return text.replace(from, to);
+}
 
-if (html.includes('TWO CASES') || html.includes('COMPLETE LEVEL 1 TO UNLOCK')) {
+let androidHtml = html;
+androidHtml = replaceIdentityOnce(androidHtml, "version:'3.4-illustrated-master-control-v09'", "version:'3.4-illustrated-master-control-v12'");
+androidHtml = replaceIdentityOnce(androidHtml, "sourceBlob:'v34-v09-phone-interaction-visible-audio-from-v34-v08'", "sourceBlob:'v34-v12-motorola-audio-scroll-fix'");
+androidHtml = androidHtml.replace('</head>', '<!-- HARNESS_ANDROID_CURRENT_V12 -->\n</head>');
+await writeFile(path.join(distDir, 'index.html'), androidHtml);
+
+if (!androidHtml.includes("version:'3.4-illustrated-master-control-v12'") ||
+    !androidHtml.includes('HARNESS_ANDROID_CURRENT_V12')) {
+  throw new Error('Current v12 identity markers missing');
+}
+if (androidHtml.includes('TWO CASES') || androidHtml.includes('COMPLETE LEVEL 1 TO UNLOCK')) {
   throw new Error('Campaign wrapper contamination detected');
 }
 
-console.log(`Android staging complete: exact standalone HARNESS v12 (${bytes.length} locked source bytes; ${definitionCount} definitions; ${jpegCount + svgCount} graphics; ${wavCount} audio tracks).`);
+console.log(`Android staging complete: standalone HARNESS CURRENT v12 (${bytes.length} locked source bytes; identity metadata corrected; ${definitionCount} definitions; ${jpegCount + svgCount} graphics; ${wavCount} audio tracks).`);
