@@ -1,6 +1,6 @@
 {
-  "appId": "com.theidealabstudio.harnesswhodoyoutrust.campaign2test",
-  "appName": "Harness Campaign Test",
+  "appId": "com.theidealabstudio.harnesswhodoyoutrust.katetestedv09",
+  "appName": "HARNESS Kate Test",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

@@ -1,4 +1,4 @@
-name: Harness two-level Android campaign test
+name: Harness Kate-tested v09 two-level Android test
 
 on:
   workflow_dispatch:
@@ -50,7 +50,7 @@ jobs:
         working-directory: android/harness-who-do-you-trust
         run: npm install --no-audit --no-fund
 
-      - name: Verify locked V3.4 and assemble two-level campaign
+      - name: Verify Kevin's Kate-tested v09 and assemble two-level campaign
         working-directory: android/harness-who-do-you-trust
         run: npm run build:web
 
@@ -73,7 +73,7 @@ jobs:
           aab=android/app/build/outputs/bundle/release/app-release.aab
           test -s "$apk"
           test -s "$aab"
-          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust.campaign2test'"
+          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust.katetestedv09'"
           unzip -p "$apk" assets/public/index.html > /tmp/harness-campaign.html
           unzip -p "$apk" assets/public/level-1.html > /tmp/harness-level-1.html
           unzip -p "$apk" assets/public/level-2.html > /tmp/harness-level-2.html
@@ -81,17 +81,18 @@ jobs:
           grep -q 'COMPLETE LEVEL 1 TO UNLOCK' /tmp/harness-campaign.html
           grep -q 'NEXT="level-2.html"' /tmp/harness-level-1.html
           grep -q 'SERVER 4' /tmp/harness-level-1.html
-          grep -q 'YELLOW WORDS ARE TAPPABLE' /tmp/harness-level-1.html
           grep -q 'class="mc-adviser-card' /tmp/harness-level-1.html
+          grep -q 'mc-hero{display:none!important}' /tmp/harness-level-1.html
+          grep -q 'mc-assignment-hero{display:none!important}' /tmp/harness-level-1.html
           grep -q 'CAMPAIGN COMPLETE' /tmp/harness-level-2.html
           grep -q 'THE MISSING TWO' /tmp/harness-level-2.html
-          grep -q 'v12-motorola-audio-scroll-fix' /tmp/harness-level-2.html
+          grep -q 'illustrated-master-control:v09' /tmp/harness-level-2.html
           sha256sum "$apk" "$aab" /tmp/harness-campaign.html /tmp/harness-level-1.html /tmp/harness-level-2.html
 
-      - name: Upload two-level campaign device-test artifacts
+      - name: Upload Kate-tested two-level campaign device-test artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: harness-two-level-campaign-test
+          name: harness-kate-tested-v09-two-level
           path: |
             android/harness-who-do-you-trust/android/app/build/outputs/apk/debug/app-debug.apk
             android/harness-who-do-you-trust/android/app/build/outputs/bundle/release/app-release.aab

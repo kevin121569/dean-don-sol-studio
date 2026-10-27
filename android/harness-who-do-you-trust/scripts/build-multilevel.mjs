@@ -50,7 +50,7 @@ const campaignCss = `
 .campaign-level-link.secondary{border-color:#3e9ec7;background:#072c45;color:#dff7ff!important}
 .campaign-complete-note{margin:14px 0;padding:13px 15px;border:1px solid #47d596;border-radius:10px;background:#083a2b;color:#dfffee;font-weight:800}
 .topbar nav .campaign-home{display:inline-flex;align-items:center;color:#dff7ff;text-decoration:none;border:1px solid #397fa2;border-radius:7px;padding:8px 10px;font-weight:800}
-/* Phone-first campaign entry: the locked v12 desktop shell repeats decorative
+/* Phone-first campaign entry: the tested v09 desktop shell repeats decorative
    art before the interactive board. Keep the controls, put the playable board
    first, and reduce the repeated art to a compact text-only briefing control. */
 @media(max-width:760px){
@@ -99,17 +99,17 @@ function addCampaign(text, level, nextFile) {
 
 function buildLevel2() {
   let html = source;
-  html = replaceOnce(html, '<title>HARNESS V3.4 · Illustrated Master Control v12</title>', '<title>HARNESS · Level 2 · The Harbor Protocol</title>', 'level 2 title');
+  html = replaceOnce(html, '<title>HARNESS V3.4 · Illustrated Master Control v09</title>', '<title>HARNESS · Level 2 · The Harbor Protocol</title>', 'level 2 title');
   html = addCampaign(html, 2, null);
   return html;
 }
 
 function buildLevel1() {
   let html = replaceEpisode(source, episode1);
-  html = replaceOnce(html, '<title>HARNESS V3.4 · Illustrated Master Control v12</title>', '<title>HARNESS · Level 1 · Server 4</title>', 'level 1 title');
-  html = replaceOnce(html, '<div class="brand"><strong>HARNESS</strong><span>EPISODE 2 · ILLUSTRATED MASTER CONTROL · v12</span></div>', '<div class="brand"><strong>HARNESS</strong><span>LEVEL 1 · SERVER 4 · ILLUSTRATED CAMPAIGN</span></div>', 'level 1 topbar');
+  html = replaceOnce(html, '<title>HARNESS V3.4 · Illustrated Master Control v09</title>', '<title>HARNESS · Level 1 · Server 4</title>', 'level 1 title');
+  html = replaceOnce(html, '<div class="brand"><strong>HARNESS</strong><span>EPISODE 2 · ILLUSTRATED MASTER CONTROL · v09</span></div>', '<div class="brand"><strong>HARNESS</strong><span>LEVEL 1 · SERVER 4 · ILLUSTRATED CAMPAIGN</span></div>', 'level 1 topbar');
   html = html.replace("const LEGACY_SAVE_KEY='harness-v32:episode-002:approved-sequence:v01';", "const LEGACY_SAVE_KEY='harness-campaign:episode-001:legacy';")
-             .replace("const SAVE_KEY='harness-v34:episode-002:illustrated-master-control:v12-motorola-audio-scroll-fix';", "const SAVE_KEY='harness-campaign:episode-001:illustrated-master-control:v1';")
+             .replace("const SAVE_KEY='harness-v34:episode-002:illustrated-master-control:v09';", "const SAVE_KEY='harness-campaign:episode-001:illustrated-master-control:v1';")
              .replace("const img={e_monitor:'v34/ledger.jpg',e_controller:'v34/hub.jpg',e_technician:'v34/hub.jpg',e_protocol:'v34/audit.jpg',e_clocksync:'v34/audit.jpg',e_harbor:'v34/gauge.jpg'};", "const img={e_monitor:'v34/ledger.jpg',e_controller:'v34/hub.jpg',e_technician:'v34/hub.jpg',e_protocol:'v34/audit.jpg',e_clocksync:'v34/audit.jpg'};")
              .replace("const short={e_monitor:'Replication ledger',e_controller:'Hub alert',e_technician:'Agent message',e_protocol:'Containment rules',e_clocksync:'Signed audit',e_harbor:'Harbor gauge'};", "const short={e_monitor:'Monitor alert',e_controller:'Controller log',e_technician:'Technician statement',e_protocol:'Containment rules',e_clocksync:'Clock-sync report'};");
   html = html.replace("vocab=id==='e_clocksync'?'<span class=\"mc-vocab\">AUDIT = an official check of records</span>':'';", "vocab=id==='e_clocksync'?'<span class=\"mc-vocab\">CLOCK DRIFT = clocks slowly disagree</span>':'';");
