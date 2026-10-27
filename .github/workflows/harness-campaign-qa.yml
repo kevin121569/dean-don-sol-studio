@@ -37,8 +37,10 @@ jobs:
 
       - name: Install Android SDK 36
         run: |
-          yes | sdkmanager --licenses >/dev/null
-          sdkmanager --install "platforms;android-36" "build-tools;36.0.0"
+          SDKMANAGER_PATH="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | sort -V | tail -1)"
+          test -x "$SDKMANAGER_PATH"
+          yes | "$SDKMANAGER_PATH" --licenses >/dev/null
+          "$SDKMANAGER_PATH" --install "platforms;android-36" "build-tools;36.0.0"
 
       - name: Install pinned Capacitor dependencies
         working-directory: android/harness-campaign-qa
