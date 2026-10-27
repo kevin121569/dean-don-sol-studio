@@ -89,6 +89,17 @@ The first campaign-shell slice is implemented in this branch:
   uses the explicit `harness:case-completed` event;
 - Cases 3-5 keep `launch: null`, so candidate content cannot be mistaken for a
   playable or package-ready case.
+- `runtime/case-engine.mjs` now provides the reusable Cases 3-5 state machine:
+  evidence inspection, conditional adviser reveals, trust gating, decision
+  requirements, four outcomes, postmortems, restore sanitization, and explicit
+  completion all come from case data rather than hard-coded Case 3 rules;
+- `app/play.html` is a gated, phone-first Case 3 development renderer. It keeps
+  the playable board in the first viewport, supplies complete text with no
+  audio dependency, and remains absent from the selector until production art
+  and physical-phone review pass;
+- automated Case 3 path coverage proves that both hidden records and all four
+  endings are reachable, the strongest ending cannot bypass its evidence and
+  trust requirements, and forged session values are removed during restore.
 
 The storage/content and adapter suites run alongside the campaign validator.
 Visual device approval remains open because the current workspace has no local

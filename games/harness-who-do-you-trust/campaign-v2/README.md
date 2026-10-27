@@ -20,8 +20,15 @@ It fingerprints the approved monolith before execution, reads only the frozen
 campaign save namespace. Level 1's known self-triggering campaign observer is
 removed in memory; the frozen file itself is never changed. Five original
 Server 4 evidence illustrations replace the borrowed Harbor cards through the
-same in-memory adapter. Cases 3-5 remain disconnected until the shared renderer
-and production assets pass their gates.
+same in-memory adapter.
+
+Case 3 now has a data-driven internal renderer at
+`app/play.html?case=episode-003&preview=1`. Its pure engine covers evidence,
+conditional adviser reveals, the two-person trust judgment, decision locks,
+all four outcomes, the postmortem, and fail-forward completion. The campaign
+selector still leaves Cases 3-5 disconnected: Case 3 must receive production
+art and phone-device approval before its launch route is enabled, and Cases 4-5
+must prove their case-specific trust modes in the same shared engine.
 
 ## Intended launch scope
 
@@ -64,8 +71,9 @@ warning to update the expected value.
 This branch contains the campaign contract and complete content candidates for
 Cases 3-5. It is intentionally **not an APK** and not yet a replacement game.
 It now also contains the phone-first case selector, isolated v2 campaign
-storage, and fingerprint-locked playable routes for Cases 1 and 2. Cases 3-5
-stay disconnected until their renderer, art, and regression gates pass. The
-only Level 1 presentation deltas are the explicitly allowlisted completion fix
-and original evidence art applied in memory by the compatibility runner.
+storage, fingerprint-locked playable routes for Cases 1 and 2, and the gated
+Case 3 shared-renderer preview. Cases 3-5 stay disconnected from the selector
+until their art and regression gates pass. The only Level 1 presentation deltas
+are the explicitly allowlisted completion fix and original evidence art applied
+in memory by the compatibility runner.
 
