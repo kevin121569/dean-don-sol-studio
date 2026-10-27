@@ -1,6 +1,6 @@
 {
-  "appId": "com.theidealabstudio.harness.harborprotocol.v09",
-  "appName": "HARNESS Harbor v09",
+  "appId": "com.theidealabstudio.harness.harborprotocol.v12",
+  "appName": "HARNESS Harbor v12",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"
