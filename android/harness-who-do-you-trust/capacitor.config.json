@@ -1,6 +1,6 @@
 {
-  "appId": "com.theidealabstudio.harnesswhodoyoutrust.katetestedv09",
-  "appName": "HARNESS Kate Test",
+  "appId": "com.theidealabstudio.harness.harborprotocol.v09",
+  "appName": "HARNESS Harbor v09",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"
