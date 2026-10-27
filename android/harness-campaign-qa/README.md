@@ -6,7 +6,7 @@ test app or the future Play app.
 
 - Android ID: `com.theidealabstudio.harness.campaign.fullqa`
 - Launcher: **HARNESS QA · 5 CASES**
-- Visible build: **FULL5-20261027-B**
+- Visible build: **FULL5-20261027-C**
 - Entry: the real campaign selector with only Case 1 unlocked on a fresh install
 - Source: staged directly from `games/harness-who-do-you-trust/campaign-v2`
 - Network: none required during play
@@ -24,7 +24,7 @@ npm run build:web
 
 Android generation requires Node 22, Java 21, Android SDK 36, and the npm
 dependencies. The GitHub workflow performs those steps and uploads an unsigned
-debug APK named `HARNESS-QA-FIVE-CASES-FULL5-20261027-B.apk` for phone testing.
+debug APK named `HARNESS-QA-FIVE-CASES-FULL5-20261027-C.apk` for phone testing.
 
 Never upload this debug package to Google Play.
 

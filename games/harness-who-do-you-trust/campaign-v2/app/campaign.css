@@ -43,6 +43,17 @@ main { width: min(1120px, 100%); margin: auto; padding: 18px clamp(14px, 4vw, 40
 .mission p, .section-heading p { margin: 10px 0 0; color: var(--muted); line-height: 1.5; max-width: 720px; }
 .progress { height: 12px; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #031018; }
 .progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #3dcbdf, #ffe083); transition: width .2s ease; }
+.case-map { margin: 0 0 24px; padding: 15px; border: 1px solid #3f91a9; border-radius: 14px; background: linear-gradient(120deg, #0b2f3e, #071a25); box-shadow: 0 12px 32px #0004; }
+.case-map-heading { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; margin-bottom: 12px; }
+.case-map-heading .eyebrow { margin: 0; }
+.case-map-heading strong { color: #fff0b6; font-size: .88rem; }
+.case-map ol { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.case-map-button { width: 100%; min-height: 68px; display: grid; place-items: center; gap: 2px; padding: 7px 3px; border: 1px solid var(--cyan); border-radius: 10px; background: #0c3b4c; color: #effcff; cursor: pointer; }
+.case-map-button span { font-size: 1.38rem; font-weight: 950; line-height: 1; }
+.case-map-button small { color: var(--cyan); font-size: .62rem; font-weight: 900; letter-spacing: .06em; }
+.case-map li[data-status="locked"] .case-map-button { border-color: #55717c; background: #0a2029; color: #aebfc6; }
+.case-map li[data-status="locked"] .case-map-button small { color: #9db1b9; }
+.case-map li[data-status="completed"] .case-map-button { border-color: var(--green); color: var(--green); }
 .section-heading { display: grid; grid-template-columns: minmax(0, .72fr) minmax(260px, 1fr); gap: 24px; align-items: end; margin: 6px 0 16px; }
 
 .case-list { list-style: none; display: grid; gap: 12px; margin: 0; padding: 0; }
@@ -61,17 +72,26 @@ main { width: min(1120px, 100%); margin: auto; padding: 18px clamp(14px, 4vw, 40
 .case-action:hover:not(:disabled) { background: #145a72; }
 .case-action:disabled { cursor: default; color: #9bb0b8; background: #0b2029; border-color: #385562; }
 .campaign-message { margin: 18px 0 0; padding: 14px 16px; border-left: 4px solid var(--gold); background: #2b240d; color: #fff3bd; line-height: 1.45; }
+.case-list-end { display: flex; justify-content: space-between; gap: 14px; margin: 14px 0 0; padding: 14px 16px; border: 1px solid #457e92; border-radius: 10px; background: #071c27; color: var(--muted); }
+.case-list-end strong { color: var(--gold); }
 
 @media (max-width: 640px) {
   .campaign-header { align-items: center; padding-top: 20px; }
   .campaign-count { min-width: 82px; }
   .mission { grid-template-columns: 1fr; align-items: stretch; padding-top: 18px; }
+  .case-map { position: sticky; top: 0; z-index: 4; margin-inline: -4px; padding: 10px; border-radius: 0 0 12px 12px; }
+  .case-map-heading { margin-bottom: 8px; }
+  .case-map-heading strong { font-size: .75rem; }
+  .case-map-button { min-height: 56px; border-radius: 8px; }
+  .case-map-button span { font-size: 1.15rem; }
+  .case-map-button small { font-size: .56rem; }
   .section-heading { grid-template-columns: 1fr; gap: 4px; margin-top: 8px; }
   .case-card { grid-template-columns: 52px minmax(0, 1fr); gap: 12px; padding: 14px; }
   .case-number { width: 50px; height: 50px; font-size: 1.4rem; }
   .case-meta { align-items: flex-start; }
   .case-status { font-size: .62rem; }
   .case-tagline { font-size: .93rem; }
+  .case-list-end { display: grid; gap: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

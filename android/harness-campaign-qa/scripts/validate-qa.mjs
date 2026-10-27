@@ -3,7 +3,7 @@ import {readFile, readdir} from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath, pathToFileURL} from "node:url";
 
-const BUILD_ID = "FULL5-20261027-B";
+const BUILD_ID = "FULL5-20261027-C";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const dist = path.join(root, "dist");
@@ -30,6 +30,8 @@ const config = await json("capacitor.config.json");
 const manifest = await json("dist/campaign/campaign.json");
 const inventory = await json("dist/qa-manifest.json");
 const rootHtml = await readFile(path.join(dist, "index.html"), "utf8");
+const campaignIndex = await readFile(path.join(dist, "campaign/app/index.html"), "utf8");
+const campaignScript = await readFile(path.join(dist, "campaign/app/campaign.mjs"), "utf8");
 const playHtml = await readFile(path.join(dist, "campaign/app/play.html"), "utf8");
 const {createCampaignStore} = await import(pathToFileURL(path.join(dist, "campaign/runtime/campaign-store.mjs")));
 
@@ -38,6 +40,8 @@ ok(config.appName === "HARNESS QA · 5 CASES", "QA launcher name changed");
 ok(config.webDir === "dist", "QA webDir must remain dist");
 ok(rootHtml.includes(`BUILD ${BUILD_ID}`), "root QA build stamp missing");
 ok(playHtml.includes(`HARNESS QA · FIVE CASES · ${BUILD_ID}`), "in-game QA build banner missing");
+ok(campaignIndex.includes('id="caseMapList"') && campaignIndex.includes("5 / 5 CASES SHOWN"), "selector must visibly prove all five cases are present");
+ok(campaignScript.includes('mapButton.innerHTML = `<span>${item.completed ? "✓" : item.level}</span><small>CASE ${item.level}</small>`'), "selector must render five numbered case-map buttons from the manifest");
 ok(manifest.qa?.buildId === BUILD_ID && manifest.qa?.productionRelease === false, "QA manifest identity missing");
 for (const level of [3, 4, 5]) {
   const id = `episode-00${level}`;

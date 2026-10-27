@@ -43,11 +43,14 @@ function render(store) {
   $("progressBar").style.width = `${cases.length ? solved / cases.length * 100 : 0}%`;
 
   const list = $("caseList");
+  const map = $("caseMapList");
   const template = $("caseTemplate");
   list.replaceChildren();
+  map.replaceChildren();
 
   for (const item of cases) {
     const node = template.content.firstElementChild.cloneNode(true);
+    node.id = `case-card-${item.level}`;
     node.dataset.status = item.status;
     node.querySelector(".case-number").textContent = item.completed ? "✓" : item.level;
     node.querySelector(".case-label").textContent = `CASE ${item.level} OF ${cases.length}`;
@@ -61,6 +64,17 @@ function render(store) {
     button.setAttribute("aria-label", `${button.textContent}: ${item.title}`);
     button.addEventListener("click", () => routeToCase(item));
     list.append(node);
+
+    const mapItem = document.createElement("li");
+    mapItem.dataset.status = item.status;
+    const mapButton = document.createElement("button");
+    mapButton.type = "button";
+    mapButton.className = "case-map-button";
+    mapButton.innerHTML = `<span>${item.completed ? "✓" : item.level}</span><small>CASE ${item.level}</small>`;
+    mapButton.setAttribute("aria-label", `Show Case ${item.level}: ${item.title} (${statusCopy[item.status]})`);
+    mapButton.addEventListener("click", () => node.scrollIntoView({behavior: "smooth", block: "start"}));
+    mapItem.append(mapButton);
+    map.append(mapItem);
   }
 }
 
