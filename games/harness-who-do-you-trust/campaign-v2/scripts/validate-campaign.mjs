@@ -164,7 +164,29 @@ if (campaign) {
     } catch (error) {
       errors.push(`${entry.id}: cannot hash campaign source ${entry.source}: ${error.message}`);
     }
+
+    if (entry.launch !== null) {
+      requireValue(entry.runtime?.kind === "legacy-monolith", `${entry.id}: connected launch must use the approved legacy-monolith adapter`);
+      requireValue(typeof entry.runtime?.source === "string", `${entry.id}: runtime source is required`);
+      requireValue(typeof entry.runtime?.sourceHash === "string" && entry.runtime.sourceHash.length === 64, `${entry.id}: runtime sourceHash is required`);
+      requireValue(entry.runtime?.inspector === "HarnessV34", `${entry.id}: approved read-only inspector must be HarnessV34`);
+      requireValue(Array.isArray(entry.runtime?.transforms), `${entry.id}: runtime transforms must be an array`);
+      try {
+        const runtimePath = resolve(campaignRoot, entry.runtime.source);
+        requireValue(sha256(runtimePath) === entry.runtime.sourceHash, `${entry.id}: runtime fingerprint does not match ${entry.runtime.source}`);
+      } catch (error) {
+        errors.push(`${entry.id}: cannot hash runtime source ${entry.runtime?.source}: ${error.message}`);
+      }
+    }
   }
+
+  const connected = (campaign.cases ?? []).filter((entry) => entry.launch !== null).map((entry) => entry.id);
+  requireValue(JSON.stringify(connected) === JSON.stringify(["episode-001", "episode-002"]), "campaign: only approved Cases 1 and 2 may be connected at this checkpoint");
+  const level1Runtime = campaign.cases?.find((entry) => entry.id === "episode-001")?.runtime;
+  requireValue(
+    JSON.stringify(level1Runtime?.transforms) === JSON.stringify(["remove-legacy-campaign-observer"]),
+    "episode-001: the allowlisted observer removal must be the only compatibility transform"
+  );
 
   for (const level of [3, 4, 5]) {
     const id = `episode-00${level}`;
@@ -185,4 +207,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log("HARNESS campaign validation passed: 5-case manifest, Levels 3-5 content, cross-references, progression, and frozen-source hashes.");
+console.log("HARNESS campaign validation passed: five-case manifest, two approved runtime ports, Levels 3-5 content, progression, and frozen-source fingerprints.");

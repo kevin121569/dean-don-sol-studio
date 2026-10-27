@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#04111a">
+  <title>HARNESS · Loading case</title>
+  <link rel="stylesheet" href="./case-runner.css">
+</head>
+<body>
+  <header class="runner-header">
+    <a class="back" href="./index.html" aria-label="Return to case files">‹ CASES</a>
+    <div class="runner-title">
+      <span id="caseLabel">HARNESS</span>
+      <strong id="caseTitle">Loading approved case…</strong>
+    </div>
+    <span id="saveStatus" class="save-status" role="status">VERIFYING</span>
+  </header>
+
+  <main id="runner" class="runner" aria-busy="true">
+    <div id="loading" class="loading-card">
+      <strong>VERIFYING APPROVED CASE</strong>
+      <span>The game will open only if its source fingerprint matches.</span>
+    </div>
+    <iframe id="caseFrame" title="HARNESS case" hidden></iframe>
+    <section id="runnerError" class="runner-error" role="alert" hidden>
+      <h1>This case did not open</h1>
+      <p id="errorText"></p>
+      <a href="./index.html">RETURN TO CASE FILES</a>
+    </section>
+  </main>
+
+  <a id="returnLink" class="complete-link" href="./index.html" hidden>CASE COMPLETE · RETURN TO CASE FILES →</a>
+  <script type="module" src="./case-runner.mjs"></script>
+</body>
+</html>

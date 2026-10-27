@@ -111,7 +111,7 @@ export function createCampaignStore(manifestInput, backend) {
       caseId,
       episodeId: overrides.episodeId ?? caseId,
       contentVersion: overrides.contentVersion ?? item.contentVersion ?? 1,
-      contentHash: overrides.contentHash ?? item.contentHash ?? `manifest:${manifest.version ?? 1}:${caseId}`
+      contentHash: overrides.contentHash ?? item.runtime?.sourceHash ?? item.contentHash ?? `manifest:${manifest.version ?? 1}:${caseId}`
     };
   }
 
@@ -125,8 +125,7 @@ export function createCampaignStore(manifestInput, backend) {
       const item = caseById.get(caseId);
       const expected = metadata(caseId, {
         episodeId: item.episodeId ?? caseId,
-        contentVersion: item.contentVersion ?? 1,
-        contentHash: item.contentHash ?? `manifest:${manifest.version ?? 1}:${caseId}`
+        contentVersion: item.contentVersion ?? 1
       });
       const envelope = validEnvelope(safeParse(storage.get(saveKey(caseId))), expected);
       if (!envelope?.session.completed) continue;

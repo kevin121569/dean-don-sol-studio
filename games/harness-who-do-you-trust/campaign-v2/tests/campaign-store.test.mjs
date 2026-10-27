@@ -109,6 +109,18 @@ test("foreign, stale, and malformed save envelopes are rejected", () => {
   assert.equal(store.saveCase("episode-001", session("episode-999")), false);
 });
 
+test("connected cases bind saves to the executed runtime fingerprint", () => {
+  const storage = memoryStorage();
+  const store = createCampaignStore(manifest, storage);
+  assert.equal(store.saveCase("episode-001", session("episode-001")), true);
+  const saved = JSON.parse(storage.getItem(store.saveKey("episode-001")));
+  const item = manifest.cases.find((entry) => entry.id === "episode-001");
+  assert.equal(saved.contentHash, item.runtime.sourceHash);
+  saved.contentHash = item.contentHash;
+  storage.setItem(store.saveKey("episode-001"), JSON.stringify(saved));
+  assert.equal(store.loadCase("episode-001"), null, "a data-file hash cannot impersonate the approved playable runtime");
+});
+
 test("corrupt progress cannot unlock a case and is safely rebuilt", () => {
   const storage = memoryStorage();
   const store = createCampaignStore(manifest, storage);

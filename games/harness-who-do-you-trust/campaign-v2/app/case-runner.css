@@ -1,0 +1,89 @@
+:root {
+  color-scheme: dark;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #e8f7ff;
+  background: #020a10;
+  --bar: #061b27;
+  --line: #2f6f85;
+  --cyan: #75e5f4;
+  --gold: #ffdc78;
+  --green: #7ee0ad;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+body { min-width: 320px; background: #020a10; }
+a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+.runner-header {
+  position: relative;
+  z-index: 2;
+  min-height: calc(56px + env(safe-area-inset-top));
+  padding: calc(8px + env(safe-area-inset-top)) 10px 8px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  background: var(--bar);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 6px 22px #0009;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: #effcff;
+  text-decoration: none;
+  font-size: .78rem;
+  font-weight: 900;
+}
+
+.runner-title { min-width: 0; }
+.runner-title span { display: block; color: var(--cyan); font-size: .62rem; font-weight: 900; letter-spacing: .1em; }
+.runner-title strong { display: block; overflow: hidden; color: #fff; font-size: .9rem; text-overflow: ellipsis; white-space: nowrap; }
+.save-status { color: var(--gold); font-size: .62rem; font-weight: 900; letter-spacing: .06em; }
+.save-status[data-complete="true"] { color: var(--green); }
+
+.runner { height: calc(100dvh - 56px - env(safe-area-inset-top)); background: #020a10; }
+#caseFrame { width: 100%; height: 100%; border: 0; background: #020a10; }
+.loading-card, .runner-error {
+  width: min(520px, calc(100% - 32px));
+  margin: 52px auto;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #082331;
+  line-height: 1.5;
+}
+.loading-card strong, .loading-card span { display: block; }
+.loading-card strong { color: var(--gold); }
+.loading-card span, .runner-error p { margin-top: 8px; color: #b9d0da; }
+.runner-error h1 { margin: 0; font-size: 1.45rem; }
+.runner-error a { display: inline-flex; margin-top: 12px; color: var(--gold); font-weight: 900; }
+.complete-link {
+  position: fixed;
+  z-index: 4;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  left: 12px;
+  min-height: 48px;
+  padding: 14px 16px;
+  border: 2px solid #47d596;
+  border-radius: 10px;
+  background: #083a2b;
+  box-shadow: 0 12px 34px #000d;
+  color: #eafff2;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 950;
+}
+
+@media (max-width: 520px) {
+  .runner-header { grid-template-columns: auto minmax(0, 1fr); }
+  .save-status { display: none; }
+  .back { min-height: 44px; }
+}

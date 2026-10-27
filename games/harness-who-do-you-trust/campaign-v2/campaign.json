@@ -21,7 +21,16 @@
       "contentHash": "743285383fd5ca17891c840feb41ea28bbdcb9d294d6503c874c8ec32d1f2819",
       "status": "existing-source",
       "source": "../data/episode-001.json",
-      "launch": null,
+      "launch": "./case.html?case=episode-001",
+      "runtime": {
+        "kind": "legacy-monolith",
+        "source": "build/level-1.html",
+        "sourceHash": "4fbe004e42c12af00a34006a939deed8dc14d74b74ae6c1d44bbd5c535ba4ccd",
+        "inspector": "HarnessV34",
+        "transforms": [
+          "remove-legacy-campaign-observer"
+        ]
+      },
       "unlocks": "episode-002"
     },
     {
@@ -34,7 +43,14 @@
       "contentHash": "83089e531ae5a88162f54d68cee96bb0146f2bf2fa0793333595c704a66d8b60",
       "status": "frozen-playable-source",
       "source": "../../../android/harness-who-do-you-trust/www/index.html",
-      "launch": null,
+      "launch": "./case.html?case=episode-002",
+      "runtime": {
+        "kind": "legacy-monolith",
+        "source": "../../../android/harness-who-do-you-trust/www/index.html",
+        "sourceHash": "83089e531ae5a88162f54d68cee96bb0146f2bf2fa0793333595c704a66d8b60",
+        "inspector": "HarnessV34",
+        "transforms": []
+      },
       "unlocks": "episode-003"
     },
     {

@@ -64,7 +64,7 @@ These choices are fixed for the campaign branch so engineering does not stall:
 | Art | Do not ship borrowed Level 2 images as Server 4 art. Empty semantic slots block release until approved art is supplied. |
 | Trust | Cases 1-2 retain their tested interaction in parity mode. Cases 3-5 make the trust judgment visible and reflect it in the debrief. |
 
-## Implementation checkpoint — selector and storage
+## Implementation checkpoint — selector, storage, and approved-case bridge
 
 The first campaign-shell slice is implemented in this branch:
 
@@ -78,11 +78,16 @@ The first campaign-shell slice is implemented in this branch:
 - corrupted, foreign, stale, out-of-order, and cross-case saves are rejected;
 - the shell listens for one explicit `harness:case-completed` event, replacing
   the Level 1 observer loop;
-- all five manifest launch routes remain `null`. This is intentional: a button
-  cannot launch a case until the compatibility renderer passes its regression
-  gate.
+- Cases 1 and 2 route through one compact `app/case.html` compatibility runner;
+- the runner verifies each full monolith SHA-256 before it executes;
+- Level 1 is recreated from fingerprinted historical inputs, then its known
+  self-triggering observer is removed in memory without changing the oracle;
+- minimal state crosses one validated `postMessage` bridge and completion still
+  uses the explicit `harness:case-completed` event;
+- Cases 3-5 keep `launch: null`, so candidate content cannot be mistaken for a
+  playable or package-ready case.
 
-The storage/content suite currently passes 12 tests plus the campaign validator.
+The storage/content and adapter suites run alongside the campaign validator.
 Visual device approval remains open because the current workspace has no local
 browser executable; this checkpoint is not described as phone-tested or ready
 for an APK.

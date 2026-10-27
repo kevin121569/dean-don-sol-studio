@@ -1,0 +1,10 @@
+{
+  "name": "harness-five-case-campaign",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare": "node scripts/prepare-runtime.mjs",
+    "validate": "npm run prepare && node scripts/validate-campaign.mjs",
+    "test": "npm run prepare && node --test tests/*.test.mjs"
+  }
+}

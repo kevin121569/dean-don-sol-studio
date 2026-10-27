@@ -14,6 +14,13 @@ has a confirmed Case Review lockup in its appended campaign script; the new
 runtime must fix that defect outside the oracle and record it as an intentional
 regression delta.
 
+Cases 1 and 2 now open through `app/case.html`, a single compatibility runner.
+It fingerprints the approved monolith before execution, reads only the frozen
+`HarnessV34` inspection surface, and mirrors minimal case state into the
+campaign save namespace. Level 1's known self-triggering campaign observer is
+removed in memory; the frozen file itself is never changed. Cases 3-5 remain
+disconnected until the shared renderer and production assets pass their gates.
+
 ## Intended launch scope
 
 1. **Server 4** — reconcile conflicting clocks before an irreversible shutdown.
@@ -34,12 +41,17 @@ Each new case must provide:
 - complete text equivalents so sound is optional;
 - a continuity beat supported by evidence in the current or an earlier case.
 
-Run the content gate from the repository root:
+Prepare and run the campaign gates from this directory:
 
 ```bash
-node games/harness-who-do-you-trust/campaign-v2/scripts/validate-campaign.mjs
-node --test games/harness-who-do-you-trust/campaign-v2/tests/*.test.mjs
+cd games/harness-who-do-you-trust/campaign-v2
+npm test
+npm run validate
 ```
+
+The preparation step deterministically recreates the approved Level 1 monolith
+from fingerprinted repository-history inputs. A shallow clone must fetch full
+history before preparing the runtime.
 
 The gate also checks the repository copies of the approved sources against
 `frozen-sources.json`. A failed frozen-source hash is a release blocker, not a
@@ -49,10 +61,9 @@ warning to update the expected value.
 
 This branch contains the campaign contract and complete content candidates for
 Cases 3-5. It is intentionally **not an APK** and not yet a replacement game.
-It now also contains the phone-first case selector and isolated v2 campaign
-storage. Play buttons intentionally stay disconnected until a case passes its
-renderer and regression gate. Cases 1 and 2 remain regression oracles until the
-extracted shell can match their approved phone experience, except for the
-explicitly allowlisted Level 1 completion fix and approved campaign-wide
-consistency changes.
+It now also contains the phone-first case selector, isolated v2 campaign
+storage, and fingerprint-locked playable routes for Cases 1 and 2. Cases 3-5
+stay disconnected until their renderer, art, and regression gates pass. The
+only Level 1 source delta is the explicitly allowlisted completion fix applied
+in memory by the compatibility runner.
 
