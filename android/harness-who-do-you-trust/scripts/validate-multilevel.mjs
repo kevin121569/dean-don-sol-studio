@@ -45,13 +45,13 @@ ok(html['index.html'].includes('COMPLETE LEVEL 1 TO UNLOCK'), 'Level 2 is not vi
 ok(html['index.html'].includes("a.href='level-2.html'"), 'Campaign hub does not unlock Level 2');
 ok(html['level-1.html'].includes('NEXT="level-2.html"'), 'Level 1 has no Level 2 continuation target');
 ok(html['level-1.html'].includes('CONTINUE TO LEVEL 2'), 'Level 1 completion CTA missing');
-ok(html['level-1.html'].includes('height:120px!important') && html['level-1.html'].includes('height:104px!important'), 'Level 1 compact mobile masthead guard missing');
+ok(html['level-1.html'].includes('.mc-hero{display:none!important}') && html['level-1.html'].includes('#investigationCard,#decisionCard{order:-20}') && html['level-1.html'].includes('.mc-assignment-hero{display:none!important}') && html['level-1.html'].includes('.mc-map-card img{display:none!important}'), 'Level 1 direct-to-game mobile guard missing');
 ok(html['level-1.html'].includes('YELLOW WORDS ARE TAPPABLE'), 'Level 1 definitions guidance missing');
 ok((html['level-1.html'].match(/plain:/g) || []).length >= 20, 'Level 1 definition set is unexpectedly small');
 ok((html['level-1.html'].match(/mc-adviser-card/g) || []).length >= 2, 'Level 1 illustrated adviser-card system missing');
 ok(html['level-1.html'].includes("adviserFile=id=>'v34/'"), 'Level 1 current adviser portrait mapping missing');
 ok(html['level-2.html'].includes('TRY ANOTHER ENDING'), 'Level 2 alternate-ending replay missing');
-ok(html['level-2.html'].includes('height:120px!important') && html['level-2.html'].includes('height:104px!important'), 'Level 2 compact mobile masthead guard missing');
+ok(html['level-2.html'].includes('.mc-hero{display:none!important}') && html['level-2.html'].includes('#investigationCard,#decisionCard{order:-20}') && html['level-2.html'].includes('.mc-assignment-hero{display:none!important}') && html['level-2.html'].includes('.mc-map-card img{display:none!important}'), 'Level 2 direct-to-game mobile guard missing');
 ok(html['level-2.html'].includes('CAMPAIGN COMPLETE'), 'Level 2 campaign completion state missing');
 ok(html['level-2.html'].includes('harness-v34:episode-002:illustrated-master-control:v12-motorola-audio-scroll-fix'), 'Level 2 tested save identity missing');
 
