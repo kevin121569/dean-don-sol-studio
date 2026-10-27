@@ -9,7 +9,10 @@ It does **not** replace either verified playable source:
 The current production rule is simple: the verified sources stay untouched while
 the campaign schema, new case content, progression rules, and tests are built
 beside them. A playable build must not be promoted until Levels 1 and 2 pass
-visual and behavioral regression on a phone-sized viewport.
+visual and behavioral regression on a phone-sized viewport. The Level 1 oracle
+has a confirmed Case Review lockup in its appended campaign script; the new
+runtime must fix that defect outside the oracle and record it as an intentional
+regression delta.
 
 ## Intended launch scope
 
@@ -47,5 +50,6 @@ This branch contains the campaign contract and complete content candidates for
 Cases 3-5. It is intentionally **not an APK** and not yet a replacement game.
 The next implementation slice is the reusable shell plus Case 3 behind a case
 selector. Cases 1 and 2 remain regression oracles until the extracted shell can
-match their approved phone experience.
+match their approved phone experience, except for the explicitly allowlisted
+Level 1 completion fix and approved campaign-wide consistency changes.
 

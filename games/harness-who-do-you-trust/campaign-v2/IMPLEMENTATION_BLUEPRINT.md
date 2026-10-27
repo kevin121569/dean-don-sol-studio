@@ -7,6 +7,14 @@ Level 1 and v12 Level 2 files remain untouched regression oracles. Build the
 campaign beside them, move presentation assumptions into case data, and promote
 only after Levels 1 and 2 match the approved phone experience.
 
+One verified exception is already known: the Level 1 oracle locks up when Case
+Review opens. Its appended `MutationObserver` calls `enhance()`, which assigns
+`.case-end.textContent` on every observed DOM change. That assignment creates a
+new child-list mutation and schedules `enhance()` again indefinitely. The frozen
+file remains untouched; the new campaign shell must replace this observer with
+an explicit completion event and carry the difference in the Level 1 parity
+allowlist.
+
 Independent review agreed on the product direction:
 
 - two cases feel like a strong pilot, not enough value for a normal paid game;
@@ -27,6 +35,34 @@ Independent review agreed on the product direction:
 
 Never update a hash just to make a failure disappear. A changed hash requires a
 deliberate source review and owner approval.
+
+Direct comparison also confirms the Harness core, session wrapper, and audio
+module are byte-identical between the two monoliths. Their extracted SHA-256
+values are:
+
+- Harness core: `75bbcb9074a94c1ea1bdeba81051b4bf29775485a7d7de66e150abda5adacc2e`
+- session wrapper: `41392498876f3829d054a7a0cb0f7e3d86ca044f4c4e6abecea60d855349405f`
+- audio module: `3e78e6836b7ad36bd3830e34e6a20c2b3053973ce82fc0b3149c198cc8e83403`
+
+The Level 1 presentation is not production-complete art-wise: its evidence map
+reuses Level 2 `ledger.jpg`, `hub.jpg`, and `audit.jpg` assets. The data remains
+valid, but original Server 4 art is a release blocker rather than a reason to
+keep borrowed harbor imagery.
+
+## Product decisions for implementation
+
+These choices are fixed for the campaign branch so engineering does not stall:
+
+| Topic | Campaign decision |
+|---|---|
+| Naming | Use **Case 1-5** in campaign navigation. Preserve legacy wording only inside parity mode. |
+| Advisers | BOY / Searcher, TOOTH / Fact-Checker, LUKE / Worst-Case Thinker, DON SOL / Team Lead. Keep internal ID `darth` for save compatibility. |
+| Level 1 wording | Allowlist consistency fixes such as LUKE and Case naming in the new runtime; never edit the frozen oracle. |
+| Progression | Fail forward: any completed ending unlocks the next case. Better endings affect review and achievement, not access. |
+| Time | Fictional deadlines may create story stakes; no real countdown timer pressures the child. |
+| Phone layout | Put the interactive investigation/decision board in the first viewport. Decorative assignment art must not block play or cover controls. |
+| Art | Do not ship borrowed Level 2 images as Server 4 art. Empty semantic slots block release until approved art is supplied. |
+| Trust | Cases 1-2 retain their tested interaction in parity mode. Cases 3-5 make the trust judgment visible and reflect it in the debrief. |
 
 ## Level 2 assumptions that must become case data
 
@@ -97,25 +133,29 @@ slots for the later production pass.
 
 1. **Freeze and fingerprint.** Keep the approved monoliths unchanged and run
    `validate-campaign.mjs` on every change.
-2. **Extract without redesigning.** Copy the v12 renderer into a new campaign
+2. **Record the Level 1 blocker.** Add a regression test proving the frozen
+   observer locks Case Review. Fix completion only in the new shell with an
+   explicit event; never patch the oracle.
+3. **Extract without redesigning.** Copy the v12 renderer into a new campaign
    shell. Replace one hard-coded Level 2 value at a time with case data while
    comparing the rendered Level 2 screen after each change.
-3. **Add campaign saves.** Store completion separately from per-case sessions.
+4. **Add campaign saves.** Store completion separately from per-case sessions.
    Never reuse the v12 key or write campaign state into an approved source.
-4. **Add case select.** Case 1 is open. Each completed case unlocks the next.
+5. **Add case select.** Case 1 is open. Each completed case unlocks the next.
    Completed cases remain replayable. A case reset never erases season progress.
-5. **Port Level 1 as a compatibility adapter.** Preserve its text and rules;
-   translate only the shape required by the new renderer.
-6. **Port Level 2 as a compatibility adapter.** Match the v12 source before
+6. **Port Level 1 as a compatibility adapter.** Preserve its evidence and rules;
+   translate only the shape required by the new renderer. Apply only allowlisted
+   completion, naming, role, phone-layout, and approved-art deltas.
+7. **Port Level 2 as a compatibility adapter.** Match the v12 source before
    enabling Case 3.
-7. **Make Case 3 playable.** Use semantic art placeholders only during internal
+8. **Make Case 3 playable.** Use semantic art placeholders only during internal
    development; do not distribute an APK until approved art and phone layout
    replace them.
-8. **Add Cases 4 and 5.** Reuse the same shell. Do not fork another one-off HTML
+9. **Add Cases 4 and 5.** Reuse the same shell. Do not fork another one-off HTML
    build per case.
-9. **Regression and device gate.** Test Android offline, fresh install, upgrade,
+10. **Regression and device gate.** Test Android offline, fresh install, upgrade,
    rotation, back navigation, sound off, and the target Motorola viewport.
-10. **Package once.** Generate a signed test APK only after the campaign gate,
+11. **Package once.** Generate a signed test APK only after the campaign gate,
     regression gate, and device gate all pass.
 
 ## Acceptance tests
@@ -137,6 +177,8 @@ slots for the later production pass.
 - Repository frozen-source hashes pass.
 - Level 1 story text, evidence, advice, locks, four decisions, and outcomes
   remain unchanged.
+- The frozen Level 1 file reproduces the known Case Review lockup; the new shell
+  remains responsive and records the fix as an intentional parity delta.
 - Level 2 v12 masthead, illustrated board, adviser avatars, evidence panels,
   decision flow, outcome, back behavior, and Motorola scrolling match the
   approved source.
@@ -179,10 +221,12 @@ slots for the later production pass.
 ## Release blockers
 
 - any frozen-source hash change;
+- the Level 1 Case Review lockup appearing in the new runtime;
 - a Case 1 or 2 visual/behavior mismatch on the target phone;
 - a case save appearing in another case;
 - an unreachable hidden clue or decision;
 - missing text when sound is off;
 - clipped or obscured controls;
 - unapproved placeholder art/audio in a distributed APK;
+- borrowed Level 2 harbor art appearing as finished Server 4 art;
 - fewer than five playable cases in a normally priced paid release.
