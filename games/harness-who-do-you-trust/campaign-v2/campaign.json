@@ -13,42 +13,67 @@
   "cases": [
     {
       "id": "episode-001",
+      "episodeId": "episode-001",
       "level": 1,
       "title": "Server 4",
+      "tagline": "A shutdown order, two clocks, and evidence that disappears if you act too fast.",
+      "contentVersion": 1,
+      "contentHash": "743285383fd5ca17891c840feb41ea28bbdcb9d294d6503c874c8ec32d1f2819",
       "status": "existing-source",
       "source": "../data/episode-001.json",
+      "launch": null,
       "unlocks": "episode-002"
     },
     {
       "id": "episode-002",
+      "episodeId": "episode-002",
       "level": 2,
       "title": "The Missing Two",
+      "tagline": "Trace two missing workers while a separate warning puts people at the harbor in danger.",
+      "contentVersion": 12,
+      "contentHash": "83089e531ae5a88162f54d68cee96bb0146f2bf2fa0793333595c704a66d8b60",
       "status": "frozen-playable-source",
       "source": "../../../android/harness-who-do-you-trust/www/index.html",
+      "launch": null,
       "unlocks": "episode-003"
     },
     {
       "id": "episode-003",
+      "episodeId": "episode-003",
       "level": 3,
       "title": "The Cold Mirror",
+      "tagline": "One air sensor says danger. Independent measurements and freezing weather complicate the call.",
+      "contentVersion": 1,
+      "contentHash": "e3363882e7be8843423c962c9cb7f954c838a8045c5fd1f0615da647f8277659",
       "status": "content-candidate",
       "source": "data/episode-003.json",
+      "launch": null,
       "unlocks": "episode-004"
     },
     {
       "id": "episode-004",
+      "episodeId": "episode-004",
       "level": 4,
       "title": "The Ledger's Weight",
+      "tagline": "A citywide savings model conflicts with verified danger in three vulnerable neighborhoods.",
+      "contentVersion": 1,
+      "contentHash": "903ca97a2c91d638560b16b34925c45da54406add5a59028586644be80edfba1",
       "status": "content-candidate",
       "source": "data/episode-004.json",
+      "launch": null,
       "unlocks": "episode-005"
     },
     {
       "id": "episode-005",
+      "episodeId": "episode-005",
       "level": 5,
       "title": "The Open Record",
+      "tagline": "Set the final boundary between useful automation and authority people must keep.",
+      "contentVersion": 1,
+      "contentHash": "cb9beefc24c81f647fecf16c7154cfd3f9575dd8be125d838dfe821a92dcf605",
       "status": "content-candidate",
       "source": "data/episode-005.json",
+      "launch": null,
       "unlocks": null
     }
   ],

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#061823">
+  <title>HARNESS · Who Do You Trust?</title>
+  <link rel="stylesheet" href="./campaign.css">
+</head>
+<body>
+  <a class="skip" href="#cases">Skip to cases</a>
+  <header class="campaign-header">
+    <div>
+      <span class="eyebrow">DON SOL STUDIOS · FIVE-CASE CAMPAIGN</span>
+      <h1>HARNESS</h1>
+      <p>Who Do You Trust?</p>
+    </div>
+    <div class="campaign-count" aria-live="polite">
+      <strong id="solvedCount">0 / 5</strong>
+      <span>cases solved</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="mission" aria-labelledby="missionTitle">
+      <div>
+        <span class="eyebrow">YOUR CAMPAIGN</span>
+        <h2 id="missionTitle">Investigate. Compare. Decide.</h2>
+        <p>Every case asks you to test evidence, question your advisers, and make a call while some facts are still uncertain.</p>
+      </div>
+      <div class="progress" aria-label="Campaign progress">
+        <span id="progressBar"></span>
+      </div>
+    </section>
+
+    <section id="cases" aria-labelledby="casesTitle">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">CASE FILES</span>
+          <h2 id="casesTitle">Choose an investigation</h2>
+        </div>
+        <p>Any completed ending unlocks the next case. Better judgment changes what you learn—not whether you may continue.</p>
+      </div>
+      <ol id="caseList" class="case-list" aria-live="polite"></ol>
+    </section>
+
+    <p id="campaignMessage" class="campaign-message" role="status" hidden></p>
+  </main>
+
+  <template id="caseTemplate">
+    <li class="case-card">
+      <div class="case-number" aria-hidden="true"></div>
+      <div class="case-copy">
+        <div class="case-meta"><span class="case-label"></span><span class="case-status"></span></div>
+        <h3></h3>
+        <p class="case-tagline"></p>
+        <button class="case-action" type="button"></button>
+      </div>
+    </li>
+  </template>
+
+  <script type="module" src="./campaign.mjs"></script>
+</body>
+</html>

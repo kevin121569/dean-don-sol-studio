@@ -64,6 +64,29 @@ These choices are fixed for the campaign branch so engineering does not stall:
 | Art | Do not ship borrowed Level 2 images as Server 4 art. Empty semantic slots block release until approved art is supplied. |
 | Trust | Cases 1-2 retain their tested interaction in parity mode. Cases 3-5 make the trust judgment visible and reflect it in the debrief. |
 
+## Implementation checkpoint — selector and storage
+
+The first campaign-shell slice is implemented in this branch:
+
+- `app/index.html`, `campaign.css`, and `campaign.mjs` provide a compact,
+  phone-first five-case selector with no full-screen decorative obstruction;
+- `runtime/campaign-store.mjs` namespaces every save by case, verifies case ID,
+  episode ID, content version, and content hash, and keeps season completion
+  separate from a replayable case session;
+- fail-forward unlocking is monotonic: replaying or resetting an earlier case
+  does not relock a later case;
+- corrupted, foreign, stale, out-of-order, and cross-case saves are rejected;
+- the shell listens for one explicit `harness:case-completed` event, replacing
+  the Level 1 observer loop;
+- all five manifest launch routes remain `null`. This is intentional: a button
+  cannot launch a case until the compatibility renderer passes its regression
+  gate.
+
+The storage/content suite currently passes 12 tests plus the campaign validator.
+Visual device approval remains open because the current workspace has no local
+browser executable; this checkpoint is not described as phone-tested or ready
+for an APK.
+
 ## Level 2 assumptions that must become case data
 
 The v12 game core already reads the episode's evidence, advisers, decisions,

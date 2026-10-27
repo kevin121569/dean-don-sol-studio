@@ -153,6 +153,19 @@ if (campaign) {
   requireValue(JSON.stringify(campaign.caseOrder) === JSON.stringify(expectedOrder), "campaign: caseOrder must be episode-001 through episode-005");
   requireValue((campaign.cases ?? []).length === 5, "campaign: exactly five cases are required");
 
+  for (const entry of campaign.cases ?? []) {
+    requireValue(entry.episodeId === entry.id, `${entry.id}: episodeId must match the case id`);
+    requireValue(Number.isInteger(entry.contentVersion) && entry.contentVersion > 0, `${entry.id}: contentVersion must be a positive integer`);
+    requireValue(typeof entry.tagline === "string" && entry.tagline.length >= 20, `${entry.id}: campaign card needs a useful tagline`);
+    requireValue(entry.launch === null || typeof entry.launch === "string", `${entry.id}: launch must be null or a route string`);
+    try {
+      const sourcePath = resolve(campaignRoot, entry.source);
+      requireValue(sha256(sourcePath) === entry.contentHash, `${entry.id}: contentHash does not match ${entry.source}`);
+    } catch (error) {
+      errors.push(`${entry.id}: cannot hash campaign source ${entry.source}: ${error.message}`);
+    }
+  }
+
   for (const level of [3, 4, 5]) {
     const id = `episode-00${level}`;
     const caseData = loadJson(join(campaignRoot, "data", `${id}.json`));

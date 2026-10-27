@@ -38,6 +38,7 @@ Run the content gate from the repository root:
 
 ```bash
 node games/harness-who-do-you-trust/campaign-v2/scripts/validate-campaign.mjs
+node --test games/harness-who-do-you-trust/campaign-v2/tests/*.test.mjs
 ```
 
 The gate also checks the repository copies of the approved sources against
@@ -48,8 +49,10 @@ warning to update the expected value.
 
 This branch contains the campaign contract and complete content candidates for
 Cases 3-5. It is intentionally **not an APK** and not yet a replacement game.
-The next implementation slice is the reusable shell plus Case 3 behind a case
-selector. Cases 1 and 2 remain regression oracles until the extracted shell can
-match their approved phone experience, except for the explicitly allowlisted
-Level 1 completion fix and approved campaign-wide consistency changes.
+It now also contains the phone-first case selector and isolated v2 campaign
+storage. Play buttons intentionally stay disconnected until a case passes its
+renderer and regression gate. Cases 1 and 2 remain regression oracles until the
+extracted shell can match their approved phone experience, except for the
+explicitly allowlisted Level 1 completion fix and approved campaign-wide
+consistency changes.
 
