@@ -1,0 +1,24 @@
+{
+  "name": "harness-campaign-case3-qa",
+  "private": true,
+  "version": "0.3.0-qa.20261027",
+  "description": "Isolated Android QA wrapper for the HARNESS five-case campaign and Case 3 phone gate",
+  "scripts": {
+    "prepare:campaign": "node ../../games/harness-who-do-you-trust/campaign-v2/scripts/prepare-runtime.mjs",
+    "stage:web": "node scripts/stage-campaign.mjs",
+    "validate:web": "node scripts/validate-qa.mjs",
+    "build:web": "npm run prepare:campaign && npm run stage:web && npm run validate:web",
+    "cap:add:android": "npm run build:web && cap add android",
+    "cap:sync": "npm run build:web && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/preferences": "8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3"
+  }
+}
+
