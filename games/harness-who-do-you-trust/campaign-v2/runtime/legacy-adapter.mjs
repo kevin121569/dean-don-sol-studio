@@ -36,6 +36,16 @@ function applyServer4Art(source, evidenceArt) {
   return replaceOnce(source, before, after, "Server 4 evidence-art map");
 }
 
+function repairServer4PhoneText(source) {
+  const clamped = ".mc-clue small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}";
+  const readable = ".mc-clue small{display:block;-webkit-line-clamp:unset;-webkit-box-orient:initial;overflow:visible}";
+  let repaired = replaceOnce(source, clamped, readable, "Server 4 phone evidence text");
+  const close = repaired.indexOf("</head>");
+  if (close < 0) throw new Error("Server 4 phone repair requires a closing head tag.");
+  const css = `<style id="harness-server4-phone-text-repair">dialog{overflow-y:auto;overscroll-behavior:contain}@media(max-width:760px){#panel{padding-bottom:max(24px,calc(env(safe-area-inset-bottom) + 18px))}.selectors{position:relative;z-index:1}}</style>`;
+  return repaired.slice(0, close) + css + repaired.slice(close);
+}
+
 function injectAssetOverrides(source, overrides) {
   if (!isObject(overrides) || Object.keys(overrides).length === 0) return source;
   for (const [name, value] of Object.entries(overrides)) {
@@ -98,6 +108,8 @@ export function prepareLegacyHtml(source, config) {
       html = removeScriptById(html, LEGACY_OBSERVER_SCRIPT_ID);
     } else if (transform === "server4-original-art") {
       html = applyServer4Art(html, config.evidenceArt);
+    } else if (transform === "server4-phone-text-repair") {
+      html = repairServer4PhoneText(html);
     } else {
       throw new Error(`Unknown legacy transform: ${transform}`);
     }

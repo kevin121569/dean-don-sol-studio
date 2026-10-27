@@ -40,6 +40,9 @@ test("Level 1 adapter removes only the known observer script and adds the explic
   assert.match(html, /window\.HarnessV34=harnessInspector/);
   assert.match(html, /"caseId":"episode-001"/);
   assert.doesNotMatch(html, /const img=\{e_monitor:'v34\/ledger\.jpg'/);
+  assert.doesNotMatch(html, /-webkit-line-clamp:2/);
+  assert.match(html, /id="harness-server4-phone-text-repair"/);
+  assert.match(html, /dialog\{overflow-y:auto/);
   for (const item of Object.values(art)) assert.match(html, new RegExp(item.asset.replace(".", "\\.")));
   assert.ok(html.indexOf('id="harness-server4-art"') < html.indexOf("window.HarnessEpisode = "));
 });

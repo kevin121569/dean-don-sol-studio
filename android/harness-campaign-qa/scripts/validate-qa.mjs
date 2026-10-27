@@ -3,7 +3,7 @@ import {readFile, readdir} from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath, pathToFileURL} from "node:url";
 
-const BUILD_ID = "FULL5-20261027-C";
+const BUILD_ID = "FULL5-20261027-D";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const dist = path.join(root, "dist");
@@ -32,8 +32,10 @@ const inventory = await json("dist/qa-manifest.json");
 const rootHtml = await readFile(path.join(dist, "index.html"), "utf8");
 const campaignIndex = await readFile(path.join(dist, "campaign/app/index.html"), "utf8");
 const campaignScript = await readFile(path.join(dist, "campaign/app/campaign.mjs"), "utf8");
+const level1Html = await readFile(path.join(dist, "campaign/build/level-1.html"), "utf8");
 const playHtml = await readFile(path.join(dist, "campaign/app/play.html"), "utf8");
 const {createCampaignStore} = await import(pathToFileURL(path.join(dist, "campaign/runtime/campaign-store.mjs")));
+const {prepareLegacyHtml} = await import(pathToFileURL(path.join(dist, "campaign/runtime/legacy-adapter.mjs")));
 
 ok(config.appId === "com.theidealabstudio.harness.campaign.fullqa", "QA package ID changed");
 ok(config.appName === "HARNESS QA · 5 CASES", "QA launcher name changed");
@@ -42,6 +44,15 @@ ok(rootHtml.includes(`BUILD ${BUILD_ID}`), "root QA build stamp missing");
 ok(playHtml.includes(`HARNESS QA · FIVE CASES · ${BUILD_ID}`), "in-game QA build banner missing");
 ok(campaignIndex.includes('id="caseMapList"') && campaignIndex.includes("5 / 5 CASES SHOWN"), "selector must visibly prove all five cases are present");
 ok(campaignScript.includes('mapButton.innerHTML = `<span>${item.completed ? "✓" : item.level}</span><small>CASE ${item.level}</small>`'), "selector must render five numbered case-map buttons from the manifest");
+const case1Entry = manifest.cases.find((item) => item.id === "episode-001");
+const renderedLevel1 = prepareLegacyHtml(level1Html, {
+  caseId: case1Entry.id,
+  episodeId: case1Entry.episodeId,
+  inspector: case1Entry.runtime.inspector,
+  transforms: case1Entry.runtime.transforms,
+  evidenceArt: Object.fromEntries(Object.entries(case1Entry.runtime.art).map(([id, art]) => [id, art.asset]))
+});
+ok(renderedLevel1.includes('id="harness-server4-phone-text-repair"') && !renderedLevel1.includes("-webkit-line-clamp:2"), "Case 1 phone text must expand and its evidence dialog must scroll");
 ok(manifest.qa?.buildId === BUILD_ID && manifest.qa?.productionRelease === false, "QA manifest identity missing");
 for (const level of [3, 4, 5]) {
   const id = `episode-00${level}`;

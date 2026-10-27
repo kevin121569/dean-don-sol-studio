@@ -200,8 +200,8 @@ if (campaign) {
   requireValue(JSON.stringify(connected) === JSON.stringify(expectedOrder), "campaign: all five cases must be connected in order");
   const level1Runtime = campaign.cases?.find((entry) => entry.id === "episode-001")?.runtime;
   requireValue(
-    JSON.stringify(level1Runtime?.transforms) === JSON.stringify(["remove-legacy-campaign-observer", "server4-original-art"]),
-    "episode-001: only the observer repair and original-art map may transform the approved runtime"
+    JSON.stringify(level1Runtime?.transforms) === JSON.stringify(["remove-legacy-campaign-observer", "server4-original-art", "server4-phone-text-repair"]),
+    "episode-001: only the observer, original-art, and phone-text repairs may transform the approved runtime"
   );
   const level1ArtIds = ["e_monitor", "e_controller", "e_technician", "e_protocol", "e_clocksync"];
   requireValue(

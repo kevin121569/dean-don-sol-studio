@@ -56,7 +56,8 @@
         },
         "transforms": [
           "remove-legacy-campaign-observer",
-          "server4-original-art"
+          "server4-original-art",
+          "server4-phone-text-repair"
         ]
       },
       "unlocks": "episode-002"
