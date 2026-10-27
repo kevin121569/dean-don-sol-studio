@@ -91,6 +91,38 @@
       "contentHash": "e3363882e7be8843423c962c9cb7f954c838a8045c5fd1f0615da647f8277659",
       "status": "content-candidate",
       "source": "data/episode-003.json",
+      "art": {
+        "e_particle_alert": {
+          "asset": "cold-mirror/particle-alert.jpg",
+          "source": "assets/cold-mirror/particle-alert.jpg",
+          "sourceHash": "80fb0a262a6c6693fc17c5af0921f70a01c9fe99c9bdd7cdd48a8dd81445ca84"
+        },
+        "e_hvac_trace": {
+          "asset": "cold-mirror/hvac-trace.jpg",
+          "source": "assets/cold-mirror/hvac-trace.jpg",
+          "sourceHash": "58504570273bca3179893d16cabe3e6d86281b882f12527b8517a904ee9f88e5"
+        },
+        "e_alarm_panel": {
+          "asset": "cold-mirror/alarm-panel.jpg",
+          "source": "assets/cold-mirror/alarm-panel.jpg",
+          "sourceHash": "3988fbf412c8b762596e0bd4215c13c92efa75e565843fff2d2753b3839811f9"
+        },
+        "e_witness_note": {
+          "asset": "cold-mirror/resident-reports.jpg",
+          "source": "assets/cold-mirror/resident-reports.jpg",
+          "sourceHash": "59c0e892fb8bc4a1e446a3f625618beea38587102a56a934299fb1fea049df0b"
+        },
+        "e_service_bulletin": {
+          "asset": "cold-mirror/service-bulletin.jpg",
+          "source": "assets/cold-mirror/service-bulletin.jpg",
+          "sourceHash": "d69f5e40a776b7472a67c1afa2b0d0c1a2cbad84cc1dec7b6c6f5c52d6a28bc1"
+        },
+        "e_handheld_check": {
+          "asset": "cold-mirror/handheld-check.jpg",
+          "source": "assets/cold-mirror/handheld-check.jpg",
+          "sourceHash": "432a362001bc77e070d09194df7d7ac1ba88fc593ec12e66a779bb282a92ac1e"
+        }
+      },
       "launch": null,
       "unlocks": "episode-004"
     },

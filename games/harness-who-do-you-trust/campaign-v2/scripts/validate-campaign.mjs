@@ -207,6 +207,35 @@ if (campaign) {
   }
   requireValue(unique(artAssets), "episode-001: every evidence record must have distinct original art");
 
+  const level3Entry = campaign.cases?.find((entry) => entry.id === "episode-003");
+  const level3ArtIds = [
+    "e_particle_alert",
+    "e_hvac_trace",
+    "e_alarm_panel",
+    "e_witness_note",
+    "e_service_bulletin",
+    "e_handheld_check"
+  ];
+  requireValue(
+    JSON.stringify(Object.keys(level3Entry?.art ?? {})) === JSON.stringify(level3ArtIds),
+    "episode-003: original art must cover all six evidence records in order"
+  );
+  const level3ArtAssets = [];
+  for (const evidenceId of level3ArtIds) {
+    const art = level3Entry?.art?.[evidenceId];
+    requireValue(/^cold-mirror\/[a-z0-9-]+\.jpg$/.test(art?.asset ?? ""), `episode-003/${evidenceId}: unsafe art asset name`);
+    requireValue(/^assets\/cold-mirror\/[a-z0-9-]+\.jpg$/.test(art?.source ?? ""), `episode-003/${evidenceId}: unsafe art source`);
+    requireValue(typeof art?.sourceHash === "string" && art.sourceHash.length === 64, `episode-003/${evidenceId}: art fingerprint is required`);
+    if (art?.asset) level3ArtAssets.push(art.asset);
+    try {
+      const artPath = resolve(campaignRoot, art.source);
+      requireValue(sha256(artPath) === art.sourceHash, `episode-003/${evidenceId}: original art fingerprint changed`);
+    } catch (error) {
+      errors.push(`episode-003/${evidenceId}: cannot read original art ${art?.source}: ${error.message}`);
+    }
+  }
+  requireValue(unique(level3ArtAssets), "episode-003: every evidence record must have distinct original art");
+
   for (const level of [3, 4, 5]) {
     const id = `episode-00${level}`;
     const caseData = loadJson(join(campaignRoot, "data", `${id}.json`));

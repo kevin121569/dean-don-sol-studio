@@ -28,6 +28,7 @@ let campaignEntry;
 let caseData;
 let store;
 let state;
+let artUrls = {};
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
@@ -46,10 +47,28 @@ function visualClass(evidenceId) {
   })[evidenceId] ?? "visual-bulletin";
 }
 
-async function sha256(text) {
-  const bytes = new TextEncoder().encode(text);
+async function sha256Bytes(bytes) {
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function sha256Text(text) {
+  return sha256Bytes(new TextEncoder().encode(text));
+}
+
+async function verifyArtAssets(entry) {
+  const verified = {};
+  for (const [evidenceId, art] of Object.entries(entry.art ?? {})) {
+    if (!/^assets\/cold-mirror\/[a-z0-9-]+\.jpg$/.test(art.source) || !/^[a-f0-9]{64}$/.test(art.sourceHash)) {
+      throw new Error(`The art record for ${evidenceId} is not safe to load.`);
+    }
+    const response = await fetch(`../${art.source}`, {cache: "no-store"});
+    if (!response.ok) throw new Error(`Could not load the art for ${evidenceId}.`);
+    const bytes = await response.arrayBuffer();
+    if (await sha256Bytes(bytes) !== art.sourceHash) throw new Error(`The art fingerprint for ${evidenceId} does not match.`);
+    verified[evidenceId] = `../${art.source}`;
+  }
+  return verified;
 }
 
 async function loadJsonText(url) {
@@ -126,7 +145,7 @@ function evidenceCards() {
   const inspected = new Set(state.inspectedSources);
   const newRecords = new Set(ui.reveal);
   return visibleEvidence(caseData, state).map((evidence) => `<button class="evidence-card ${inspected.has(evidence.id) ? "inspected" : ""} ${newRecords.has(evidence.id) ? "new-record" : ""}" data-action="inspect" data-id="${escapeHtml(evidence.id)}">
-    <span class="evidence-visual ${visualClass(evidence.id)}" aria-hidden="true"></span>
+    <span class="evidence-visual ${visualClass(evidence.id)}" aria-hidden="true">${artUrls[evidence.id] ? `<img src="${escapeHtml(artUrls[evidence.id])}" alt="">` : ""}</span>
     <span class="evidence-copy">
       <h3>${escapeHtml(evidence.title)}</h3>
       <p>${escapeHtml(evidence.clock)}</p>
@@ -271,7 +290,7 @@ function drawerMarkup() {
   const body = evidence.body.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
   return `<aside class="drawer" role="dialog" aria-modal="true" aria-labelledby="evidence-title">
     <div class="drawer-panel">
-      <div class="drawer-visual evidence-visual ${visualClass(evidence.id)}" aria-hidden="true"></div>
+      <div class="drawer-visual evidence-visual ${visualClass(evidence.id)}" aria-hidden="true">${artUrls[evidence.id] ? `<img src="${escapeHtml(artUrls[evidence.id])}" alt="">` : ""}</div>
       <div class="drawer-copy">
         <p class="eyebrow">Evidence record</p>
         <h2 id="evidence-title">${escapeHtml(evidence.title)}</h2>
@@ -353,8 +372,9 @@ async function boot() {
       throw new Error("That case is not available in the shared renderer.");
     }
     const caseText = await loadJsonText(`../${campaignEntry.source}`);
-    if (await sha256(caseText) !== campaignEntry.contentHash) throw new Error("The case file fingerprint does not match the approved content.");
+    if (await sha256Text(caseText) !== campaignEntry.contentHash) throw new Error("The case file fingerprint does not match the approved content.");
     caseData = JSON.parse(caseText);
+    artUrls = await verifyArtAssets(campaignEntry);
     store = createCampaignStore(manifest);
     if (!preview && store.caseStatus(caseData.id) === "locked") return lockedScreen();
     const saved = preview ? null : store.loadCase(caseData.id);

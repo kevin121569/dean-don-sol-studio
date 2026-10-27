@@ -26,9 +26,11 @@ Case 3 now has a data-driven internal renderer at
 `app/play.html?case=episode-003&preview=1`. Its pure engine covers evidence,
 conditional adviser reveals, the two-person trust judgment, decision locks,
 all four outcomes, the postmortem, and fail-forward completion. The campaign
-selector still leaves Cases 3-5 disconnected: Case 3 must receive production
-art and phone-device approval before its launch route is enabled, and Cases 4-5
-must prove their case-specific trust modes in the same shared engine.
+selector still leaves Cases 3-5 disconnected: Case 3 must receive phone-device
+approval before its launch route is enabled, and Cases 4-5 must prove their
+case-specific trust modes in the same shared engine. The six original Cold
+Mirror evidence images are fingerprinted and loaded only after the renderer
+verifies their packaged bytes, clearing the art half of that Case 3 gate.
 
 ## Intended launch scope
 
@@ -72,8 +74,9 @@ This branch contains the campaign contract and complete content candidates for
 Cases 3-5. It is intentionally **not an APK** and not yet a replacement game.
 It now also contains the phone-first case selector, isolated v2 campaign
 storage, fingerprint-locked playable routes for Cases 1 and 2, and the gated
-Case 3 shared-renderer preview. Cases 3-5 stay disconnected from the selector
-until their art and regression gates pass. The only Level 1 presentation deltas
-are the explicitly allowlisted completion fix and original evidence art applied
-in memory by the compatibility runner.
+Case 3 shared-renderer preview with six original evidence illustrations. Case 3
+stays disconnected from the selector until its physical-phone regression gate
+passes; Cases 4-5 still require their own art and renderer coverage. The only
+Level 1 presentation deltas are the explicitly allowlisted completion fix and
+original evidence art applied in memory by the compatibility runner.
 
