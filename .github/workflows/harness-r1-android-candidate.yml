@@ -1,4 +1,4 @@
-name: Harness Kate-tested v09 two-level Android test
+name: Harness Kate-tested v09 standalone Android test
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
-      - name: Check out campaign source
+      - name: Check out standalone source
         uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -50,7 +50,7 @@ jobs:
         working-directory: android/harness-who-do-you-trust
         run: npm install --no-audit --no-fund
 
-      - name: Verify Kevin's Kate-tested v09 and assemble two-level campaign
+      - name: Verify Kevin's Kate-tested v09 and stage standalone game
         working-directory: android/harness-who-do-you-trust
         run: npm run build:web
 
@@ -66,33 +66,32 @@ jobs:
           chmod +x gradlew
           ./gradlew :app:assembleDebug :app:bundleRelease --no-daemon --max-workers=2 --console=plain
 
-      - name: Verify final APK contains both campaign levels
+      - name: Verify final APK contains only the illustrated Harbor Protocol game
         working-directory: android/harness-who-do-you-trust
         run: |
           apk=android/app/build/outputs/apk/debug/app-debug.apk
           aab=android/app/build/outputs/bundle/release/app-release.aab
           test -s "$apk"
           test -s "$aab"
-          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harnesswhodoyoutrust.katetestedv09'"
-          unzip -p "$apk" assets/public/index.html > /tmp/harness-campaign.html
-          unzip -p "$apk" assets/public/level-1.html > /tmp/harness-level-1.html
-          unzip -p "$apk" assets/public/level-2.html > /tmp/harness-level-2.html
-          grep -q 'TWO CASES' /tmp/harness-campaign.html
-          grep -q 'COMPLETE LEVEL 1 TO UNLOCK' /tmp/harness-campaign.html
-          grep -q 'NEXT="level-2.html"' /tmp/harness-level-1.html
-          grep -q 'SERVER 4' /tmp/harness-level-1.html
-          grep -q 'class="mc-adviser-card' /tmp/harness-level-1.html
-          grep -q 'mc-hero{display:none!important}' /tmp/harness-level-1.html
-          grep -q 'mc-assignment-hero{display:none!important}' /tmp/harness-level-1.html
-          grep -q 'CAMPAIGN COMPLETE' /tmp/harness-level-2.html
-          grep -q 'THE MISSING TWO' /tmp/harness-level-2.html
-          grep -q 'illustrated-master-control:v09' /tmp/harness-level-2.html
-          sha256sum "$apk" "$aab" /tmp/harness-campaign.html /tmp/harness-level-1.html /tmp/harness-level-2.html
+          "${ANDROID_HOME}/build-tools/36.0.0/aapt" dump badging "$apk" | grep -q "package: name='com.theidealabstudio.harness.harborprotocol.v09'"
+          unzip -p "$apk" assets/public/index.html > /tmp/harness-v09-standalone.html
+          ! unzip -l "$apk" | grep -q 'assets/public/level-[12]\.html'
+          grep -q 'HARNESS V3.4 · Illustrated Master Control v09' /tmp/harness-v09-standalone.html
+          grep -q 'HARNESS_ANDROID_STANDALONE_V09' /tmp/harness-v09-standalone.html
+          grep -q 'class="mc-adviser-card' /tmp/harness-v09-standalone.html
+          grep -q 'THE MISSING TWO' /tmp/harness-v09-standalone.html
+          grep -q 'illustrated-master-control:v09' /tmp/harness-v09-standalone.html
+          grep -q 'data:image/jpeg;base64,' /tmp/harness-v09-standalone.html
+          grep -q 'data:audio/x-wav;base64,' /tmp/harness-v09-standalone.html
+          ! grep -q 'TWO CASES' /tmp/harness-v09-standalone.html
+          ! grep -q 'COMPLETE LEVEL 1 TO UNLOCK' /tmp/harness-v09-standalone.html
+          ! grep -q 'SERVER 4' /tmp/harness-v09-standalone.html
+          sha256sum "$apk" "$aab" /tmp/harness-v09-standalone.html
 
-      - name: Upload Kate-tested two-level campaign device-test artifacts
+      - name: Upload Kate-tested standalone device-test artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: harness-kate-tested-v09-two-level
+          name: harness-kate-tested-v09-standalone
           path: |
             android/harness-who-do-you-trust/android/app/build/outputs/apk/debug/app-debug.apk
             android/harness-who-do-you-trust/android/app/build/outputs/bundle/release/app-release.aab
