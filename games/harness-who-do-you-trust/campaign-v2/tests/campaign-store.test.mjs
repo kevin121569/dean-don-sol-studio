@@ -121,6 +121,21 @@ test("connected cases bind saves to the executed runtime fingerprint", () => {
   assert.equal(store.loadCase("episode-001"), null, "a data-file hash cannot impersonate the approved playable runtime");
 });
 
+test("shared-renderer saves bind to both renderer and case-content fingerprints", () => {
+  const storage = memoryStorage();
+  const store = createCampaignStore(manifest, storage);
+  for (const caseId of ["episode-001", "episode-002"]) {
+    assert.equal(store.saveCase(caseId, session(caseId, {completed: true, outcomeId: "qa-pass", sceneId: "review"})), true);
+  }
+  assert.equal(store.saveCase("episode-003", session("episode-003")), true);
+  const saved = JSON.parse(storage.getItem(store.saveKey("episode-003")));
+  const item = manifest.cases.find((entry) => entry.id === "episode-003");
+  assert.equal(saved.contentHash, `${item.runtime.sourceHash}:${item.contentHash}`);
+  saved.contentHash = item.runtime.sourceHash;
+  storage.setItem(store.saveKey("episode-003"), JSON.stringify(saved));
+  assert.equal(store.loadCase("episode-003"), null);
+});
+
 test("corrupt progress cannot unlock a case and is safely rebuilt", () => {
   const storage = memoryStorage();
   const store = createCampaignStore(manifest, storage);

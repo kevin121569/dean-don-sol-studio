@@ -84,15 +84,15 @@ test("bridge messages accept only the selected case and a valid completed outcom
   }, "episode-001")?.outcomeId, "d_hybrid");
 });
 
-test("only the two approved cases have launch routes", () => {
+test("all five approved cases have launch routes and preserve their runtime types", () => {
   assert.deepEqual(
-    manifest.cases.map((item) => [item.id, Boolean(item.launch)]),
+    manifest.cases.map((item) => [item.id, Boolean(item.launch), item.runtime.kind]),
     [
-      ["episode-001", true],
-      ["episode-002", true],
-      ["episode-003", false],
-      ["episode-004", false],
-      ["episode-005", false]
+      ["episode-001", true, "legacy-monolith"],
+      ["episode-002", true, "legacy-monolith"],
+      ["episode-003", true, "shared-case-renderer"],
+      ["episode-004", true, "shared-case-renderer"],
+      ["episode-005", true, "shared-case-renderer"]
     ]
   );
 });

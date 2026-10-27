@@ -6,6 +6,7 @@
   "series": "HARNESS: Who Do You Trust?",
   "audience": "ages 10-14 and families",
   "expectedMinutes": 20,
+  "bestDecisionId": "d_phased_reallocation",
   "briefing": {
     "heading": "Case 4: The Ledger's Weight",
     "paragraphs": [
@@ -218,6 +219,7 @@
   },
   "trustJudgment": {
     "mode": "weigh_each",
+    "requiredHigh": 2,
     "prompt": "How much weight should each adviser carry when a citywide model conflicts with incomplete but local field evidence?",
     "availableAfter": {
       "minimumEvidence": 4,
@@ -454,6 +456,17 @@
     "caseLabel": "CASE 4 OF 5",
     "assignmentTitle": "The city budget vote",
     "summary": "A model predicts savings. Field crews report local danger. Decide what the city funds, what it delays, and who carries the risk.",
+    "gauge": {
+      "value": "35%",
+      "label": "SHIFT",
+      "ariaLabel": "Proposed budget shift 35 percent"
+    },
+    "status": [
+      {"label": "Model risk", "value": "7%", "tone": "danger"},
+      {"label": "Storm chance", "value": "22%"},
+      {"label": "Blocked drains", "value": "18"},
+      {"label": "Vote", "value": "tonight"}
+    ],
     "tasks": [
       "Inspect the model, forecast, field, and budget records.",
       "Find what the citywide average leaves out.",

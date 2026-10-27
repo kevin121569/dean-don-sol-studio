@@ -14,12 +14,15 @@ import {
   isBestOutcome,
   normalizeCaseSession,
   openReview,
+  setAdvisorWeight,
   toggleTrustedAdvisor,
   trustStatus,
   visibleEvidence
 } from "../runtime/case-engine.mjs";
 
 const coldMirror = JSON.parse(readFileSync(new URL("../data/episode-003.json", import.meta.url)));
+const ledgerWeight = JSON.parse(readFileSync(new URL("../data/episode-004.json", import.meta.url)));
+const openRecord = JSON.parse(readFileSync(new URL("../data/episode-005.json", import.meta.url)));
 
 function inspectMany(state, ids) {
   return ids.reduce((current, id) => inspectEvidence(coldMirror, current, id), state);
@@ -154,4 +157,60 @@ test("restore sanitizes foreign, hidden, duplicate, and invented values", () => 
   assert.deepEqual(restored.consultedAdvisors, ["boy"]);
   assert.deepEqual(restored.trustedAdvisors, ["boy", "tooth"]);
   assert.equal(restored.selectedEvidenceId, null);
+});
+
+function fullyInvestigated(caseData) {
+  let state = createCaseSession(caseData);
+  for (const evidence of caseData.evidence.filter((item) => !item.hidden)) state = inspectEvidence(caseData, state, evidence.id);
+  state = consultAdvisor(caseData, state, "boy").state;
+  for (const evidenceId of state.revealedSources) state = inspectEvidence(caseData, state, evidenceId);
+  state = consultAdvisor(caseData, state, "tooth").state;
+  for (const evidenceId of state.revealedSources) state = inspectEvidence(caseData, state, evidenceId);
+  for (const advisorId of ["darth", "donsol"]) state = consultAdvisor(caseData, state, advisorId).state;
+  return state;
+}
+
+test("Case 4 requires a real rating for every adviser and exactly two high weights", () => {
+  let state = beginTrust(ledgerWeight, fullyInvestigated(ledgerWeight));
+  for (const [advisorId, weight] of [["boy", "low"], ["tooth", "high"], ["darth", "medium"], ["donsol", "high"]]) {
+    state = setAdvisorWeight(ledgerWeight, state, advisorId, weight).state;
+  }
+  assert.equal(trustStatus(ledgerWeight, state).complete, true);
+  assert.deepEqual(state.trustedAdvisors, ["tooth", "donsol"]);
+  const blockedThirdHigh = setAdvisorWeight(ledgerWeight, state, "boy", "high");
+  assert.equal(blockedThirdHigh.changed, false);
+  assert.equal(commitTrust(ledgerWeight, state).sceneId, "decide");
+});
+
+test("Cases 4 and 5 expose all evidence, reach every ending, and identify one best ending", () => {
+  for (const caseData of [ledgerWeight, openRecord]) {
+    for (const decision of caseData.decisions) {
+      let state = beginTrust(caseData, fullyInvestigated(caseData));
+      if (caseData.trustJudgment.mode === "weigh_each") {
+        for (const [advisorId, weight] of [["boy", "low"], ["tooth", "high"], ["darth", "medium"], ["donsol", "high"]]) {
+          state = setAdvisorWeight(caseData, state, advisorId, weight).state;
+        }
+      } else {
+        for (const advisorId of ["tooth", "donsol"]) state = toggleTrustedAdvisor(caseData, state, advisorId).state;
+      }
+      state = commitTrust(caseData, state);
+      assert.equal(visibleEvidence(caseData, state).length, caseData.evidence.length, `${caseData.id}: hidden evidence remained unreachable`);
+      state = chooseDecision(caseData, state, decision.id);
+      assert.equal(state.sceneId, "outcome", `${caseData.id}/${decision.id}: outcome unreachable`);
+      state = completeCaseSession(caseData, openReview(caseData, state));
+      assert.equal(state.completed, true);
+      const expectedBest = decision.id === (caseData.id === "episode-004" ? "d_phased_reallocation" : "d_bounded_authority");
+      assert.equal(isBestOutcome(caseData, state), expectedBest);
+    }
+  }
+});
+
+test("Case 4 restore rejects invented adviser ratings and rebuilds high-trust advisers", () => {
+  const restored = normalizeCaseSession(ledgerWeight, {
+    ...createCaseSession(ledgerWeight),
+    advisorWeights: {boy: "high", tooth: "invented", darth: "medium", donsol: "high", intruder: "high"},
+    trustedAdvisors: ["boy", "tooth", "intruder"]
+  });
+  assert.deepEqual(restored.advisorWeights, {boy: "high", darth: "medium", donsol: "high"});
+  assert.deepEqual(restored.trustedAdvisors, ["boy", "donsol"]);
 });

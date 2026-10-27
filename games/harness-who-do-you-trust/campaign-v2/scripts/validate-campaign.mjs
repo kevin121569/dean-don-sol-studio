@@ -101,6 +101,9 @@ function validateCase(caseData, expectedId, expectedLevel) {
   requireValue(["select_one", "select_two", "weigh_each"].includes(trust?.mode), `${at}: invalid trust mode`);
   const trustAdvisorIds = (trust?.options ?? []).map((item) => item.advisorId);
   requireValue(sameMembers(trustAdvisorIds, advisorIds), `${at}: trust options must cover each adviser exactly once`);
+  if (trust?.mode === "weigh_each") {
+    requireValue(Number.isInteger(trust.requiredHigh) && trust.requiredHigh >= 1 && trust.requiredHigh < advisorIds.length, `${at}: weigh_each requires a meaningful requiredHigh limit`);
+  }
   for (const option of trust?.options ?? []) {
     for (const evidenceId of option.reveals ?? []) {
       requireValue(evidenceIds.includes(evidenceId), `${at}/trust/${option.advisorId}: unknown revealed evidence ${evidenceId}`);
@@ -109,6 +112,7 @@ function validateCase(caseData, expectedId, expectedLevel) {
 
   const decisions = caseData.decisions ?? [];
   const decisionIds = decisions.map((item) => item.id);
+  requireValue(decisionIds.includes(caseData.bestDecisionId), `${at}: bestDecisionId must name one decision`);
   requireValue(decisions.length === 4, `${at}: exactly four decisions are required`);
   requireValue(unique(decisionIds), `${at}: decision ids must be unique`);
   for (const decision of decisions) {
@@ -145,6 +149,8 @@ function validateCase(caseData, expectedId, expectedLevel) {
 
   requireValue((caseData.presentation?.tasks ?? []).length >= 4, `${at}: presentation needs at least four tasks`);
   requireValue(Object.keys(caseData.presentation?.glossary ?? {}).length >= 3, `${at}: glossary needs at least three definitions`);
+  requireValue(typeof caseData.presentation?.gauge?.value === "string", `${at}: presentation needs a gauge value`);
+  requireValue((caseData.presentation?.status ?? []).length >= 3, `${at}: presentation needs at least three live status facts`);
 }
 
 const campaign = loadJson(join(campaignRoot, "campaign.json"));
@@ -165,8 +171,8 @@ if (campaign) {
       errors.push(`${entry.id}: cannot hash campaign source ${entry.source}: ${error.message}`);
     }
 
-    if (entry.launch !== null) {
-      requireValue(entry.runtime?.kind === "legacy-monolith", `${entry.id}: connected launch must use the approved legacy-monolith adapter`);
+    if (entry.launch !== null && entry.level <= 2) {
+      requireValue(entry.runtime?.kind === "legacy-monolith", `${entry.id}: legacy launch must use the approved monolith adapter`);
       requireValue(typeof entry.runtime?.source === "string", `${entry.id}: runtime source is required`);
       requireValue(typeof entry.runtime?.sourceHash === "string" && entry.runtime.sourceHash.length === 64, `${entry.id}: runtime sourceHash is required`);
       requireValue(entry.runtime?.inspector === "HarnessV34", `${entry.id}: approved read-only inspector must be HarnessV34`);
@@ -177,11 +183,21 @@ if (campaign) {
       } catch (error) {
         errors.push(`${entry.id}: cannot hash runtime source ${entry.runtime?.source}: ${error.message}`);
       }
+    } else if (entry.launch !== null) {
+      requireValue(entry.runtime?.kind === "shared-case-renderer", `${entry.id}: new campaign launch must use the shared renderer`);
+      requireValue(entry.runtime?.source === "app/play.mjs", `${entry.id}: shared renderer source mismatch`);
+      requireValue(entry.launch === `./play.html?case=${entry.id}`, `${entry.id}: shared renderer route mismatch`);
+      try {
+        const runtimePath = resolve(campaignRoot, entry.runtime.source);
+        requireValue(sha256(runtimePath) === entry.runtime.sourceHash, `${entry.id}: shared renderer fingerprint does not match`);
+      } catch (error) {
+        errors.push(`${entry.id}: cannot hash shared renderer: ${error.message}`);
+      }
     }
   }
 
   const connected = (campaign.cases ?? []).filter((entry) => entry.launch !== null).map((entry) => entry.id);
-  requireValue(JSON.stringify(connected) === JSON.stringify(["episode-001", "episode-002"]), "campaign: only approved Cases 1 and 2 may be connected at this checkpoint");
+  requireValue(JSON.stringify(connected) === JSON.stringify(expectedOrder), "campaign: all five cases must be connected in order");
   const level1Runtime = campaign.cases?.find((entry) => entry.id === "episode-001")?.runtime;
   requireValue(
     JSON.stringify(level1Runtime?.transforms) === JSON.stringify(["remove-legacy-campaign-observer", "server4-original-art"]),
@@ -235,6 +251,28 @@ if (campaign) {
     }
   }
   requireValue(unique(level3ArtAssets), "episode-003: every evidence record must have distinct original art");
+
+  for (const {id, folder, evidenceIds} of [
+    {id: "episode-004", folder: "ledger-weight", evidenceIds: ["e_budget_model", "e_field_photos", "e_rain_forecast", "e_cost_sheet", "e_model_notes", "e_drain_inspection"]},
+    {id: "episode-005", folder: "open-record", evidenceIds: ["e_automation_proposal", "e_pilot_results", "e_worker_log", "e_public_comment", "e_configuration_rules", "e_accountability_test"]}
+  ]) {
+    const entry = campaign.cases?.find((item) => item.id === id);
+    requireValue(JSON.stringify(Object.keys(entry?.art ?? {})) === JSON.stringify(evidenceIds), `${id}: art must cover all evidence records in order`);
+    const artAssets = [];
+    for (const evidenceId of evidenceIds) {
+      const art = entry?.art?.[evidenceId];
+      requireValue(new RegExp(`^${folder}/[a-z0-9-]+\\.jpg$`).test(art?.asset ?? ""), `${id}/${evidenceId}: unsafe asset name`);
+      requireValue(new RegExp(`^assets/${folder}/[a-z0-9-]+\\.jpg$`).test(art?.source ?? ""), `${id}/${evidenceId}: unsafe art source`);
+      requireValue(typeof art?.sourceHash === "string" && art.sourceHash.length === 64, `${id}/${evidenceId}: art fingerprint is required`);
+      if (art?.asset) artAssets.push(art.asset);
+      try {
+        requireValue(sha256(resolve(campaignRoot, art.source)) === art.sourceHash, `${id}/${evidenceId}: art fingerprint changed`);
+      } catch (error) {
+        errors.push(`${id}/${evidenceId}: cannot read art ${art?.source}: ${error.message}`);
+      }
+    }
+    requireValue(unique(artAssets), `${id}: every evidence record must have distinct art`);
+  }
 
   for (const level of [3, 4, 5]) {
     const id = `episode-00${level}`;

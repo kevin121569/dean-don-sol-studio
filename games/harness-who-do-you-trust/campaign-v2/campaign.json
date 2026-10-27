@@ -88,8 +88,8 @@
       "title": "The Cold Mirror",
       "tagline": "One air sensor says danger. Independent measurements and freezing weather complicate the call.",
       "contentVersion": 1,
-      "contentHash": "e3363882e7be8843423c962c9cb7f954c838a8045c5fd1f0615da647f8277659",
-      "status": "content-candidate",
+      "contentHash": "d9d6f3c516a7f7973d115e295435fa350c93cd77667497c30b92786eb1731e15",
+      "status": "playable",
       "source": "data/episode-003.json",
       "art": {
         "e_particle_alert": {
@@ -123,7 +123,12 @@
           "sourceHash": "432a362001bc77e070d09194df7d7ac1ba88fc593ec12e66a779bb282a92ac1e"
         }
       },
-      "launch": null,
+      "launch": "./play.html?case=episode-003",
+      "runtime": {
+        "kind": "shared-case-renderer",
+        "source": "app/play.mjs",
+        "sourceHash": "45259b4a6a7bc45b51e8a3efc003165348028d75a2f495ce324c8c62c922c0d2"
+      },
       "unlocks": "episode-004"
     },
     {
@@ -133,10 +138,23 @@
       "title": "The Ledger's Weight",
       "tagline": "A citywide savings model conflicts with verified danger in three vulnerable neighborhoods.",
       "contentVersion": 1,
-      "contentHash": "903ca97a2c91d638560b16b34925c45da54406add5a59028586644be80edfba1",
-      "status": "content-candidate",
+      "contentHash": "dbe9ef956b238f2d8baea7c5bd356b494238add4885a347e193974367341a571",
+      "status": "playable",
       "source": "data/episode-004.json",
-      "launch": null,
+      "art": {
+        "e_budget_model": {"asset": "ledger-weight/budget-model.jpg", "source": "assets/ledger-weight/budget-model.jpg", "sourceHash": "7da57850e540dfc01ceb9491f66b99be66d08f17135519aa2f1fc3bd039fe3b9"},
+        "e_field_photos": {"asset": "ledger-weight/field-photos.jpg", "source": "assets/ledger-weight/field-photos.jpg", "sourceHash": "14e993683c01f0ebf443b0174b4c04bffdefa6f090a18cae8054b8bd26b59d71"},
+        "e_rain_forecast": {"asset": "ledger-weight/rain-forecast.jpg", "source": "assets/ledger-weight/rain-forecast.jpg", "sourceHash": "7db3d2086b3d9bbeb056db234695cd47b7305b317dc0145be66f296031845924"},
+        "e_cost_sheet": {"asset": "ledger-weight/cost-sheet.jpg", "source": "assets/ledger-weight/cost-sheet.jpg", "sourceHash": "b85722c75581e229962600f755ed82597bd5aa6c788fd86d3dabf6ead268c914"},
+        "e_model_notes": {"asset": "ledger-weight/model-notes.jpg", "source": "assets/ledger-weight/model-notes.jpg", "sourceHash": "76a5aa6206d0d5950d5187f439c26c2587f4da6a3c0dcb3176c0c449a1261b5b"},
+        "e_drain_inspection": {"asset": "ledger-weight/drain-inspection.jpg", "source": "assets/ledger-weight/drain-inspection.jpg", "sourceHash": "69a760b3a8c5593f09eebc583dd42089069076ebca92282d267654b2b2d042dd"}
+      },
+      "launch": "./play.html?case=episode-004",
+      "runtime": {
+        "kind": "shared-case-renderer",
+        "source": "app/play.mjs",
+        "sourceHash": "45259b4a6a7bc45b51e8a3efc003165348028d75a2f495ce324c8c62c922c0d2"
+      },
       "unlocks": "episode-005"
     },
     {
@@ -146,10 +164,23 @@
       "title": "The Open Record",
       "tagline": "Set the final boundary between useful automation and authority people must keep.",
       "contentVersion": 1,
-      "contentHash": "cb9beefc24c81f647fecf16c7154cfd3f9575dd8be125d838dfe821a92dcf605",
-      "status": "content-candidate",
+      "contentHash": "e14cea37f544cb7b0b27510563794dd0164e9085b6be9381b19d5fbeea2e2c00",
+      "status": "playable",
       "source": "data/episode-005.json",
-      "launch": null,
+      "art": {
+        "e_automation_proposal": {"asset": "open-record/automation-proposal.jpg", "source": "assets/open-record/automation-proposal.jpg", "sourceHash": "f11608deefa8e32b230f635a6647e0209af8c2c1ea791efdb881895adc9ec5e2"},
+        "e_pilot_results": {"asset": "open-record/pilot-results.jpg", "source": "assets/open-record/pilot-results.jpg", "sourceHash": "475c756fb4db3a4bb1acba96dc04f0f030d47aab2798eec8b62ab0f3c697b111"},
+        "e_worker_log": {"asset": "open-record/worker-log.jpg", "source": "assets/open-record/worker-log.jpg", "sourceHash": "b6d8c09609ebf5dd611ba718fd5bba0dff2b0dd92cbfa7b5375b87fb3144235c"},
+        "e_public_comment": {"asset": "open-record/public-comment.jpg", "source": "assets/open-record/public-comment.jpg", "sourceHash": "0bcb6fbcb844117fef0fb0c0e7bcbb89f4a7e9374d29f3ed1b106d8cd893db7c"},
+        "e_configuration_rules": {"asset": "open-record/configuration-rules.jpg", "source": "assets/open-record/configuration-rules.jpg", "sourceHash": "05cbcebbf6d7cd913d772ed44d85e43e82c1d0414cc20ca5c1f36d4ace1b2ded"},
+        "e_accountability_test": {"asset": "open-record/accountability-test.jpg", "source": "assets/open-record/accountability-test.jpg", "sourceHash": "f929798b3d316d437d25ec834a03d2cd257022cad82246eccf6e1fd6bcf5a044"}
+      },
+      "launch": "./play.html?case=episode-005",
+      "runtime": {
+        "kind": "shared-case-renderer",
+        "source": "app/play.mjs",
+        "sourceHash": "45259b4a6a7bc45b51e8a3efc003165348028d75a2f495ce324c8c62c922c0d2"
+      },
       "unlocks": null
     }
   ],

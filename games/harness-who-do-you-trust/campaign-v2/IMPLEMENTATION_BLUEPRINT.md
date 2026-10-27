@@ -87,22 +87,20 @@ The first campaign-shell slice is implemented in this branch:
   evidence cards through the same allowlisted in-memory adapter;
 - minimal state crosses one validated `postMessage` bridge and completion still
   uses the explicit `harness:case-completed` event;
-- Cases 3-5 keep `launch: null`, so candidate content cannot be mistaken for a
-  playable or package-ready case.
+- Cases 3-5 use fingerprinted shared-renderer launch routes and remain isolated
+  from production inside the five-case QA package.
 - `runtime/case-engine.mjs` now provides the reusable Cases 3-5 state machine:
   evidence inspection, conditional adviser reveals, trust gating, decision
   requirements, four outcomes, postmortems, restore sanitization, and explicit
   completion all come from case data rather than hard-coded Case 3 rules;
-- `app/play.html` is a gated, phone-first Case 3 development renderer. It keeps
-  the playable board in the first viewport, supplies complete text with no
-  audio dependency, and remains absent from the selector until physical-phone
-  review passes;
-- automated Case 3 path coverage proves that both hidden records and all four
-  endings are reachable, the strongest ending cannot bypass its evidence and
-  trust requirements, and forged session values are removed during restore.
-- six original Cold Mirror evidence illustrations now replace the development
-  graphics; every optimized 720×432 asset is independently fingerprinted in the
-  manifest and verified by both the build validator and browser loader.
+- `app/play.html` is the phone-first Cases 3-5 renderer. It supplies complete
+  text, mission checklists, glossary definitions, case-specific status facts,
+  and no audio dependency;
+- automated path coverage proves that every hidden record and all twelve
+  endings in Cases 3-5 are reachable and forged state is removed during restore;
+- 18 original evidence illustrations cover every clue in Cases 3-5; every
+  optimized 720×432 asset is independently fingerprinted in the manifest and
+  verified by both the build validator and browser loader.
 
 The storage/content and adapter suites run alongside the campaign validator.
 Visual device approval remains open because the current workspace has no local

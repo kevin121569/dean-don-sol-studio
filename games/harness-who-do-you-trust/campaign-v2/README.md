@@ -22,15 +22,12 @@ removed in memory; the frozen file itself is never changed. Five original
 Server 4 evidence illustrations replace the borrowed Harbor cards through the
 same in-memory adapter.
 
-Case 3 now has a data-driven internal renderer at
-`app/play.html?case=episode-003&preview=1`. Its pure engine covers evidence,
-conditional adviser reveals, the two-person trust judgment, decision locks,
-all four outcomes, the postmortem, and fail-forward completion. The campaign
-selector still leaves Cases 3-5 disconnected: Case 3 must receive phone-device
-approval before its launch route is enabled, and Cases 4-5 must prove their
-case-specific trust modes in the same shared engine. The six original Cold
-Mirror evidence images are fingerprinted and loaded only after the renderer
-verifies their packaged bytes, clearing the art half of that Case 3 gate.
+Cases 3-5 now use one data-driven renderer at `app/play.html`. The engine covers
+conditional adviser reveals, two-person trust choices, Case 4's four-adviser
+weighting exercise, decision locks, four outcomes per case, postmortems, and
+fail-forward completion. All three launch from the campaign selector. Their 18
+original evidence images are fingerprinted and loaded only after the renderer
+verifies their packaged bytes.
 
 ## Intended launch scope
 
@@ -70,13 +67,10 @@ warning to update the expected value.
 
 ## Current phase
 
-This branch contains the campaign contract and complete content candidates for
-Cases 3-5. It is intentionally **not an APK** and not yet a replacement game.
-It now also contains the phone-first case selector, isolated v2 campaign
-storage, fingerprint-locked playable routes for Cases 1 and 2, and the gated
-Case 3 shared-renderer preview with six original evidence illustrations. Case 3
-stays disconnected from the selector until its physical-phone regression gate
-passes; Cases 4-5 still require their own art and renderer coverage. The only
+This branch contains the complete five-case campaign candidate and an isolated
+Android phone-test wrapper. It is not yet a Play Store replacement. The
+phone-first selector starts fresh at Case 1, preserves the exact approved Cases
+1-2, and unlocks Cases 3-5 sequentially through the shared renderer. The only
 Level 1 presentation deltas are the explicitly allowlisted completion fix and
 original evidence art applied in memory by the compatibility runner.
 

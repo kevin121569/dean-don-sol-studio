@@ -6,6 +6,7 @@
   "series": "HARNESS: Who Do You Trust?",
   "audience": "ages 10-14 and families",
   "expectedMinutes": 22,
+  "bestDecisionId": "d_bounded_authority",
   "briefing": {
     "heading": "Case 5: The Open Record",
     "paragraphs": [
@@ -453,6 +454,17 @@
     "caseLabel": "CASE 5 OF 5 — FINAL",
     "assignmentTitle": "The emergency automation hearing",
     "summary": "The city wants faster action. Decide what a machine may recommend, what it may do, and which responsibilities people cannot hand away.",
+    "gauge": {
+      "value": "85%",
+      "label": "AUTO",
+      "ariaLabel": "Automatic order confidence threshold 85 percent"
+    },
+    "status": [
+      {"label": "Pilot match", "value": "16/20", "tone": "danger"},
+      {"label": "Faster by", "value": "7 min"},
+      {"label": "Changed by people", "value": "27%"},
+      {"label": "Hearing", "value": "40 min"}
+    ],
     "tasks": [
       "Compare the proposal with the supervised pilot and worker records.",
       "Find what the confidence score hides and what the audit trail cannot explain.",

@@ -1,4 +1,5 @@
 const SCENES = Object.freeze(["briefing", "investigate", "trust", "decide", "outcome", "review"]);
+const ADVISOR_WEIGHTS = Object.freeze(["low", "medium", "high"]);
 
 const isObject = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const copy = (value) => JSON.parse(JSON.stringify(value));
@@ -45,6 +46,7 @@ export function createCaseSession(caseInput) {
     revealedSources: [],
     consultedAdvisors: [],
     trustedAdvisors: [],
+    advisorWeights: {},
     decisionId: null,
     selectedEvidenceId: null
   };
@@ -63,7 +65,15 @@ export function normalizeCaseSession(caseInput, raw) {
   const inspectable = new Set([...initiallyVisible, ...revealedSources]);
   const inspectedSources = uniqueKnown(raw.inspectedSources, inspectable);
   const consultedAdvisors = uniqueKnown(raw.consultedAdvisors, advisorIds);
-  const trustedAdvisors = uniqueKnown(raw.trustedAdvisors, advisorIds).slice(0, trustCount(caseData));
+  const advisorWeights = {};
+  if (caseData.trustJudgment.mode === "weigh_each" && isObject(raw.advisorWeights)) {
+    for (const advisorId of caseData.advisorOrder) {
+      if (ADVISOR_WEIGHTS.includes(raw.advisorWeights[advisorId])) advisorWeights[advisorId] = raw.advisorWeights[advisorId];
+    }
+  }
+  const trustedAdvisors = caseData.trustJudgment.mode === "weigh_each"
+    ? caseData.advisorOrder.filter((advisorId) => advisorWeights[advisorId] === "high")
+    : uniqueKnown(raw.trustedAdvisors, advisorIds).slice(0, trustCount(caseData));
   const decisionId = decisionIds.has(raw.decisionId) ? raw.decisionId : null;
   const selectedEvidenceId = evidenceIds.has(raw.selectedEvidenceId) && inspectable.has(raw.selectedEvidenceId)
     ? raw.selectedEvidenceId
@@ -81,6 +91,7 @@ export function normalizeCaseSession(caseInput, raw) {
     revealedSources,
     consultedAdvisors,
     trustedAdvisors,
+    advisorWeights,
     decisionId,
     selectedEvidenceId
   };
@@ -127,8 +138,11 @@ export function trustStatus(caseInput, stateInput) {
   const caseData = validateCaseData(caseInput);
   const state = normalizeCaseSession(caseData, stateInput);
   const required = caseData.trustJudgment.availableAfter;
-  const selected = state.trustedAdvisors.length;
+  const weighing = caseData.trustJudgment.mode === "weigh_each";
+  const selected = weighing ? Object.keys(state.advisorWeights).length : state.trustedAdvisors.length;
   const mustSelect = trustCount(caseData);
+  const requiredHigh = weighing ? caseData.trustJudgment.requiredHigh ?? 2 : null;
+  const highCount = weighing ? state.trustedAdvisors.length : null;
   const evidenceReady = state.inspectedSources.length >= required.minimumEvidence;
   const advisersReady = state.consultedAdvisors.length >= required.minimumAdvisers;
   return {
@@ -141,15 +155,38 @@ export function trustStatus(caseInput, stateInput) {
     minimumAdvisers: required.minimumAdvisers,
     selected,
     mustSelect,
-    complete: evidenceReady && advisersReady && selected === mustSelect
+    complete: evidenceReady && advisersReady && selected === mustSelect && (!weighing || highCount === requiredHigh)
   };
+}
+
+export function setAdvisorWeight(caseInput, stateInput, advisorId, weight) {
+  const caseData = validateCaseData(caseInput);
+  const state = normalizeCaseSession(caseData, stateInput);
+  const status = trustStatus(caseData, state);
+  if (caseData.trustJudgment.mode !== "weigh_each" || !status.available) {
+    return {state, changed: false, newlyRevealed: []};
+  }
+  const option = caseData.trustJudgment.options.find((item) => item.advisorId === advisorId);
+  if (!option || !ADVISOR_WEIGHTS.includes(weight)) return {state, changed: false, newlyRevealed: []};
+  const currentHigh = Object.values(state.advisorWeights).filter((value) => value === "high").length;
+  const wasHigh = state.advisorWeights[advisorId] === "high";
+  const requiredHigh = caseData.trustJudgment.requiredHigh ?? 2;
+  if (weight === "high" && !wasHigh && currentHigh >= requiredHigh) {
+    return {state, changed: false, newlyRevealed: []};
+  }
+  state.advisorWeights[advisorId] = weight;
+  state.trustedAdvisors = caseData.advisorOrder.filter((id) => state.advisorWeights[id] === "high");
+  const knownEvidence = new Set(caseData.evidence.map((item) => item.id));
+  const newlyRevealed = (option.reveals ?? []).filter((id) => knownEvidence.has(id) && !state.revealedSources.includes(id));
+  state.revealedSources.push(...newlyRevealed);
+  return {state, changed: true, newlyRevealed};
 }
 
 export function toggleTrustedAdvisor(caseInput, stateInput, advisorId) {
   const caseData = validateCaseData(caseInput);
   const state = normalizeCaseSession(caseData, stateInput);
   const status = trustStatus(caseData, state);
-  if (!status.available) return {state, changed: false, newlyRevealed: []};
+  if (!status.available || caseData.trustJudgment.mode === "weigh_each") return {state, changed: false, newlyRevealed: []};
   const option = caseData.trustJudgment.options.find((item) => item.advisorId === advisorId);
   if (!option) return {state, changed: false, newlyRevealed: []};
 
@@ -225,6 +262,7 @@ export function completeCaseSession(caseInput, stateInput) {
 export function isBestOutcome(caseInput, stateInput) {
   const caseData = validateCaseData(caseInput);
   const state = normalizeCaseSession(caseData, stateInput);
+  if (typeof caseData.bestDecisionId === "string") return state.decisionId === caseData.bestDecisionId;
   const grades = caseData.postmortem?.[state.decisionId]?.advisors;
   return Boolean(grades && caseData.advisorOrder.every((id) => grades[id]?.rating === "strong"));
 }

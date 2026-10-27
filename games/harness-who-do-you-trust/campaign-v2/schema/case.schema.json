@@ -11,6 +11,7 @@
     "series",
     "audience",
     "expectedMinutes",
+    "bestDecisionId",
     "briefing",
     "advisors",
     "advisorOrder",
@@ -50,6 +51,10 @@
       "type": "integer",
       "minimum": 15,
       "maximum": 25
+    },
+    "bestDecisionId": {
+      "type": "string",
+      "pattern": "^d_[a-z0-9_]+$"
     },
     "briefing": {
       "type": "object",
@@ -160,6 +165,11 @@
             "weigh_each"
           ]
         },
+        "requiredHigh": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
         "prompt": {
           "type": "string"
         },
@@ -249,6 +259,8 @@
         "caseLabel",
         "assignmentTitle",
         "summary",
+        "gauge",
+        "status",
         "tasks",
         "artSlots",
         "glossary"
@@ -262,6 +274,31 @@
         },
         "summary": {
           "type": "string"
+        },
+        "gauge": {
+          "type": "object",
+          "required": ["value", "label", "ariaLabel"],
+          "properties": {
+            "value": {"type": "string"},
+            "label": {"type": "string"},
+            "ariaLabel": {"type": "string"}
+          },
+          "additionalProperties": false
+        },
+        "status": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": ["label", "value"],
+            "properties": {
+              "label": {"type": "string"},
+              "value": {"type": "string"},
+              "tone": {"enum": ["danger", "normal"]}
+            },
+            "additionalProperties": false
+          }
         },
         "tasks": {
           "type": "array",

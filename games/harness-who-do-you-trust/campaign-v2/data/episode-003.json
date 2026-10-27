@@ -6,6 +6,7 @@
   "series": "HARNESS: Who Do You Trust?",
   "audience": "ages 10-14 and families",
   "expectedMinutes": 18,
+  "bestDecisionId": "d_relocate_verify",
   "briefing": {
     "heading": "Case 3: The Cold Mirror",
     "paragraphs": [
@@ -451,6 +452,17 @@
     "caseLabel": "CASE 3 OF 5",
     "assignmentTitle": "Air alert at North Harbor Family Center",
     "summary": "One sensor says danger. Other records disagree. Protect families while you find out what the readings really mean.",
+    "gauge": {
+      "value": "184",
+      "label": "AIR",
+      "ariaLabel": "Particle reading 184"
+    },
+    "status": [
+      {"label": "East sensor", "value": "184", "tone": "danger"},
+      {"label": "Outside", "value": "-14 C"},
+      {"label": "Smoke alarm", "value": "clear"},
+      {"label": "Families", "value": "inside"}
+    ],
     "tasks": [
       "Inspect the sensor, heating, alarm, and witness records.",
       "Separate observations from explanations.",

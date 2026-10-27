@@ -1,4 +1,4 @@
-name: HARNESS Case 3 QA APK
+name: HARNESS Five-Case QA APK
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 jobs:
-  build-case3-qa:
+  build-five-case-qa:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -68,21 +68,21 @@ jobs:
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           test -f "$APK"
           unzip -l "$APK" | grep "assets/public/qa-manifest.json"
-          unzip -p "$APK" assets/public/qa-manifest.json | grep '"buildId": "C3-20261027-A"'
+          unzip -p "$APK" assets/public/qa-manifest.json | grep '"buildId": "FULL5-20261027-B"'
           "$ANDROID_HOME/build-tools/36.0.0/aapt2" dump badging "$APK" > apk-badging.txt
-          grep -F "package: name='com.theidealabstudio.harness.campaign.case3qa'" apk-badging.txt
-          grep -F "application-label:'HARNESS QA · CASE 3'" apk-badging.txt
+          grep -F "package: name='com.theidealabstudio.harness.campaign.fullqa'" apk-badging.txt
+          grep -F "application-label:'HARNESS QA · 5 CASES'" apk-badging.txt
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify "$APK"
-          cp "$APK" HARNESS-QA-CASE3-C3-20261027-A.apk
-          sha256sum HARNESS-QA-CASE3-C3-20261027-A.apk > HARNESS-QA-CASE3-C3-20261027-A.apk.sha256
+          cp "$APK" HARNESS-QA-FIVE-CASES-FULL5-20261027-B.apk
+          sha256sum HARNESS-QA-FIVE-CASES-FULL5-20261027-B.apk > HARNESS-QA-FIVE-CASES-FULL5-20261027-B.apk.sha256
 
       - name: Upload phone-test APK
         uses: actions/upload-artifact@v4
         with:
-          name: HARNESS-QA-CASE3-C3-20261027-A
+          name: HARNESS-QA-FIVE-CASES-FULL5-20261027-B
           path: |
-            android/harness-campaign-qa/HARNESS-QA-CASE3-C3-20261027-A.apk
-            android/harness-campaign-qa/HARNESS-QA-CASE3-C3-20261027-A.apk.sha256
+            android/harness-campaign-qa/HARNESS-QA-FIVE-CASES-FULL5-20261027-B.apk
+            android/harness-campaign-qa/HARNESS-QA-FIVE-CASES-FULL5-20261027-B.apk.sha256
           if-no-files-found: error
           retention-days: 14
 

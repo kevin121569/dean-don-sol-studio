@@ -107,11 +107,14 @@ export function createCampaignStore(manifestInput, backend) {
   function metadata(caseId, overrides = {}) {
     const item = caseById.get(caseId);
     if (!item) throw new RangeError(`Unknown campaign case: ${caseId}`);
+    const approvedContent = item.runtime?.kind === "shared-case-renderer"
+      ? `${item.runtime.sourceHash}:${item.contentHash}`
+      : item.runtime?.sourceHash ?? item.contentHash ?? `manifest:${manifest.version ?? 1}:${caseId}`;
     return {
       caseId,
       episodeId: overrides.episodeId ?? caseId,
       contentVersion: overrides.contentVersion ?? item.contentVersion ?? 1,
-      contentHash: overrides.contentHash ?? item.runtime?.sourceHash ?? item.contentHash ?? `manifest:${manifest.version ?? 1}:${caseId}`
+      contentHash: overrides.contentHash ?? approvedContent
     };
   }
 

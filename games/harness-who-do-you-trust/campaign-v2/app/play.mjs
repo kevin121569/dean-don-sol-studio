@@ -12,6 +12,7 @@ import {
   normalizeCaseSession,
   openReview,
   previousScene,
+  setAdvisorWeight,
   toggleTrustedAdvisor,
   trustStatus,
   visibleEvidence
@@ -22,7 +23,7 @@ const params = new URLSearchParams(location.search);
 const requestedCaseId = params.get("case") ?? "episode-003";
 const preview = params.get("preview") === "1";
 const stageOrder = ["investigate", "trust", "decide", "outcome", "review"];
-const ui = {advice: null, reveal: [], drawerOpen: false, saveOkay: true};
+const ui = {advice: null, reveal: [], drawerOpen: false, saveOkay: true, weightMessage: null};
 let manifest;
 let campaignEntry;
 let caseData;
@@ -59,7 +60,7 @@ function sha256Text(text) {
 async function verifyArtAssets(entry) {
   const verified = {};
   for (const [evidenceId, art] of Object.entries(entry.art ?? {})) {
-    if (!/^assets\/cold-mirror\/[a-z0-9-]+\.jpg$/.test(art.source) || !/^[a-f0-9]{64}$/.test(art.sourceHash)) {
+    if (!/^assets\/(cold-mirror|ledger-weight|open-record)\/[a-z0-9-]+\.jpg$/.test(art.source) || !/^[a-f0-9]{64}$/.test(art.sourceHash)) {
       throw new Error(`The art record for ${evidenceId} is not safe to load.`);
     }
     const response = await fetch(`../${art.source}`, {cache: "no-store"});
@@ -99,12 +100,8 @@ function stageRail() {
 }
 
 function statusStrip() {
-  return `<div class="status-row" aria-label="Live incident facts">
-    <span class="status-pill danger">East sensor <strong>184</strong></span>
-    <span class="status-pill">Outside <strong>−14°C</strong></span>
-    <span class="status-pill">Smoke alarm <strong>clear</strong></span>
-    <span class="status-pill">Families <strong>inside</strong></span>
-  </div>`;
+  const pills = caseData.presentation.status.map((item) => `<span class="status-pill ${item.tone === "danger" ? "danger" : ""}">${escapeHtml(item.label)} <strong>${escapeHtml(item.value)}</strong></span>`).join("");
+  return `<div class="status-row" aria-label="Live case facts">${pills}</div>`;
 }
 
 function shell(screen) {
@@ -120,7 +117,7 @@ function shell(screen) {
         <h1>${escapeHtml(caseData.title)}</h1>
         <p>${escapeHtml(caseData.presentation.assignmentTitle)}</p>
       </div>
-      <div class="alert-gauge" aria-label="Particle reading 184">184<small>AIR</small></div>
+      <div class="alert-gauge" aria-label="${escapeHtml(caseData.presentation.gauge.ariaLabel)}">${escapeHtml(caseData.presentation.gauge.value)}<small>${escapeHtml(caseData.presentation.gauge.label)}</small></div>
     </div>
     <div class="stage-rail" aria-label="Case progress">${stageRail()}</div>
   </header>
@@ -131,12 +128,16 @@ function shell(screen) {
 
 function briefingScreen() {
   const paragraphs = caseData.briefing.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("");
+  const tasks = caseData.presentation.tasks.map((task) => `<li>${escapeHtml(task)}</li>`).join("");
+  const glossary = Object.entries(caseData.presentation.glossary).map(([term, definition]) => `<div class="glossary-item"><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(definition)}</dd></div>`).join("");
   shell(`${statusStrip()}
     <article class="card briefing">
       <p class="eyebrow">Incoming assignment</p>
       <h2>${escapeHtml(caseData.briefing.heading)}</h2>
       ${paragraphs}
       <div class="mission-box"><b>Your mission</b>${escapeHtml(caseData.briefing.mission)}</div>
+      <details class="briefing-details"><summary>Mission checklist</summary><ol>${tasks}</ol></details>
+      <details class="briefing-details"><summary>Definitions</summary><dl class="glossary-list">${glossary}</dl></details>
       <button class="primary" data-action="start">Open the evidence board</button>
     </article>`);
 }
@@ -194,6 +195,7 @@ function investigationScreen() {
 
 function trustScreen() {
   const gate = trustStatus(caseData, state);
+  if (caseData.trustJudgment.mode === "weigh_each") return weightEachScreen(gate);
   const selected = new Set(state.trustedAdvisors);
   const cards = caseData.trustJudgment.options.map((option) => {
     const advisor = caseData.advisors[option.advisorId];
@@ -211,6 +213,29 @@ function trustScreen() {
     <div class="action-dock">
       <button class="secondary" data-action="evidence">Evidence</button>
       <button class="primary" data-action="commit-trust" ${gate.complete ? "" : "disabled"}>Continue with ${gate.selected}/${gate.mustSelect}</button>
+    </div>`);
+}
+
+function weightEachScreen(gate) {
+  const cards = caseData.trustJudgment.options.map((option) => {
+    const current = state.advisorWeights[option.advisorId] ?? null;
+    const buttons = ["low", "medium", "high"].map((weight) => `<button class="weight-button ${current === weight ? "selected" : ""}" data-action="set-weight" data-id="${option.advisorId}" data-weight="${weight}">${weight}</button>`).join("");
+    return `<article class="trust-card weight-card ${current ? "rated" : ""}">
+      <span class="pick-state">${current ? `${escapeHtml(current.toUpperCase())} ✓` : "NOT RATED"}</span>
+      <h3>${escapeHtml(option.label)}</h3>
+      <p><strong>Useful:</strong> ${escapeHtml(option.strength)}</p>
+      <p class="blind"><strong>Blind spot:</strong> ${escapeHtml(option.blindSpot)}</p>
+      <div class="weight-options" aria-label="Weight for ${escapeHtml(caseData.advisors[option.advisorId].name)}">${buttons}</div>
+    </article>`;
+  }).join("");
+  shell(`${statusStrip()}
+    <div class="screen-head"><div><p class="eyebrow">Evidence weighting</p><h2>${escapeHtml(caseData.trustJudgment.prompt)}</h2><p>Rate every adviser. Give HIGH weight to exactly ${caseData.trustJudgment.requiredHigh}; use MEDIUM or LOW for the others.</p></div></div>
+    ${ui.weightMessage ? `<div class="reveal-box"><b>Weight limit</b><p>${escapeHtml(ui.weightMessage)}</p></div>` : ""}
+    ${ui.reveal.length ? `<div class="reveal-box"><b>Your rating opened a lead</b><p>Return to the evidence board if you want to inspect it before deciding.</p></div>` : ""}
+    <div class="trust-grid">${cards}</div>
+    <div class="action-dock">
+      <button class="secondary" data-action="evidence">Evidence</button>
+      <button class="primary" data-action="commit-trust" ${gate.complete ? "" : "disabled"}>Continue · ${gate.selected}/${gate.mustSelect} rated</button>
     </div>`);
 }
 
@@ -235,7 +260,7 @@ function decisionScreen() {
       <p>${escapeHtml(decision.description)}</p>
       <p class="risk"><strong>Tradeoff:</strong> ${escapeHtml(decision.risk)}</p>
       ${status.available ? "" : `<p class="lock-note">🔒 ${escapeHtml(missingRequirementText(status))}</p>`}
-      <button class="choice-button" data-action="decide" data-id="${decision.id}" ${status.available ? "" : "disabled"}>Issue this order</button>
+      <button class="choice-button" data-action="decide" data-id="${decision.id}" ${status.available ? "" : "disabled"}>Choose this action</button>
     </article>`;
   }).join("");
   shell(`<div class="screen-head"><div><p class="eyebrow">Command decision</p><h2>Choose the safest defensible action</h2><p>No option is free of cost. Protect people and preserve what can still be learned.</p></div></div>
@@ -248,7 +273,12 @@ function decisionScreen() {
 
 function outcomeScreen() {
   const decision = caseData.decisions.find((item) => item.id === state.decisionId);
-  const reflections = state.trustedAdvisors.map((advisorId) => `<div class="reflection"><b>${escapeHtml(caseData.advisors[advisorId].name)} — your trusted voice</b><p>${escapeHtml(decision.outcome.trustVariants[advisorId])}</p></div>`).join("");
+  const reflectionIds = caseData.trustJudgment.mode === "weigh_each" ? caseData.advisorOrder : state.trustedAdvisors;
+  const reflections = reflectionIds.map((advisorId) => {
+    const weight = state.advisorWeights[advisorId];
+    const label = weight ? `${weight.toUpperCase()} weight` : "your trusted voice";
+    return `<div class="reflection"><b>${escapeHtml(caseData.advisors[advisorId].name)} — ${escapeHtml(label)}</b><p>${escapeHtml(decision.outcome.trustVariants[advisorId])}</p></div>`;
+  }).join("");
   shell(`<article class="card outcome-hero">
       <span class="outcome-mark">ORDER CARRIED OUT</span>
       <h2>${escapeHtml(decision.outcome.heading)}</h2>
@@ -269,6 +299,13 @@ function reviewScreen() {
     const grade = postmortem.advisors[advisorId];
     return `<div class="grade ${grade.rating}"><b>${escapeHtml(caseData.advisors[advisorId].name)}<em>${escapeHtml(grade.rating)}</em></b><p>${escapeHtml(grade.text)}</p></div>`;
   }).join("");
+  const nextEntry = manifest.cases.find((item) => item.id === caseData.progression.unlocks);
+  const continuation = nextEntry?.launch
+    ? `<a class="primary text-link continue-link" href="${escapeHtml(nextEntry.launch)}">Continue to Case ${nextEntry.level} →</a>`
+    : `<a class="primary text-link continue-link" href="./index.html">Return to campaign</a>`;
+  const completionCopy = caseData.progression.unlocks
+    ? isBestOutcome(caseData, state) ? "Strong judgment recorded. The next case is unlocked." : "Case complete. The next case unlocks even when the result is imperfect."
+    : isBestOutcome(caseData, state) ? "Season complete. You kept final authority explainable, reviewable, and human." : "Season complete. Your record preserves every decision for review.";
   shell(`<div class="screen-head"><div><p class="eyebrow">Case review</p><h2>Facts, gaps, and judgment</h2></div></div>
     <div class="review-grid">
       <article class="card review-card"><h3>What the team knew</h3><ul>${known}</ul></article>
@@ -276,7 +313,7 @@ function reviewScreen() {
       <article class="card review-card"><h3>Adviser scorecard</h3><div class="grade-list">${grades}</div></article>
       <article class="card review-card"><h3>Lesson carried forward</h3><p>${escapeHtml(caseData.progression.continuityBeat)}</p></article>
     </div>
-    ${state.completed ? `<div class="completion"><b>Case 3 recorded.</b><p>${isBestOutcome(caseData, state) ? "You protected people, preserved evidence, and kept a human responsible for the final check." : "The next case unlocks because completing the investigation matters—even when the result is imperfect."}</p><a class="primary text-link" href="./index.html">Return to campaign</a></div>` : ""}
+    ${state.completed ? `<div class="completion"><b>Case ${caseData.level} recorded.</b><p>${escapeHtml(completionCopy)}</p>${continuation}</div>` : ""}
     <div class="action-dock">
       <button class="secondary" data-action="back">Result</button>
       <button class="primary" data-action="finish" ${state.completed ? "disabled" : ""}>${state.completed ? "Case complete ✓" : "Finish case"}</button>
@@ -351,6 +388,11 @@ app.addEventListener("click", (event) => {
     const result = toggleTrustedAdvisor(caseData, state, id);
     ui.reveal = result.newlyRevealed;
     setState(result.state);
+  } else if (action === "set-weight") {
+    const result = setAdvisorWeight(caseData, state, id, button.dataset.weight);
+    ui.weightMessage = result.changed ? null : `Exactly ${caseData.trustJudgment.requiredHigh} advisers may carry HIGH weight. Lower one before raising another.`;
+    ui.reveal = result.newlyRevealed;
+    setState(result.state);
   } else if (action === "commit-trust") setState(commitTrust(caseData, state));
   else if (action === "evidence") setState({...state, sceneId: "investigate"});
   else if (action === "edit-trust") setState({...state, sceneId: "trust"});
@@ -379,10 +421,28 @@ async function boot() {
     if (!preview && store.caseStatus(caseData.id) === "locked") return lockedScreen();
     const saved = preview ? null : store.loadCase(caseData.id);
     state = saved ? normalizeCaseSession(caseData, saved.session) : createCaseSession(caseData);
+    const capacitorApp = globalThis.Capacitor?.Plugins?.App;
+    if (capacitorApp?.addListener) capacitorApp.addListener("backButton", handleBack);
     render();
   } catch (error) {
     errorScreen(error instanceof Error ? error : new Error("Unknown case-loading error."));
   }
 }
+
+function handleBack() {
+  if (!state) return;
+  if (ui.drawerOpen) {
+    ui.drawerOpen = false;
+    render();
+    return;
+  }
+  if (state.sceneId !== "briefing") {
+    setState(previousScene(caseData, state));
+    return;
+  }
+  location.assign("./index.html");
+}
+
+window.addEventListener("popstate", handleBack);
 
 boot();
