@@ -1,0 +1,62 @@
+{
+  "id": "harness-season-001",
+  "version": 1,
+  "title": "HARNESS: Who Do You Trust?",
+  "audience": "ages 10-14 and families",
+  "caseOrder": [
+    "episode-001",
+    "episode-002",
+    "episode-003",
+    "episode-004",
+    "episode-005"
+  ],
+  "cases": [
+    {
+      "id": "episode-001",
+      "level": 1,
+      "title": "Server 4",
+      "status": "existing-source",
+      "source": "../data/episode-001.json",
+      "unlocks": "episode-002"
+    },
+    {
+      "id": "episode-002",
+      "level": 2,
+      "title": "The Missing Two",
+      "status": "frozen-playable-source",
+      "source": "../../../android/harness-who-do-you-trust/www/index.html",
+      "unlocks": "episode-003"
+    },
+    {
+      "id": "episode-003",
+      "level": 3,
+      "title": "The Cold Mirror",
+      "status": "content-candidate",
+      "source": "data/episode-003.json",
+      "unlocks": "episode-004"
+    },
+    {
+      "id": "episode-004",
+      "level": 4,
+      "title": "The Ledger's Weight",
+      "status": "content-candidate",
+      "source": "data/episode-004.json",
+      "unlocks": "episode-005"
+    },
+    {
+      "id": "episode-005",
+      "level": 5,
+      "title": "The Open Record",
+      "status": "content-candidate",
+      "source": "data/episode-005.json",
+      "unlocks": null
+    }
+  ],
+  "progression": {
+    "mode": "sequential",
+    "completionKey": "harness-campaign:v2:completed",
+    "caseSavePrefix": "harness-campaign:v2:case:",
+    "replayCompletedCases": true,
+    "resetCaseDoesNotResetSeason": true
+  }
+}

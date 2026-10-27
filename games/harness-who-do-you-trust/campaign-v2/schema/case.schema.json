@@ -1,0 +1,558 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://theidealabstudio.com/schemas/harness-case-v2.json",
+  "title": "HARNESS campaign case",
+  "type": "object",
+  "required": [
+    "id",
+    "version",
+    "level",
+    "title",
+    "series",
+    "audience",
+    "expectedMinutes",
+    "briefing",
+    "advisors",
+    "advisorOrder",
+    "evidence",
+    "advice",
+    "trustJudgment",
+    "decisions",
+    "postmortem",
+    "presentation",
+    "progression"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^episode-00[3-9]$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 3,
+      "maximum": 9
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3
+    },
+    "series": {
+      "const": "HARNESS: Who Do You Trust?"
+    },
+    "audience": {
+      "type": "string"
+    },
+    "expectedMinutes": {
+      "type": "integer",
+      "minimum": 15,
+      "maximum": 25
+    },
+    "briefing": {
+      "type": "object",
+      "required": [
+        "heading",
+        "paragraphs",
+        "mission",
+        "learningGoal"
+      ],
+      "properties": {
+        "heading": {
+          "type": "string"
+        },
+        "paragraphs": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string"
+          }
+        },
+        "mission": {
+          "type": "string"
+        },
+        "learningGoal": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "advisors": {
+      "type": "object",
+      "required": [
+        "boy",
+        "tooth",
+        "darth",
+        "donsol"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "boy": {
+          "$ref": "#/$defs/advisor"
+        },
+        "tooth": {
+          "$ref": "#/$defs/advisor"
+        },
+        "darth": {
+          "$ref": "#/$defs/advisor"
+        },
+        "donsol": {
+          "$ref": "#/$defs/advisor"
+        }
+      }
+    },
+    "advisorOrder": {
+      "const": [
+        "boy",
+        "tooth",
+        "darth",
+        "donsol"
+      ]
+    },
+    "evidence": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 8,
+      "items": {
+        "$ref": "#/$defs/evidence"
+      }
+    },
+    "advice": {
+      "type": "object",
+      "required": [
+        "boy",
+        "tooth",
+        "darth",
+        "donsol"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "boy": {
+          "$ref": "#/$defs/adviceVariants"
+        },
+        "tooth": {
+          "$ref": "#/$defs/adviceVariants"
+        },
+        "darth": {
+          "$ref": "#/$defs/adviceVariants"
+        },
+        "donsol": {
+          "$ref": "#/$defs/adviceVariants"
+        }
+      }
+    },
+    "trustJudgment": {
+      "type": "object",
+      "required": [
+        "mode",
+        "prompt",
+        "availableAfter",
+        "options",
+        "outcomeRule"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "select_one",
+            "select_two",
+            "weigh_each"
+          ]
+        },
+        "prompt": {
+          "type": "string"
+        },
+        "availableAfter": {
+          "type": "object",
+          "required": [
+            "minimumEvidence",
+            "minimumAdvisers"
+          ],
+          "properties": {
+            "minimumEvidence": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "minimumAdvisers": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          },
+          "additionalProperties": false
+        },
+        "options": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "object",
+            "required": [
+              "advisorId",
+              "label",
+              "strength",
+              "blindSpot",
+              "reveals"
+            ],
+            "properties": {
+              "advisorId": {
+                "enum": [
+                  "boy",
+                  "tooth",
+                  "darth",
+                  "donsol"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "strength": {
+                "type": "string"
+              },
+              "blindSpot": {
+                "type": "string"
+              },
+              "reveals": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "outcomeRule": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "$ref": "#/$defs/decision"
+      }
+    },
+    "postmortem": {
+      "type": "object",
+      "minProperties": 4,
+      "additionalProperties": {
+        "$ref": "#/$defs/postmortem"
+      }
+    },
+    "presentation": {
+      "type": "object",
+      "required": [
+        "caseLabel",
+        "assignmentTitle",
+        "summary",
+        "tasks",
+        "artSlots",
+        "glossary"
+      ],
+      "properties": {
+        "caseLabel": {
+          "type": "string"
+        },
+        "assignmentTitle": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "tasks": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "string"
+          }
+        },
+        "artSlots": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "glossary": {
+          "type": "object",
+          "minProperties": 3,
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "progression": {
+      "type": "object",
+      "required": [
+        "requires",
+        "unlocks",
+        "continuityBeat"
+      ],
+      "properties": {
+        "requires": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unlocks": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "continuityBeat": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "advisor": {
+      "type": "object",
+      "required": [
+        "name",
+        "verb",
+        "strength",
+        "weakness"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "verb": {
+          "type": "string"
+        },
+        "strength": {
+          "type": "string"
+        },
+        "weakness": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "source",
+        "summary",
+        "body",
+        "proves",
+        "doesNotProve",
+        "art"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^e_[a-z0-9_]+$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "clock": {
+          "type": "string"
+        },
+        "hidden": {
+          "type": "boolean"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "body": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "proves": {
+          "type": "string"
+        },
+        "doesNotProve": {
+          "type": "string"
+        },
+        "art": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "adviceVariants": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "when",
+          "text"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "when": {
+            "type": "object",
+            "properties": {
+              "inspected": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "consultedFewerThan": {
+                "type": "integer"
+              },
+              "trusted": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "text": {
+            "type": "string"
+          },
+          "reveals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "id",
+        "label",
+        "description",
+        "risk",
+        "outcome"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^d_[a-z0-9_]+$"
+        },
+        "label": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "risk": {
+          "type": "string"
+        },
+        "requires": {
+          "type": "object",
+          "properties": {
+            "evidence": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "trustedAdvisors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "outcome": {
+          "type": "object",
+          "required": [
+            "heading",
+            "text",
+            "trustVariants"
+          ],
+          "properties": {
+            "heading": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "trustVariants": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "postmortem": {
+      "type": "object",
+      "required": [
+        "known",
+        "unknown",
+        "advisors"
+      ],
+      "properties": {
+        "known": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unknown": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "advisors": {
+          "type": "object",
+          "required": [
+            "boy",
+            "tooth",
+            "darth",
+            "donsol"
+          ],
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "rating",
+              "text"
+            ],
+            "properties": {
+              "rating": {
+                "enum": [
+                  "strong",
+                  "mixed",
+                  "weak"
+                ]
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,477 @@
+{
+  "id": "episode-003",
+  "version": 1,
+  "level": 3,
+  "title": "The Cold Mirror",
+  "series": "HARNESS: Who Do You Trust?",
+  "audience": "ages 10-14 and families",
+  "expectedMinutes": 18,
+  "briefing": {
+    "heading": "Case 3: The Cold Mirror",
+    "paragraphs": [
+      "During a bitter cold snap, the North Harbor Family Center reports dangerous particles in its east wing. The city dashboard says the air is unsafe, but the building's smoke alarms never triggered.",
+      "Families are inside for the night. A full evacuation would move children and older residents into freezing weather. Ignoring the warning could leave them breathing something harmful.",
+      "The sensor, the heating system, eyewitnesses, and an independent meter do not all tell the same story. Your team must separate what was measured from what was inferred."
+    ],
+    "mission": "Protect the people in the center while a human inspector determines whether the alert is a real hazard or a faulty reading.",
+    "learningGoal": "Compare independent measurements, account for sensor limitations, and choose a reversible safety step under uncertainty."
+  },
+  "advisors": {
+    "boy": {
+      "name": "BOY",
+      "verb": "SEARCHER",
+      "strength": "Finds records and possible explanations quickly",
+      "weakness": "A fast match may not apply to this exact device"
+    },
+    "tooth": {
+      "name": "TOOTH",
+      "verb": "FACT-CHECKER",
+      "strength": "Checks serial numbers, timestamps, and independent readings",
+      "weakness": "Careful verification takes time"
+    },
+    "darth": {
+      "name": "LUKE",
+      "verb": "WORST-CASE THINKER",
+      "strength": "Keeps a possible air hazard from being dismissed",
+      "weakness": "Can treat the most frightening possibility as the most likely one"
+    },
+    "donsol": {
+      "name": "DON SOL",
+      "verb": "TEAM LEAD",
+      "strength": "Builds a plan that protects people and preserves evidence",
+      "weakness": "His plan is only as sound as the records the team brings him"
+    }
+  },
+  "advisorOrder": [
+    "boy",
+    "tooth",
+    "darth",
+    "donsol"
+  ],
+  "evidence": [
+    {
+      "id": "e_particle_alert",
+      "title": "Air-quality alert",
+      "source": "East-wing particle sensor",
+      "clock": "6:42 p.m.",
+      "hidden": false,
+      "summary": "The east-wing sensor jumped from 11 to 184 micrograms per cubic meter in two minutes.",
+      "body": [
+        "The city dashboard labels any reading above 150 as DANGEROUS and recommends evacuation.",
+        "Only one sensor reported the spike. The dashboard does not show whether that sensor was warming up or recently serviced."
+      ],
+      "proves": "One sensor reported a sudden high particle reading.",
+      "doesNotProve": "It does not prove the whole building is contaminated or identify the source.",
+      "art": "evidence_particle_alert"
+    },
+    {
+      "id": "e_hvac_trace",
+      "title": "Heating-system trace",
+      "source": "Family Center HVAC controller",
+      "clock": "6:39-6:43 p.m.",
+      "hidden": false,
+      "summary": "The east-wing heater restarted three minutes before the particle spike after an outdoor-temperature drop.",
+      "body": [
+        "The heater completed an automatic high-heat startup cycle. Airflow stayed inside its normal range.",
+        "The trace proves timing, not whether the heater released smoke or harmless dust."
+      ],
+      "proves": "The heater startup happened immediately before the alert.",
+      "doesNotProve": "Timing alone does not show that the heater caused the reading.",
+      "art": "evidence_hvac_trace"
+    },
+    {
+      "id": "e_alarm_panel",
+      "title": "Building alarm panel",
+      "source": "Independent smoke and carbon-monoxide system",
+      "clock": "6:35-6:50 p.m.",
+      "hidden": false,
+      "summary": "No smoke, heat, or carbon-monoxide alarm triggered in either wing.",
+      "body": [
+        "The panel passed its self-check at 5:58 p.m.",
+        "A clean alarm panel lowers the chance of fire or carbon monoxide, but it cannot detect every airborne irritant."
+      ],
+      "proves": "Three other detector types did not report fire or carbon monoxide.",
+      "doesNotProve": "It does not prove the air is safe from every pollutant.",
+      "art": "evidence_alarm_panel"
+    },
+    {
+      "id": "e_witness_note",
+      "title": "Resident reports",
+      "source": "Three people in the east wing",
+      "clock": "Collected at 6:47 p.m.",
+      "hidden": false,
+      "summary": "One resident noticed a sharp smell; two noticed nothing unusual. Nobody reported coughing or burning eyes.",
+      "body": [
+        "The sharp smell began when warm air first came through the vents and faded within a minute.",
+        "A smell is an observation. Calling it smoke, ozone, or hot dust would be an interpretation without a sample."
+      ],
+      "proves": "At least one person noticed a brief odor near the heater startup.",
+      "doesNotProve": "The reports do not identify the substance or establish a dangerous concentration.",
+      "art": "evidence_witness_note"
+    },
+    {
+      "id": "e_service_bulletin",
+      "title": "Sensor service bulletin",
+      "source": "Manufacturer record found by BOY, serial checked by TOOTH",
+      "clock": "Issued eight months earlier",
+      "hidden": true,
+      "summary": "This sensor model can briefly over-read during a nearby electric-heater startup if its inlet filter is overdue for replacement.",
+      "body": [
+        "The bulletin applies only to units in a listed serial-number range. TOOTH confirms the east-wing unit is in that range.",
+        "The center's maintenance log shows the filter replacement is 19 days overdue. The bulletin explains a possible false spike; it does not guarantee one."
+      ],
+      "proves": "The installed sensor has a documented failure mode and overdue maintenance that match the timing.",
+      "doesNotProve": "It does not prove this alert was false.",
+      "art": "evidence_service_bulletin"
+    },
+    {
+      "id": "e_handheld_check",
+      "title": "Independent meter check",
+      "source": "Fire inspector's calibrated handheld meter",
+      "clock": "6:53 p.m.",
+      "hidden": true,
+      "summary": "Readings at the east-wing vent, hallway, and occupied room are between 10 and 14, within the normal range.",
+      "body": [
+        "The inspector takes three readings while the affected heater zone remains off. No smoke or carbon monoxide is detected.",
+        "A clean later reading cannot prove there was never a short release, but it provides an independent measurement before residents return to the east wing."
+      ],
+      "proves": "An independent calibrated meter finds normal air after the zone is isolated.",
+      "doesNotProve": "It cannot reconstruct exactly what was in the air at 6:42 p.m.",
+      "art": "evidence_handheld_check"
+    }
+  ],
+  "advice": {
+    "boy": [
+      {
+        "id": "boy_bulletin",
+        "when": {
+          "inspected": [
+            "e_particle_alert",
+            "e_hvac_trace"
+          ]
+        },
+        "text": "I found a manufacturer bulletin that matches the heater timing. It might explain the spike, but I have not checked the sensor's serial number yet. Open the bulletin and have TOOTH verify that it applies.",
+        "reveals": [
+          "e_service_bulletin"
+        ]
+      },
+      {
+        "id": "boy_fast_match",
+        "when": {},
+        "text": "A repair forum says these sensors sometimes jump during heater startup. That is a lead, not proof. We need the official bulletin and this unit's serial number before relying on it."
+      }
+    ],
+    "tooth": [
+      {
+        "id": "tooth_independent_check",
+        "when": {
+          "inspected": [
+            "e_service_bulletin"
+          ]
+        },
+        "text": "The bulletin applies to this exact sensor, and its filter is overdue. That makes a false spike plausible, not certain. I asked a fire inspector for an independent meter reading before anyone returns to the east wing.",
+        "reveals": [
+          "e_handheld_check"
+        ]
+      },
+      {
+        "id": "tooth_compare_systems",
+        "when": {},
+        "text": "The particle sensor, alarm panel, and eyewitness reports measure different things. Compare them without turning 'no smoke alarm' into 'no hazard.'"
+      }
+    ],
+    "darth": [
+      {
+        "id": "darth_after_check",
+        "when": {
+          "inspected": [
+            "e_handheld_check"
+          ]
+        },
+        "text": "The clean handheld readings lower the danger, but they came later. Keep the affected heater zone off and do not move people back until a human inspector clears it."
+      },
+      {
+        "id": "darth_evacuate",
+        "when": {},
+        "text": "A dangerous-air alert around children deserves action. My safest first thought is evacuation, but the freezing weather creates a second hazard we must count honestly."
+      }
+    ],
+    "donsol": [
+      {
+        "id": "donsol_reversible",
+        "when": {
+          "inspected": [
+            "e_service_bulletin",
+            "e_handheld_check"
+          ]
+        },
+        "text": "We can protect people without pretending the alarm is false: move everyone to the warm west wing, isolate the east-wing heater, preserve the logs, and let the fire inspector take independent readings."
+      },
+      {
+        "id": "donsol_frame",
+        "when": {},
+        "text": "Name both risks: possible bad air inside and dangerous cold outside. Look for a reversible step that reduces both while better evidence is gathered."
+      }
+    ]
+  },
+  "trustJudgment": {
+    "mode": "select_two",
+    "prompt": "Which two advisers should carry the most weight before you move families or clear the building?",
+    "availableAfter": {
+      "minimumEvidence": 4,
+      "minimumAdvisers": 3
+    },
+    "options": [
+      {
+        "advisorId": "boy",
+        "label": "Trust BOY's rapid lead search",
+        "strength": "He finds the relevant service bulletin quickly.",
+        "blindSpot": "His first forum match is not verified for this sensor.",
+        "reveals": [
+          "e_service_bulletin"
+        ]
+      },
+      {
+        "advisorId": "tooth",
+        "label": "Trust TOOTH's source checks",
+        "strength": "He verifies the serial number and requests an independent meter.",
+        "blindSpot": "Waiting for certainty can cost time during a real hazard.",
+        "reveals": [
+          "e_handheld_check"
+        ]
+      },
+      {
+        "advisorId": "darth",
+        "label": "Trust LUKE's safety warning",
+        "strength": "He refuses to dismiss a potentially dangerous reading.",
+        "blindSpot": "A full evacuation into severe cold creates another risk.",
+        "reveals": []
+      },
+      {
+        "advisorId": "donsol",
+        "label": "Trust DON SOL's reversible plan",
+        "strength": "He separates people from the suspect zone while evidence is checked.",
+        "blindSpot": "The plan depends on space, staff, and a reachable inspector.",
+        "reveals": []
+      }
+    ],
+    "outcomeRule": "Trust changes the debrief lens, not the physical facts. Strong outcomes reward independent verification plus a reversible safety action."
+  },
+  "decisions": [
+    {
+      "id": "d_evacuate_all",
+      "label": "Evacuate everyone outside now",
+      "description": "Treat the particle alert as a confirmed building-wide hazard and move all families to the outdoor assembly point.",
+      "risk": "This protects against a real airborne hazard but exposes children and older residents to dangerous cold before transport arrives.",
+      "outcome": {
+        "heading": "Safe from one danger, exposed to another",
+        "text": "The center empties quickly. No one suffers smoke exposure, but two residents need treatment for cold stress while buses are delayed. The later meter check is normal and the sensor fault remains the leading explanation.",
+        "trustVariants": {
+          "boy": "BOY's lead might have supported a sheltered move, but it was not verified before the evacuation.",
+          "tooth": "TOOTH's request for an independent reading was sound, but the group moved before it arrived.",
+          "darth": "LUKE's warning prevented possible exposure, while his blind spot became the cold-weather harm.",
+          "donsol": "DON SOL's two-risk framing was not used; the response reduced one danger by increasing another."
+        }
+      }
+    },
+    {
+      "id": "d_shelter_in_place",
+      "label": "Keep everyone in place and shut off the heater",
+      "description": "Stop the east-wing heater, close interior doors, and wait for the sensor to settle without moving residents.",
+      "risk": "This avoids cold exposure but leaves people near a possibly contaminated zone and gathers no independent measurement.",
+      "outcome": {
+        "heading": "The reading falls, but the question remains",
+        "text": "The dashboard returns to normal after the heater stops. Nobody becomes ill, but the team cannot tell whether the air cleared or the sensor corrected itself. The center stays closed overnight because no one obtained an independent check.",
+        "trustVariants": {
+          "boy": "BOY's possible explanation influenced the choice before it was fully checked.",
+          "tooth": "TOOTH warned that a falling dashboard value is not independent verification.",
+          "darth": "LUKE's concern remains unresolved because people stayed near the suspect zone.",
+          "donsol": "DON SOL supported isolation, but not leaving residents in the affected area without a second reading."
+        }
+      }
+    },
+    {
+      "id": "d_clear_alarm",
+      "label": "Reset the sensor and resume normal heat",
+      "description": "Assume the spike came from a known sensor problem and return the center to normal operation.",
+      "risk": "The building stays warm, but a real pollutant could be hidden by resetting the only device that reported it.",
+      "outcome": {
+        "heading": "Comfort returns before confidence",
+        "text": "Heat returns and the alert does not repeat. A morning inspection finds the overdue filter, but staff cannot prove what caused the original spike because the zone was not independently measured while isolated.",
+        "trustVariants": {
+          "boy": "BOY found a useful explanation, but a plausible explanation was treated as proof.",
+          "tooth": "TOOTH's serial check supported the failure mode, not an immediate all-clear.",
+          "darth": "LUKE's warning was discounted even though the first reading was never reconstructed.",
+          "donsol": "DON SOL's request to preserve choices and evidence was not followed."
+        }
+      }
+    },
+    {
+      "id": "d_relocate_verify",
+      "label": "Relocate inside, isolate, and verify",
+      "description": "Move families to the warm west wing, shut down the east-wing heater zone, preserve the logs, and send in a human inspector with a calibrated meter.",
+      "risk": "The move disrupts sleeping families and requires staff coordination, but it limits exposure while preserving evidence and warmth.",
+      "requires": {
+        "evidence": [
+          "e_service_bulletin",
+          "e_handheld_check"
+        ],
+        "trustedAdvisors": [
+          "tooth",
+          "donsol"
+        ]
+      },
+      "outcome": {
+        "heading": "People move, the facts catch up",
+        "text": "Families settle in the warm west wing. The east zone stays isolated while the inspector records normal readings at three locations. The faulty filter is replaced before the heater returns to service. No one is exposed to dangerous air or cold, and the original alert remains available for review.",
+        "trustVariants": {
+          "boy": "BOY's bulletin gave the team a testable explanation instead of an excuse to ignore the alarm.",
+          "tooth": "TOOTH's independent check turned a plausible theory into a defensible decision.",
+          "darth": "LUKE's caution kept people out of the suspect zone until a human cleared it.",
+          "donsol": "DON SOL combined the useful parts of the team's advice into a reversible plan."
+        }
+      }
+    }
+  ],
+  "postmortem": {
+    "d_evacuate_all": {
+      "known": [
+        "One sensor reported a dangerous spike.",
+        "The heater startup and alert happened within three minutes."
+      ],
+      "unknown": [
+        "Whether a harmful substance was present at 6:42 p.m.",
+        "Whether an indoor relocation could have protected residents from both risks."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "mixed",
+          "text": "Found the right bulletin, but his first fast match was not enough to justify an all-clear."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Asked for the serial check and independent reading that could have supported a less harmful response."
+        },
+        "darth": {
+          "rating": "mixed",
+          "text": "Took the alert seriously, but underweighted the cold-weather danger."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "Named both hazards and proposed separating people from the suspect zone without sending them outside."
+        }
+      }
+    },
+    "d_shelter_in_place": {
+      "known": [
+        "The dashboard reading fell after the east-wing heater stopped.",
+        "No other detector triggered."
+      ],
+      "unknown": [
+        "Whether the air became safe or the sensor corrected itself.",
+        "What an independent meter would have read during the response."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "mixed",
+          "text": "Found a reasonable hypothesis but could not independently confirm the air was safe."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Correctly separated a dashboard change from an independent measurement."
+        },
+        "darth": {
+          "rating": "strong",
+          "text": "Kept attention on the unresolved possibility of harmful air."
+        },
+        "donsol": {
+          "rating": "mixed",
+          "text": "Supported isolation, but his safer plan also moved people away from the suspect zone."
+        }
+      }
+    },
+    "d_clear_alarm": {
+      "known": [
+        "The sensor had an overdue filter and a documented over-reading problem.",
+        "The alert did not repeat after reset."
+      ],
+      "unknown": [
+        "What caused the original spike.",
+        "Whether resuming heat erased useful evidence."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "mixed",
+          "text": "His lead mattered, but a possible explanation was used as a conclusion."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Verified that the bulletin applied while warning that it did not prove the alert false."
+        },
+        "darth": {
+          "rating": "mixed",
+          "text": "His concern was possible rather than proved, but the choice did not test it."
+        },
+        "donsol": {
+          "rating": "weak",
+          "text": "The decision ignored his reversible plan and discarded the chance for a clean comparison."
+        }
+      }
+    },
+    "d_relocate_verify": {
+      "known": [
+        "The installed sensor matched the service bulletin.",
+        "Independent readings were normal while the affected zone remained isolated."
+      ],
+      "unknown": [
+        "The exact contents of the air during the original two-minute spike.",
+        "Whether the overdue filter alone caused the event."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "strong",
+          "text": "Found the bulletin and handed the team a claim that could be checked."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Confirmed the device match and obtained an independent physical reading."
+        },
+        "darth": {
+          "rating": "strong",
+          "text": "Kept people out of the suspect area until a human inspector cleared it."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "Combined protection, evidence preservation, and human verification."
+        }
+      }
+    }
+  },
+  "presentation": {
+    "caseLabel": "CASE 3 OF 5",
+    "assignmentTitle": "Air alert at North Harbor Family Center",
+    "summary": "One sensor says danger. Other records disagree. Protect families while you find out what the readings really mean.",
+    "tasks": [
+      "Inspect the sensor, heating, alarm, and witness records.",
+      "Separate observations from explanations.",
+      "Ask at least three advisers and choose whose judgment carries weight.",
+      "Make a reversible safety decision and review what remained unknown."
+    ],
+    "artSlots": {
+      "header": "case_header",
+      "map": "family_center_floor_plan",
+      "outcome": "case_outcome"
+    },
+    "glossary": {
+      "independent measurement": "A reading made by a separate tool or source that does not simply repeat the first system.",
+      "calibration": "Checking and adjusting a measuring tool so its readings match a trusted standard.",
+      "false positive": "A warning that reports danger when the specific danger is not actually present.",
+      "reversible": "A choice that can be changed without permanently destroying evidence or options."
+    }
+  },
+  "progression": {
+    "requires": "episode-002",
+    "unlocks": "episode-004",
+    "continuityBeat": "The investigation expands from disputed digital records to a physical safety system, showing why dashboards need independent human checks."
+  }
+}

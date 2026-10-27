@@ -1,0 +1,480 @@
+{
+  "id": "episode-005",
+  "version": 1,
+  "level": 5,
+  "title": "The Open Record",
+  "series": "HARNESS: Who Do You Trust?",
+  "audience": "ages 10-14 and families",
+  "expectedMinutes": 22,
+  "briefing": {
+    "heading": "Case 5: The Open Record",
+    "paragraphs": [
+      "After four disputed emergencies, the city proposes an automatic response system. It would read alarms, rank risks, and send orders before a human duty officer reviews them.",
+      "The pilot promises faster action. Workers say it could also repeat the exact mistakes the team has uncovered: mismatched clocks, incomplete evidence, sensor faults, and averages that hide who is harmed.",
+      "The council hearing begins in 40 minutes. Your final recommendation must decide what the system may do, what a human must approve, and what the public is allowed to inspect and challenge."
+    ],
+    "mission": "Design an oversight decision that gains useful speed without turning uncertain machine judgments into unreviewable public orders.",
+    "learningGoal": "Distinguish recommendation from authority, require accountability, and build an appeal path for high-impact automated decisions."
+  },
+  "advisors": {
+    "boy": {
+      "name": "BOY",
+      "verb": "SEARCHER",
+      "strength": "Finds the configuration, pilot results, and missing records quickly",
+      "weakness": "Can mistake a visible efficiency gain for proof the whole system is fair"
+    },
+    "tooth": {
+      "name": "TOOTH",
+      "verb": "FACT-CHECKER",
+      "strength": "Tests performance claims and checks whether decisions can be reconstructed",
+      "weakness": "A perfect audit trail cannot remove every urgent judgment call"
+    },
+    "darth": {
+      "name": "LUKE",
+      "verb": "WORST-CASE THINKER",
+      "strength": "Sees how automated authority can scale one mistake across many people",
+      "weakness": "Can prefer a complete shutdown even when restricted automation would help"
+    },
+    "donsol": {
+      "name": "DON SOL",
+      "verb": "TEAM LEAD",
+      "strength": "Defines boundaries, human responsibility, and a public review process",
+      "weakness": "Oversight rules fail if no named person has time and authority to enforce them"
+    }
+  },
+  "advisorOrder": [
+    "boy",
+    "tooth",
+    "darth",
+    "donsol"
+  ],
+  "evidence": [
+    {
+      "id": "e_automation_proposal",
+      "title": "Automation proposal",
+      "source": "City emergency technology office",
+      "clock": "Council draft, version 6",
+      "hidden": false,
+      "summary": "The system would send temporary containment and evacuation orders when its confidence score exceeds 85 percent.",
+      "body": [
+        "The proposal predicts an eight-minute reduction in average response time and says human officers can review orders afterward.",
+        "It does not distinguish reversible technical containment from orders that move people, close services, or erase records."
+      ],
+      "proves": "The proposed system could act faster than the current review process.",
+      "doesNotProve": "It does not prove its confidence score deserves legal authority or that after-the-fact review repairs harm.",
+      "art": "evidence_automation_proposal"
+    },
+    {
+      "id": "e_pilot_results",
+      "title": "Supervised pilot results",
+      "source": "Twenty simulated emergencies",
+      "clock": "Previous 90 days",
+      "hidden": false,
+      "summary": "The pilot recommended the same first step as reviewers in 16 of 20 simulations and responded seven minutes faster on average.",
+      "body": [
+        "In three cases, human reviewers changed the recommendation after checking evidence the system ranked as low priority. One remaining disagreement had no clear best answer.",
+        "Because the pilot was supervised, no automated recommendation became a real public order."
+      ],
+      "proves": "The system often produces useful recommendations quickly.",
+      "doesNotProve": "It does not show what would happen if recommendations became automatic orders.",
+      "art": "evidence_pilot_results"
+    },
+    {
+      "id": "e_worker_log",
+      "title": "Duty-officer decision log",
+      "source": "Emergency operations staff",
+      "clock": "Same 90-day pilot",
+      "hidden": false,
+      "summary": "Human reviewers changed 27 percent of high-impact recommendations after noticing context the system had not surfaced.",
+      "body": [
+        "The most common reasons were conflicting clocks, missing independent readings, and unequal neighborhood consequences.",
+        "Review added a median of six minutes. Staff say unclear responsibility, not reading time alone, caused the longest delays."
+      ],
+      "proves": "Human review changed a meaningful share of high-impact recommendations for specific evidence reasons.",
+      "doesNotProve": "It does not prove humans are always right or that every automated action should wait.",
+      "art": "evidence_worker_log"
+    },
+    {
+      "id": "e_public_comment",
+      "title": "Public hearing summary",
+      "source": "Residents, workers, and disability advocates",
+      "clock": "Comments accepted for 30 days",
+      "hidden": false,
+      "summary": "Most commenters support faster warnings but ask who can explain, pause, and appeal an automated order.",
+      "body": [
+        "Residents from low-lying neighborhoods want model inputs and neighborhood impacts published. Workers want one named duty officer responsible for every high-impact order.",
+        "Advocates warn that digital-only notices can miss people who need language, mobility, or offline access support."
+      ],
+      "proves": "Affected groups identify specific oversight and access needs beyond speed.",
+      "doesNotProve": "Public comments alone do not determine the technical reliability of the system.",
+      "art": "evidence_public_comment"
+    },
+    {
+      "id": "e_configuration_rules",
+      "title": "Decision configuration",
+      "source": "System rules found by BOY and verified by TOOTH",
+      "clock": "Build proposed for launch",
+      "hidden": true,
+      "summary": "The confidence score discounts records marked late, conflicting, incomplete, or outside the normal range.",
+      "body": [
+        "Those labels can identify noisy data, but the earlier cases show they can also describe the most important clue: a mismatched clock, a single independent gauge, or an extreme storm day.",
+        "The configuration stores the final score but does not currently preserve a public list of which records were discounted."
+      ],
+      "proves": "The proposed score can hide uncertain evidence and does not expose all exclusions in its public record.",
+      "doesNotProve": "It does not prove every discounted record should receive equal weight.",
+      "art": "evidence_configuration_rules"
+    },
+    {
+      "id": "e_accountability_test",
+      "title": "Accountability test",
+      "source": "Independent review team",
+      "clock": "Completed before the hearing",
+      "hidden": true,
+      "summary": "Reviewers could reconstruct 12 of 20 pilot recommendations from the stored record; eight lacked enough detail to explain why evidence was down-ranked.",
+      "body": [
+        "The review team recommends storing the evidence list, exclusions, confidence limits, human approver, action, and appeal result for every high-impact event.",
+        "It also recommends allowing the system to take only short, reversible containment steps without prior human approval."
+      ],
+      "proves": "The current record is not sufficient to explain or challenge every high-impact recommendation.",
+      "doesNotProve": "It does not prove automation must be abandoned; it identifies conditions for accountable use.",
+      "art": "evidence_accountability_test"
+    }
+  ],
+  "advice": {
+    "boy": [
+      {
+        "id": "boy_configuration",
+        "when": {
+          "inspected": [
+            "e_automation_proposal",
+            "e_pilot_results"
+          ]
+        },
+        "text": "I found the launch configuration. The system down-ranks late, conflicting, incomplete, and extreme records. Those filters may reduce noise, but they also match clues that mattered in every earlier case. TOOTH should check what the public record keeps.",
+        "reveals": [
+          "e_configuration_rules"
+        ]
+      },
+      {
+        "id": "boy_speed",
+        "when": {},
+        "text": "Seven minutes faster is a real benefit, and 16 of 20 recommendations matched reviewers. But that success rate came from a supervised pilot, not from automatic public orders."
+      }
+    ],
+    "tooth": [
+      {
+        "id": "tooth_accountability",
+        "when": {
+          "inspected": [
+            "e_configuration_rules",
+            "e_worker_log"
+          ]
+        },
+        "text": "The final score is stored, but eight pilot decisions cannot be reconstructed because the system did not preserve why evidence was down-ranked. I unlocked the independent accountability test.",
+        "reveals": [
+          "e_accountability_test"
+        ]
+      },
+      {
+        "id": "tooth_claims",
+        "when": {},
+        "text": "Compare like with like. The proposal's speed claim comes from recommendations under supervision. It does not measure the safety of unsupervised legal orders."
+      }
+    ],
+    "darth": [
+      {
+        "id": "darth_bounded",
+        "when": {
+          "inspected": [
+            "e_accountability_test"
+          ]
+        },
+        "text": "Do not let one confidence score move people or erase evidence. I can support short, reversible containment if it expires automatically and a named human must approve anything with lasting impact."
+      },
+      {
+        "id": "darth_stop",
+        "when": {},
+        "text": "One mistake sent at machine speed can reach every neighborhood before a person understands it. My first instinct is to stop the launch, though that would also give up useful response time."
+      }
+    ],
+    "donsol": [
+      {
+        "id": "donsol_charter",
+        "when": {
+          "inspected": [
+            "e_public_comment",
+            "e_accountability_test"
+          ]
+        },
+        "text": "Use the system as an adviser with narrow emergency powers: reversible containment may last 15 minutes, then expires unless a named duty officer confirms it. Publish the evidence, exclusions, approver, and appeal result."
+      },
+      {
+        "id": "donsol_authority",
+        "when": {},
+        "text": "The question is not whether the system is good or bad. It is which actions it may take, who remains responsible, and how a person can challenge the result."
+      }
+    ]
+  },
+  "trustJudgment": {
+    "mode": "select_two",
+    "prompt": "Which two advisers should shape the final authority rules for the city's emergency system?",
+    "availableAfter": {
+      "minimumEvidence": 5,
+      "minimumAdvisers": 4
+    },
+    "options": [
+      {
+        "advisorId": "boy",
+        "label": "Trust BOY's performance and configuration search",
+        "strength": "He finds both the speed benefit and the evidence filters behind it.",
+        "blindSpot": "Efficiency can look more decisive than fairness and appeal rights.",
+        "reveals": [
+          "e_configuration_rules"
+        ]
+      },
+      {
+        "advisorId": "tooth",
+        "label": "Trust TOOTH's accountability test",
+        "strength": "He checks whether a decision can be explained and reproduced.",
+        "blindSpot": "Documentation alone does not decide every urgent tradeoff.",
+        "reveals": [
+          "e_accountability_test"
+        ]
+      },
+      {
+        "advisorId": "darth",
+        "label": "Trust LUKE's scaled-harm warning",
+        "strength": "He sees why lasting automated orders need strict limits.",
+        "blindSpot": "A total stop would discard useful reversible automation.",
+        "reveals": []
+      },
+      {
+        "advisorId": "donsol",
+        "label": "Trust DON SOL's oversight charter",
+        "strength": "He assigns authority, expiration, responsibility, transparency, and appeal.",
+        "blindSpot": "The charter fails if staffing and enforcement are not funded.",
+        "reveals": []
+      }
+    ],
+    "outcomeRule": "Trust is justified by the rule it produces. The strongest ending combines tested speed with narrow authority, a named human, an open record, and an appeal path."
+  },
+  "decisions": [
+    {
+      "id": "d_full_authority",
+      "label": "Approve automatic high-impact orders",
+      "description": "Allow the system to send containment, evacuation, closure, and deletion orders whenever confidence exceeds 85 percent.",
+      "risk": "The city gains maximum speed, but uncertain or excluded evidence can be converted into widespread action before human review.",
+      "outcome": {
+        "heading": "Speed becomes authority",
+        "text": "The system shortens several routine responses. During its first disputed event, it closes two shelters after down-ranking a late inspection record. A duty officer reverses the order 18 minutes later, but families have already been redirected. The action is fast and difficult to explain from the stored record.",
+        "trustVariants": {
+          "boy": "BOY's speed evidence was used, while the configuration warning he found was not repaired.",
+          "tooth": "TOOTH's accountability test predicted the missing explanation that delayed the reversal.",
+          "darth": "LUKE's scaled-harm warning becomes concrete when one weak judgment reaches two shelters at once.",
+          "donsol": "DON SOL's boundary between recommendation and public authority was removed."
+        }
+      }
+    },
+    {
+      "id": "d_manual_fallback",
+      "label": "Use a 30-day manual fallback",
+      "description": "Pause live automation for 30 days while a public team repairs the record, responsibility, and appeal rules.",
+      "risk": "This prevents unreviewable orders now, but preserves the current slower process during the repair month.",
+      "outcome": {
+        "heading": "A defensible pause with a real cost",
+        "text": "The council orders a 30-day repair and publishes the missing pilot records. Human duty officers continue making every call. No automated order harms anyone, but two routine containment responses take longer than the supervised pilot would have required. The pause produces a stronger proposal, not an indefinite delay.",
+        "trustVariants": {
+          "boy": "BOY's performance evidence shows exactly what useful speed the city gives up during the repair month.",
+          "tooth": "TOOTH's documentation concerns become the measurable exit conditions for the pause.",
+          "darth": "LUKE's caution is honored without turning a temporary safeguard into a permanent ban.",
+          "donsol": "DON SOL's oversight questions define the work due at the end of 30 days."
+        }
+      }
+    },
+    {
+      "id": "d_supervised_sandbox",
+      "label": "Run a second 90-day supervised sandbox",
+      "description": "Continue recommendations with no live automatic actions while collecting more performance data under the existing rules.",
+      "risk": "The city learns more, but repeating the same pilot without first fixing missing records may produce more data that still cannot answer the governance question.",
+      "outcome": {
+        "heading": "More trials, same missing rule",
+        "text": "The second supervised pilot improves average accuracy. Because the record format and authority policy were not changed first, several disagreements still cannot be reconstructed. Ninety days later, the city knows the system is useful but remains unable to say what it should be allowed to do.",
+        "trustVariants": {
+          "boy": "BOY gets more performance numbers, but the core authority question is not a search problem.",
+          "tooth": "TOOTH can test more cases, yet the missing record fields make part of the new evidence weak.",
+          "darth": "LUKE's ban on live orders prevents scaled harm during the fixed 90-day period.",
+          "donsol": "DON SOL's governance design is delayed instead of being tested."
+        }
+      }
+    },
+    {
+      "id": "d_bounded_authority",
+      "label": "Allow bounded automation with human authority",
+      "description": "Permit 15-minute reversible containment, require a named human for lasting or public-impact orders, and publish evidence, exclusions, approval, and appeal records.",
+      "risk": "The system will be slower than full automation and requires funded duty staff, but its most consequential actions remain reviewable and reversible.",
+      "requires": {
+        "evidence": [
+          "e_configuration_rules",
+          "e_accountability_test",
+          "e_public_comment"
+        ],
+        "trustedAdvisors": [
+          "tooth",
+          "donsol"
+        ]
+      },
+      "outcome": {
+        "heading": "The system advises; a person remains accountable",
+        "text": "The council approves narrow emergency powers with automatic expiration. Each high-impact order names its human approver and publishes the evidence considered, the records discounted, and an accessible appeal path. The city gains most of the pilot's containment speed while keeping lasting authority and responsibility with people.",
+        "trustVariants": {
+          "boy": "BOY's speed evidence remains useful inside clear boundaries, and his configuration discovery becomes part of the public record.",
+          "tooth": "TOOTH's accountability test supplies the fields needed to explain and challenge each decision.",
+          "darth": "LUKE's scaled-harm warning becomes an expiration rule instead of a blanket prohibition.",
+          "donsol": "DON SOL converts the team's lessons into authority limits, named responsibility, transparency, and appeal."
+        }
+      }
+    }
+  ],
+  "postmortem": {
+    "d_full_authority": {
+      "known": [
+        "The system acts faster than the existing human-only process.",
+        "Its public record omits reasons some evidence was discounted."
+      ],
+      "unknown": [
+        "How often after-the-fact review can repair a harmful public order.",
+        "Whether people can appeal quickly enough during an emergency."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "mixed",
+          "text": "Found the speed benefit and the risky filters; only the attractive half shaped the decision."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Demonstrated that eight pilot recommendations could not be reconstructed."
+        },
+        "darth": {
+          "rating": "strong",
+          "text": "Correctly warned that automation can scale one uncertain judgment."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "Asked the missing governance questions about authority, responsibility, and appeal."
+        }
+      }
+    },
+    "d_manual_fallback": {
+      "known": [
+        "The pause has a fixed 30-day end and public repair tasks.",
+        "Human-only response remains slower during that period."
+      ],
+      "unknown": [
+        "Whether every repair condition will be met in 30 days.",
+        "How the repaired system will perform under live bounded authority."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "strong",
+          "text": "Quantified the useful speed the pause temporarily gives up."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Turned audit failures into concrete release conditions."
+        },
+        "darth": {
+          "rating": "strong",
+          "text": "Protected the public during a limited repair period without demanding a permanent ban."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "Defined the governance questions the revised proposal must answer."
+        }
+      }
+    },
+    "d_supervised_sandbox": {
+      "known": [
+        "The sandbox is limited to 90 days and sends no live automatic orders.",
+        "The current record format cannot explain every disagreement."
+      ],
+      "unknown": [
+        "Whether more trials will change the authority policy.",
+        "Whether decision records will be repaired before the next pilot ends."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "strong",
+          "text": "Can find more performance patterns, though numbers alone cannot assign authority."
+        },
+        "tooth": {
+          "rating": "mixed",
+          "text": "More testing helps, but repeating a weak record design limits what can be verified."
+        },
+        "darth": {
+          "rating": "strong",
+          "text": "The no-live-order boundary contains harm during the fixed pilot."
+        },
+        "donsol": {
+          "rating": "mixed",
+          "text": "The choice delays rather than tests his proposed responsibility and appeal rules."
+        }
+      }
+    },
+    "d_bounded_authority": {
+      "known": [
+        "Reversible containment expires after 15 minutes without human confirmation.",
+        "Every high-impact order has a named approver and an inspectable record."
+      ],
+      "unknown": [
+        "How the policy will perform during simultaneous city emergencies.",
+        "Whether funding will keep qualified duty officers available at all times."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "strong",
+          "text": "Found both the measurable benefit and the configuration risk."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Tested the claims and identified the exact record needed for accountability."
+        },
+        "darth": {
+          "rating": "strong",
+          "text": "Converted the danger of scaled harm into strict limits on lasting action."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "Connected speed, authority, transparency, human responsibility, and appeal in one enforceable charter."
+        }
+      }
+    }
+  },
+  "presentation": {
+    "caseLabel": "CASE 5 OF 5 — FINAL",
+    "assignmentTitle": "The emergency automation hearing",
+    "summary": "The city wants faster action. Decide what a machine may recommend, what it may do, and which responsibilities people cannot hand away.",
+    "tasks": [
+      "Compare the proposal with the supervised pilot and worker records.",
+      "Find what the confidence score hides and what the audit trail cannot explain.",
+      "Choose whose judgment shapes the final authority rules.",
+      "Deliver an oversight decision with limits, ownership, transparency, and appeal."
+    ],
+    "artSlots": {
+      "header": "case_header",
+      "diagram": "authority_boundary_diagram",
+      "outcome": "season_finale_outcome"
+    },
+    "glossary": {
+      "authority": "The recognized power to make a decision or issue an order that others must follow.",
+      "audit trail": "A record showing what evidence, rules, people, and actions produced a decision.",
+      "appeal": "A process for asking an authorized person to review and possibly change a decision.",
+      "bounded automation": "Automation limited by action type, time, review, and responsibility rules.",
+      "high-impact decision": "A choice that significantly affects people's safety, rights, access, or essential services."
+    }
+  },
+  "progression": {
+    "requires": "episode-004",
+    "unlocks": null,
+    "continuityBeat": "The finale turns the campaign's repeated evidence failures into public rules: systems may assist, but lasting authority must remain explainable, reviewable, and accountable."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "level1Monolith": {
+    "name": "level-1.html",
+    "sha256": "4fbe004e42c12af00a34006a939deed8dc14d74b74ae6c1d44bbd5c535ba4ccd",
+    "repositoryPath": null,
+    "note": "Authoritative source is held outside this branch; do not reconstruct it from the data file."
+  },
+  "level1CaseData": {
+    "name": "episode-001.json",
+    "sha256": "743285383fd5ca17891c840feb41ea28bbdcb9d294d6503c874c8ec32d1f2819",
+    "repositoryPath": "games/harness-who-do-you-trust/data/episode-001.json"
+  },
+  "level2Monolith": {
+    "name": "HARNESS_V3_4_ILLUSTRATED_MASTER_CONTROL_WORKING_v12_MOTOROLA_AUDIO_SCROLL_FIX.html",
+    "sha256": "83089e531ae5a88162f54d68cee96bb0146f2bf2fa0793333595c704a66d8b60",
+    "repositoryPath": "android/harness-who-do-you-trust/www/index.html",
+    "note": "User-approved Motorola build. This file is the visual and interaction regression oracle."
+  }
+}

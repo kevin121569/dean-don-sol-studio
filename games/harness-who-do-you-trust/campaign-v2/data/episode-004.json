@@ -1,0 +1,480 @@
+{
+  "id": "episode-004",
+  "version": 1,
+  "level": 4,
+  "title": "The Ledger's Weight",
+  "series": "HARNESS: Who Do You Trust?",
+  "audience": "ages 10-14 and families",
+  "expectedMinutes": 20,
+  "briefing": {
+    "heading": "Case 4: The Ledger's Weight",
+    "paragraphs": [
+      "The city budget system recommends moving 35 percent of next month's drain-maintenance money into a new street-cleaning drone program. Its report predicts low flood risk and large savings.",
+      "Public works crews disagree. They have photographs of blocked drains in three low-lying neighborhoods, but their inspection list is incomplete and overtime is already high.",
+      "The council votes tonight. Keeping every dollar in drainage could delay a useful program. Moving the money could leave vulnerable streets unprepared for a storm the model treats as unlikely."
+    ],
+    "mission": "Recommend a budget action that weighs model evidence, field evidence, unequal consequences, and the cost of delay.",
+    "learningGoal": "Question what a model leaves out, compare predicted averages with local observations, and make tradeoffs visible."
+  },
+  "advisors": {
+    "boy": {
+      "name": "BOY",
+      "verb": "SEARCHER",
+      "strength": "Finds comparable budgets and overlooked records quickly",
+      "weakness": "A comparison can look stronger than it is when cities measure costs differently"
+    },
+    "tooth": {
+      "name": "TOOTH",
+      "verb": "FACT-CHECKER",
+      "strength": "Checks the model's inputs against field inspections",
+      "weakness": "A complete audit may take longer than the budget deadline"
+    },
+    "darth": {
+      "name": "LUKE",
+      "verb": "WORST-CASE THINKER",
+      "strength": "Notices who bears the harm when a low-probability storm arrives",
+      "weakness": "Can make rare events dominate every decision"
+    },
+    "donsol": {
+      "name": "DON SOL",
+      "verb": "TEAM LEAD",
+      "strength": "Connects evidence, budget limits, and the ability to revise the plan",
+      "weakness": "A compromise can fail if its checkpoints are vague"
+    }
+  },
+  "advisorOrder": [
+    "boy",
+    "tooth",
+    "darth",
+    "donsol"
+  ],
+  "evidence": [
+    {
+      "id": "e_budget_model",
+      "title": "Budget model recommendation",
+      "source": "City Resource Optimizer",
+      "clock": "Generated Monday at 8:00 a.m.",
+      "hidden": false,
+      "summary": "The model recommends shifting 35 percent of drain maintenance to cleaning drones and reports a 7 percent monthly flood chance.",
+      "body": [
+        "The projected drone savings are based on fewer crew hours and faster litter removal downtown.",
+        "The report gives a citywide flood probability. It does not show risk by neighborhood or list excluded weather records."
+      ],
+      "proves": "The model predicts savings and low average flood risk under its chosen inputs.",
+      "doesNotProve": "It does not prove every neighborhood faces the same risk or that its inputs include extreme storms.",
+      "art": "evidence_budget_model"
+    },
+    {
+      "id": "e_field_photos",
+      "title": "Crew field photos",
+      "source": "Public works inspection route",
+      "clock": "Taken over the last nine days",
+      "hidden": false,
+      "summary": "Crews photographed 18 partially blocked drains, including 11 in three low-lying neighborhoods.",
+      "body": [
+        "Each photo includes a drain ID and time, but only 62 percent of scheduled routes were completed because two trucks were under repair.",
+        "The photographs prove local blockages. They do not show the condition of every drain in the city."
+      ],
+      "proves": "Known blockages are concentrated in places where water already collects.",
+      "doesNotProve": "The incomplete route cannot establish the citywide blockage rate.",
+      "art": "evidence_field_photos"
+    },
+    {
+      "id": "e_rain_forecast",
+      "title": "Thirty-day rainfall outlook",
+      "source": "Regional weather service",
+      "clock": "Updated Tuesday at 6:00 a.m.",
+      "hidden": false,
+      "summary": "Total rainfall is expected to be near normal, with a wide uncertainty range and an elevated chance of one intense storm.",
+      "body": [
+        "The most likely monthly total is ordinary. The outlook gives a 22 percent chance of a storm delivering more than two inches in six hours.",
+        "Forecast probabilities describe uncertainty; they are not promises about what will happen."
+      ],
+      "proves": "An intense storm is not the most likely outcome, but it remains a meaningful possibility.",
+      "doesNotProve": "It does not identify which streets would flood or guarantee a storm.",
+      "art": "evidence_rain_forecast"
+    },
+    {
+      "id": "e_cost_sheet",
+      "title": "Program cost sheet",
+      "source": "City finance office",
+      "clock": "Current budget proposal",
+      "hidden": false,
+      "summary": "A full delay costs a nonrefundable drone reservation fee; funding both programs completely would exceed the monthly contingency fund.",
+      "body": [
+        "The drone vendor requires a 20 percent deposit this week. The city can fund critical drain clearing plus a smaller drone pilot without exceeding the contingency limit.",
+        "Any emergency crew overtime later in the month would need a public amendment."
+      ],
+      "proves": "There is enough money for a smaller pilot and priority drain work, but not both full plans.",
+      "doesNotProve": "It does not determine which neighborhoods should receive priority.",
+      "art": "evidence_cost_sheet"
+    },
+    {
+      "id": "e_model_notes",
+      "title": "Model parameter notes",
+      "source": "Optimizer configuration reviewed by BOY and TOOTH",
+      "clock": "Training window: previous eight years",
+      "hidden": true,
+      "summary": "The model removes the two wettest storm days as outliers and averages drain conditions across the whole city.",
+      "body": [
+        "The notes say extreme days were excluded to stabilize monthly cost predictions. No neighborhood-level flood-loss data was included.",
+        "Removing rare values can improve an average prediction while hiding the events that matter most for emergency preparation."
+      ],
+      "proves": "The low-risk score depends on excluding extreme storms and local differences.",
+      "doesNotProve": "It does not prove the recommendation is useless for ordinary months.",
+      "art": "evidence_model_notes"
+    },
+    {
+      "id": "e_drain_inspection",
+      "title": "Subsurface inspection",
+      "source": "Camera check ordered by the public works supervisor",
+      "clock": "Completed Tuesday afternoon",
+      "hidden": true,
+      "summary": "Seven of the 11 photographed low-area drains also have heavy blockage below the street surface.",
+      "body": [
+        "The camera route covers the three streets with the highest past flood losses. Two pipes are more than 70 percent blocked.",
+        "The inspection gives strong local evidence, but it still does not describe uninspected neighborhoods."
+      ],
+      "proves": "The visible field reports understate the blockage at several high-consequence locations.",
+      "doesNotProve": "It does not justify treating every city drain as equally urgent.",
+      "art": "evidence_drain_inspection"
+    }
+  ],
+  "advice": {
+    "boy": [
+      {
+        "id": "boy_parameter_notes",
+        "when": {
+          "inspected": [
+            "e_budget_model",
+            "e_rain_forecast"
+          ]
+        },
+        "text": "I found the model's parameter notes. The headline score leaves out the two wettest days and averages the whole city together. That does not make the model worthless, but it changes what the 7 percent means.",
+        "reveals": [
+          "e_model_notes"
+        ]
+      },
+      {
+        "id": "boy_city_compare",
+        "when": {},
+        "text": "Three other cities report savings from street-cleaning drones, but their accounting rules and drainage systems differ. It is a useful comparison, not a copy-and-paste answer."
+      }
+    ],
+    "tooth": [
+      {
+        "id": "tooth_subsurface",
+        "when": {
+          "inspected": [
+            "e_field_photos",
+            "e_model_notes"
+          ]
+        },
+        "text": "The photos are real but incomplete. I asked for a camera inspection at the highest-loss streets. Seven drains are blocked below the surface, including two severe cases. That is independent local evidence the model lacks.",
+        "reveals": [
+          "e_drain_inspection"
+        ]
+      },
+      {
+        "id": "tooth_missing_inputs",
+        "when": {},
+        "text": "Before trusting a citywide risk number, ask what data was excluded and whether the average hides neighborhoods with much higher consequences."
+      }
+    ],
+    "darth": [
+      {
+        "id": "darth_targeted_risk",
+        "when": {
+          "inspected": [
+            "e_drain_inspection",
+            "e_rain_forecast"
+          ]
+        },
+        "text": "The intense storm is only a 22 percent possibility, but two pipes in known flood streets are more than 70 percent blocked. A low chance multiplied by severe harm still deserves targeted action."
+      },
+      {
+        "id": "darth_freeze",
+        "when": {},
+        "text": "If the model is wrong and the storm arrives, the lowest streets pay the price. I would protect drainage first, though I may be overweighting the worst month."
+      }
+    ],
+    "donsol": [
+      {
+        "id": "donsol_phased",
+        "when": {
+          "inspected": [
+            "e_cost_sheet",
+            "e_drain_inspection"
+          ]
+        },
+        "text": "The cost sheet supports a smaller drone pilot while crews clear the seven verified underground blockages. Add a public checkpoint after two weeks so the council must review new rain and inspection data before shifting more money."
+      },
+      {
+        "id": "donsol_tradeoff",
+        "when": {},
+        "text": "Do not hide the tradeoff behind one score. State who gets the benefit, who carries the risk, and what evidence will trigger a change in the plan."
+      }
+    ]
+  },
+  "trustJudgment": {
+    "mode": "weigh_each",
+    "prompt": "How much weight should each adviser carry when a citywide model conflicts with incomplete but local field evidence?",
+    "availableAfter": {
+      "minimumEvidence": 4,
+      "minimumAdvisers": 3
+    },
+    "options": [
+      {
+        "advisorId": "boy",
+        "label": "Weigh BOY's model-source search",
+        "strength": "He finds the exclusions hidden behind the headline risk score.",
+        "blindSpot": "His city comparisons use different systems and accounting rules.",
+        "reveals": [
+          "e_model_notes"
+        ]
+      },
+      {
+        "advisorId": "tooth",
+        "label": "Weigh TOOTH's field verification",
+        "strength": "He connects photographs to a targeted subsurface inspection.",
+        "blindSpot": "His strongest evidence covers only the highest-risk streets.",
+        "reveals": [
+          "e_drain_inspection"
+        ]
+      },
+      {
+        "advisorId": "darth",
+        "label": "Weigh LUKE's consequence warning",
+        "strength": "He notices that an average probability can hide unequal harm.",
+        "blindSpot": "He may spend too much to prepare for rare events.",
+        "reveals": []
+      },
+      {
+        "advisorId": "donsol",
+        "label": "Weigh DON SOL's phased compromise",
+        "strength": "He ties funding to evidence and a scheduled review.",
+        "blindSpot": "A phased plan works only if its review cannot be quietly skipped.",
+        "reveals": []
+      }
+    ],
+    "outcomeRule": "The strongest judgment combines local verification, explicit uncertainty, and a measurable checkpoint rather than automatically choosing either the model or the crews."
+  },
+  "decisions": [
+    {
+      "id": "d_follow_model",
+      "label": "Approve the full 35 percent transfer",
+      "description": "Follow the optimizer's savings plan and launch the full drone program this month.",
+      "risk": "The city gains efficiency quickly but leaves verified high-risk drains with less maintenance before the storm window closes.",
+      "outcome": {
+        "heading": "The average was not the whole city",
+        "text": "The drones improve downtown litter collection. Twelve days later, an intense storm floods two low-lying streets where subsurface blockages were documented. No one is killed, but homes and a clinic are damaged. The citywide model was useful for ordinary conditions and unsafe as the only decision rule.",
+        "trustVariants": {
+          "boy": "BOY found the model exclusions, but the headline savings carried more weight than his warning.",
+          "tooth": "TOOTH's verified local evidence was available and not reflected in the allocation.",
+          "darth": "LUKE's feared storm happened, though that does not make every future worst case certain.",
+          "donsol": "DON SOL's checkpoint and targeted protection were omitted from the final plan."
+        }
+      }
+    },
+    {
+      "id": "d_freeze_audit",
+      "label": "Freeze the transfer for a full audit",
+      "description": "Keep the existing drainage budget untouched and delay the drone contract until every route and model input is audited.",
+      "risk": "This protects maintenance funds but loses the vendor deposit and delays a program that could reduce debris entering drains.",
+      "outcome": {
+        "heading": "Safer budget, costly delay",
+        "text": "Crews clear the known drains before the next storm. The city loses its reservation fee, and the drone pilot moves to next year. The audit later confirms the model exclusions but also shows the smaller pilot could have operated without reducing critical maintenance.",
+        "trustVariants": {
+          "boy": "BOY's model notes justified an audit, but his evidence did not require cancelling every part of the pilot.",
+          "tooth": "TOOTH's careful approach protected the known streets but took longer than a targeted check required.",
+          "darth": "LUKE's safety priority was honored, while the cost of treating every uncertainty as a stop sign became visible.",
+          "donsol": "DON SOL's option to preserve both programs at smaller scale was left unused."
+        }
+      }
+    },
+    {
+      "id": "d_manual_overtime",
+      "label": "Fund both plans with emergency overtime",
+      "description": "Keep the full drone rollout and restore drain crews by borrowing from the monthly contingency fund.",
+      "risk": "Both programs move, but the city has little reserve left for equipment failure, shelter needs, or storm response.",
+      "outcome": {
+        "heading": "Everything funded, nothing left in reserve",
+        "text": "The critical drains are cleared and the drones launch. When a pump fails during a later storm, the contingency fund cannot cover a replacement without an emergency council meeting. Flooding is contained, but the rushed amendment costs more and delays shelter support.",
+        "trustVariants": {
+          "boy": "BOY's efficiency evidence was honored, but the search for savings stopped before reserve risk was solved.",
+          "tooth": "TOOTH's verified blockages were addressed, though the budget evidence warned the reserve would be too thin.",
+          "darth": "LUKE focused on flood prevention and underweighted the different emergency created by an empty reserve.",
+          "donsol": "DON SOL's demand to state every tradeoff would have exposed the reserve problem before the vote."
+        }
+      }
+    },
+    {
+      "id": "d_phased_reallocation",
+      "label": "Protect priority drains and run a smaller pilot",
+      "description": "Clear the seven verified underground blockages, shift 10 percent to a limited drone pilot, and require a two-week public review before any larger transfer.",
+      "risk": "The city receives fewer immediate savings and must enforce the review, but both programs produce evidence before the next allocation.",
+      "requires": {
+        "evidence": [
+          "e_model_notes",
+          "e_drain_inspection",
+          "e_cost_sheet"
+        ],
+        "trustedAdvisors": [
+          "tooth",
+          "donsol"
+        ]
+      },
+      "outcome": {
+        "heading": "The budget becomes a test, not a bet",
+        "text": "Crews clear the verified high-consequence drains while a small drone team operates downtown. At the public checkpoint, the city compares debris reduction, new inspections, and the updated forecast before releasing more funds. The plan costs more than the optimizer's headline, but it protects the most exposed streets and produces better evidence.",
+        "trustVariants": {
+          "boy": "BOY's parameter notes changed how the council interpreted the model instead of causing it to be discarded.",
+          "tooth": "TOOTH's local inspection determined where immediate money produced the greatest safety value.",
+          "darth": "LUKE's consequence warning shaped the priority list without allowing a rare event to consume the entire budget.",
+          "donsol": "DON SOL turned compromise into a measurable plan with a date, evidence, and a public decision point."
+        }
+      }
+    }
+  ],
+  "postmortem": {
+    "d_follow_model": {
+      "known": [
+        "The optimizer excluded the wettest storm days.",
+        "Severe blockages were verified in known flood streets."
+      ],
+      "unknown": [
+        "Whether the flooding would have been prevented by the full original maintenance budget.",
+        "How much the drones reduced debris entering other drains."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "strong",
+          "text": "Found exclusions that changed the meaning of the model's headline score."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Verified a concentrated local risk the citywide average concealed."
+        },
+        "darth": {
+          "rating": "mixed",
+          "text": "Correctly identified severe consequences, but a realized worst case does not validate every alarm."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "Proposed a checkpoint that would have linked the budget to evidence before the storm."
+        }
+      }
+    },
+    "d_freeze_audit": {
+      "known": [
+        "Known drains were cleared before the storm.",
+        "The full audit confirmed important model omissions."
+      ],
+      "unknown": [
+        "What evidence a smaller live pilot would have produced.",
+        "Whether the lost reservation fee changes future program costs."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "strong",
+          "text": "Found the reason an audit was warranted without proving the entire proposal was unsound."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Supported verification and targeted field work."
+        },
+        "darth": {
+          "rating": "mixed",
+          "text": "Protected against flood harm but gave little weight to delay and opportunity cost."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "Offered a smaller reversible pilot that the freeze did not use."
+        }
+      }
+    },
+    "d_manual_overtime": {
+      "known": [
+        "Both programs operated this month.",
+        "The contingency reserve was nearly exhausted."
+      ],
+      "unknown": [
+        "Which parts of the full drone rollout added more value than the smaller pilot.",
+        "What another simultaneous emergency would have cost."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "mixed",
+          "text": "Found savings evidence but did not solve the reserve problem."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "His verified blockages received funding and were cleared."
+        },
+        "darth": {
+          "rating": "weak",
+          "text": "Focused on one emergency while underweighting the protection provided by a reserve."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "His tradeoff framing would have made the empty reserve an explicit choice."
+        }
+      }
+    },
+    "d_phased_reallocation": {
+      "known": [
+        "The seven verified underground blockages were cleared.",
+        "A limited pilot produced real cost and performance data."
+      ],
+      "unknown": [
+        "Whether the pilot's early results will hold across a full season.",
+        "What risks remain in uninspected neighborhoods."
+      ],
+      "advisors": {
+        "boy": {
+          "rating": "strong",
+          "text": "Found the model notes and useful comparisons without treating either as the final answer."
+        },
+        "tooth": {
+          "rating": "strong",
+          "text": "Connected field claims to independent targeted inspection."
+        },
+        "darth": {
+          "rating": "strong",
+          "text": "Made unequal consequences visible without dictating an unlimited response."
+        },
+        "donsol": {
+          "rating": "strong",
+          "text": "Defined a reversible allocation with a public, evidence-based checkpoint."
+        }
+      }
+    }
+  },
+  "presentation": {
+    "caseLabel": "CASE 4 OF 5",
+    "assignmentTitle": "The city budget vote",
+    "summary": "A model predicts savings. Field crews report local danger. Decide what the city funds, what it delays, and who carries the risk.",
+    "tasks": [
+      "Inspect the model, forecast, field, and budget records.",
+      "Find what the citywide average leaves out.",
+      "Weigh each adviser instead of choosing one automatic authority.",
+      "Make a budget decision with a visible tradeoff and review point."
+    ],
+    "artSlots": {
+      "header": "case_header",
+      "map": "drainage_priority_map",
+      "outcome": "case_outcome"
+    },
+    "glossary": {
+      "outlier": "A value far from most others. Removing it can clarify an average or hide a rare event that matters.",
+      "citywide average": "One number that combines many places; it may conceal important local differences.",
+      "contingency fund": "Money held back for needs or emergencies that were not fully predicted.",
+      "checkpoint": "A scheduled moment when new evidence must be reviewed before a plan continues or expands."
+    }
+  },
+  "progression": {
+    "requires": "episode-003",
+    "unlocks": "episode-005",
+    "continuityBeat": "The player moves from checking one faulty device to judging how a model distributes public money and risk across a whole city."
+  }
+}
