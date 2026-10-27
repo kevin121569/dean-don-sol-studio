@@ -21,11 +21,33 @@ function fail(message) {
   saveStatus.textContent = "BLOCKED";
 }
 
+function digestHex(digest) {
+  return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, "0")).join("");
+}
+
 async function sha256(text) {
   if (!globalThis.crypto?.subtle) throw new Error("This browser cannot verify the approved case fingerprint.");
   const bytes = new TextEncoder().encode(text);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
-  return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, "0")).join("");
+  return digestHex(digest);
+}
+
+async function loadArt(art) {
+  if (!art) return {assetOverrides: {}, evidenceArt: {}};
+  const entries = Object.entries(art);
+  const loaded = await Promise.all(entries.map(async ([evidenceId, spec]) => {
+    const response = await fetch(new URL(spec.source, manifestUrl), {cache: "no-store"});
+    if (!response.ok) throw new Error(`Original art for ${evidenceId} failed to load (${response.status}).`);
+    const bytes = await response.arrayBuffer();
+    const actualHash = digestHex(await crypto.subtle.digest("SHA-256", bytes));
+    if (actualHash !== spec.sourceHash) throw new Error(`Original art fingerprint changed for ${evidenceId}.`);
+    const binary = [...new Uint8Array(bytes)].map((value) => String.fromCharCode(value)).join("");
+    return [evidenceId, spec.asset, `data:image/jpeg;base64,${btoa(binary)}`];
+  }));
+  return {
+    evidenceArt: Object.fromEntries(loaded.map(([evidenceId, asset]) => [evidenceId, asset])),
+    assetOverrides: Object.fromEntries(loaded.map(([, asset, data]) => [asset, data]))
+  };
 }
 
 async function loadJson(url) {
@@ -58,6 +80,7 @@ async function start() {
     const source = await sourceResponse.text();
     const actualHash = await sha256(source);
     if (actualHash !== item.runtime.sourceHash) throw new Error("The case source fingerprint does not match the approved version.");
+    const art = await loadArt(item.runtime.art);
 
     let completionAnnounced = false;
     window.addEventListener("harness:case-completed", (event) => {
@@ -91,7 +114,9 @@ async function start() {
       caseId: item.id,
       episodeId: item.episodeId,
       inspector: item.runtime.inspector,
-      transforms: item.runtime.transforms
+      transforms: item.runtime.transforms,
+      evidenceArt: art.evidenceArt,
+      assetOverrides: art.assetOverrides
     });
     loading.hidden = true;
     frame.hidden = false;

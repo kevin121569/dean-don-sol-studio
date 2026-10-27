@@ -19,6 +19,38 @@ function removeScriptById(source, id) {
   return source.slice(0, start) + source.slice(end + "</script>".length);
 }
 
+function replaceOnce(source, before, after, label) {
+  const start = source.indexOf(before);
+  if (start < 0) throw new Error(`Approved compatibility marker is missing: ${label}.`);
+  if (source.indexOf(before, start + before.length) >= 0) throw new Error(`Expected one compatibility marker: ${label}.`);
+  return source.slice(0, start) + after + source.slice(start + before.length);
+}
+
+function applyServer4Art(source, evidenceArt) {
+  const evidenceIds = ["e_monitor", "e_controller", "e_technician", "e_protocol", "e_clocksync"];
+  if (!isObject(evidenceArt) || !evidenceIds.every((id) => typeof evidenceArt[id] === "string" && evidenceArt[id].length > 0)) {
+    throw new Error("Server 4 requires one approved art asset for every evidence record.");
+  }
+  const before = "const img={e_monitor:'v34/ledger.jpg',e_controller:'v34/hub.jpg',e_technician:'v34/hub.jpg',e_protocol:'v34/audit.jpg',e_clocksync:'v34/audit.jpg'};";
+  const after = `const img={${evidenceIds.map((id) => `${id}:${JSON.stringify(evidenceArt[id])}`).join(",")}};`;
+  return replaceOnce(source, before, after, "Server 4 evidence-art map");
+}
+
+function injectAssetOverrides(source, overrides) {
+  if (!isObject(overrides) || Object.keys(overrides).length === 0) return source;
+  for (const [name, value] of Object.entries(overrides)) {
+    if (!/^server4\/[a-z0-9-]+\.jpg$/.test(name)) throw new Error(`Unsafe Server 4 asset name: ${name}`);
+    if (typeof value !== "string" || !value.startsWith("data:image/jpeg;base64,")) throw new Error(`Invalid Server 4 asset payload: ${name}`);
+  }
+  const episodeMarker = "window.HarnessEpisode = ";
+  const episodeAt = source.indexOf(episodeMarker);
+  const scriptAt = source.lastIndexOf("<script", episodeAt);
+  if (episodeAt < 0 || scriptAt < 0) throw new Error("Legacy episode payload marker is missing.");
+  const encoded = JSON.stringify(overrides).replaceAll("<", "\\u003c");
+  const script = `<script id="harness-server4-art">Object.assign(window.HarnessEmbeddedAssets,${encoded});</script>\n`;
+  return source.slice(0, scriptAt) + script + source.slice(scriptAt);
+}
+
 function bridgeScript(config) {
   const encoded = JSON.stringify({
     channel: CHANNEL,
@@ -64,10 +96,14 @@ export function prepareLegacyHtml(source, config) {
   for (const transform of transforms) {
     if (transform === "remove-legacy-campaign-observer") {
       html = removeScriptById(html, LEGACY_OBSERVER_SCRIPT_ID);
+    } else if (transform === "server4-original-art") {
+      html = applyServer4Art(html, config.evidenceArt);
     } else {
       throw new Error(`Unknown legacy transform: ${transform}`);
     }
   }
+
+  html = injectAssetOverrides(html, config.assetOverrides);
 
   const close = html.lastIndexOf("</body>");
   if (close < 0) throw new Error("Legacy HTML has no closing body tag.");

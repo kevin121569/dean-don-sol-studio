@@ -23,17 +23,25 @@ test("prepared Level 1 and repository Level 2 are the exact approved sources", (
 test("Level 1 adapter removes only the known observer script and adds the explicit bridge", () => {
   assert.match(level1, new RegExp(`<script id="${LEGACY_OBSERVER_SCRIPT_ID}">`));
   assert.match(level1, /new MutationObserver\(enhance\)/);
+  const art = runtime("episode-001").art;
+  const evidenceArt = Object.fromEntries(Object.entries(art).map(([id, item]) => [id, item.asset]));
+  const assetOverrides = Object.fromEntries(Object.values(art).map((item) => [item.asset, "data:image/jpeg;base64,AA=="]));
   const html = prepareLegacyHtml(level1, {
     caseId: "episode-001",
     episodeId: "episode-001",
     inspector: "HarnessV34",
-    transforms: ["remove-legacy-campaign-observer"]
+    transforms: runtime("episode-001").transforms,
+    evidenceArt,
+    assetOverrides
   });
   assert.doesNotMatch(html, new RegExp(`<script id="${LEGACY_OBSERVER_SCRIPT_ID}">`));
   assert.doesNotMatch(html, /new MutationObserver\(enhance\)/);
   assert.match(html, /id="harness-campaign-bridge"/);
   assert.match(html, /window\.HarnessV34=harnessInspector/);
   assert.match(html, /"caseId":"episode-001"/);
+  assert.doesNotMatch(html, /const img=\{e_monitor:'v34\/ledger\.jpg'/);
+  for (const item of Object.values(art)) assert.match(html, new RegExp(item.asset.replace(".", "\\.")));
+  assert.ok(html.indexOf('id="harness-server4-art"') < html.indexOf("window.HarnessEpisode = "));
 });
 
 test("Level 2 adapter preserves the approved game and adds only its bridge", () => {

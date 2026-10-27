@@ -44,10 +44,11 @@ values are:
 - session wrapper: `41392498876f3829d054a7a0cb0f7e3d86ca044f4c4e6abecea60d855349405f`
 - audio module: `3e78e6836b7ad36bd3830e34e6a20c2b3053973ce82fc0b3149c198cc8e83403`
 
-The Level 1 presentation is not production-complete art-wise: its evidence map
-reuses Level 2 `ledger.jpg`, `hub.jpg`, and `audit.jpg` assets. The data remains
-valid, but original Server 4 art is a release blocker rather than a reason to
-keep borrowed harbor imagery.
+The frozen Level 1 presentation reuses Level 2 `ledger.jpg`, `hub.jpg`, and
+`audit.jpg` assets. The campaign adapter now replaces that borrowed imagery
+with five distinct, fingerprinted Server 4 evidence illustrations without
+changing the oracle. Final phone review of those replacements remains a release
+gate.
 
 ## Product decisions for implementation
 
@@ -82,6 +83,8 @@ The first campaign-shell slice is implemented in this branch:
 - the runner verifies each full monolith SHA-256 before it executes;
 - Level 1 is recreated from fingerprinted historical inputs, then its known
   self-triggering observer is removed in memory without changing the oracle;
+- five original, fingerprinted Server 4 images replace the borrowed Harbor
+  evidence cards through the same allowlisted in-memory adapter;
 - minimal state crosses one validated `postMessage` bridge and completion still
   uses the explicit `harness:case-completed` event;
 - Cases 3-5 keep `launch: null`, so candidate content cannot be mistaken for a

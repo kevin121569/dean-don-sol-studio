@@ -18,8 +18,10 @@ Cases 1 and 2 now open through `app/case.html`, a single compatibility runner.
 It fingerprints the approved monolith before execution, reads only the frozen
 `HarnessV34` inspection surface, and mirrors minimal case state into the
 campaign save namespace. Level 1's known self-triggering campaign observer is
-removed in memory; the frozen file itself is never changed. Cases 3-5 remain
-disconnected until the shared renderer and production assets pass their gates.
+removed in memory; the frozen file itself is never changed. Five original
+Server 4 evidence illustrations replace the borrowed Harbor cards through the
+same in-memory adapter. Cases 3-5 remain disconnected until the shared renderer
+and production assets pass their gates.
 
 ## Intended launch scope
 
@@ -64,6 +66,6 @@ Cases 3-5. It is intentionally **not an APK** and not yet a replacement game.
 It now also contains the phone-first case selector, isolated v2 campaign
 storage, and fingerprint-locked playable routes for Cases 1 and 2. Cases 3-5
 stay disconnected until their renderer, art, and regression gates pass. The
-only Level 1 source delta is the explicitly allowlisted completion fix applied
-in memory by the compatibility runner.
+only Level 1 presentation deltas are the explicitly allowlisted completion fix
+and original evidence art applied in memory by the compatibility runner.
 

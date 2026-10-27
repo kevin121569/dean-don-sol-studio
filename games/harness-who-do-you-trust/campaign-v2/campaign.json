@@ -27,8 +27,36 @@
         "source": "build/level-1.html",
         "sourceHash": "4fbe004e42c12af00a34006a939deed8dc14d74b74ae6c1d44bbd5c535ba4ccd",
         "inspector": "HarnessV34",
+        "art": {
+          "e_monitor": {
+            "asset": "server4/monitor-alert.jpg",
+            "source": "assets/server4/monitor-alert.jpg",
+            "sourceHash": "f3fdc98073a8f2e37fb8496c9d6f82411f2ec7ab2ad5927d05431eea3d96f540"
+          },
+          "e_controller": {
+            "asset": "server4/controller-log.jpg",
+            "source": "assets/server4/controller-log.jpg",
+            "sourceHash": "2c6b2cdda9d2f41ce588a0db4d078fb641c672b1c5ade53e724f007d42783aa8"
+          },
+          "e_technician": {
+            "asset": "server4/technician-statement.jpg",
+            "source": "assets/server4/technician-statement.jpg",
+            "sourceHash": "ecf72cfac8babcad253c831440a4d42e936f597da3d06d94e7933d2a4971826f"
+          },
+          "e_protocol": {
+            "asset": "server4/containment-protocol.jpg",
+            "source": "assets/server4/containment-protocol.jpg",
+            "sourceHash": "38b7a97ac37d1cecbd64d85a819e1bba5ac7edd223b6e1cf585ad9be58ae8db7"
+          },
+          "e_clocksync": {
+            "asset": "server4/clock-sync.jpg",
+            "source": "assets/server4/clock-sync.jpg",
+            "sourceHash": "dfe16579d6676717725249ecd6dc81537baffec724f53573989ac1e24b21f6fd"
+          }
+        },
         "transforms": [
-          "remove-legacy-campaign-observer"
+          "remove-legacy-campaign-observer",
+          "server4-original-art"
         ]
       },
       "unlocks": "episode-002"

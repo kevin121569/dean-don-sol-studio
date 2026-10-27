@@ -184,9 +184,28 @@ if (campaign) {
   requireValue(JSON.stringify(connected) === JSON.stringify(["episode-001", "episode-002"]), "campaign: only approved Cases 1 and 2 may be connected at this checkpoint");
   const level1Runtime = campaign.cases?.find((entry) => entry.id === "episode-001")?.runtime;
   requireValue(
-    JSON.stringify(level1Runtime?.transforms) === JSON.stringify(["remove-legacy-campaign-observer"]),
-    "episode-001: the allowlisted observer removal must be the only compatibility transform"
+    JSON.stringify(level1Runtime?.transforms) === JSON.stringify(["remove-legacy-campaign-observer", "server4-original-art"]),
+    "episode-001: only the observer repair and original-art map may transform the approved runtime"
   );
+  const level1ArtIds = ["e_monitor", "e_controller", "e_technician", "e_protocol", "e_clocksync"];
+  requireValue(
+    JSON.stringify(Object.keys(level1Runtime?.art ?? {})) === JSON.stringify(level1ArtIds),
+    "episode-001: original art must cover all five evidence records in order"
+  );
+  const artAssets = [];
+  for (const evidenceId of level1ArtIds) {
+    const art = level1Runtime?.art?.[evidenceId];
+    requireValue(/^server4\/[a-z0-9-]+\.jpg$/.test(art?.asset ?? ""), `episode-001/${evidenceId}: unsafe runtime asset name`);
+    requireValue(typeof art?.sourceHash === "string" && art.sourceHash.length === 64, `episode-001/${evidenceId}: art fingerprint is required`);
+    if (art?.asset) artAssets.push(art.asset);
+    try {
+      const artPath = resolve(campaignRoot, art.source);
+      requireValue(sha256(artPath) === art.sourceHash, `episode-001/${evidenceId}: original art fingerprint changed`);
+    } catch (error) {
+      errors.push(`episode-001/${evidenceId}: cannot read original art ${art?.source}: ${error.message}`);
+    }
+  }
+  requireValue(unique(artAssets), "episode-001: every evidence record must have distinct original art");
 
   for (const level of [3, 4, 5]) {
     const id = `episode-00${level}`;
