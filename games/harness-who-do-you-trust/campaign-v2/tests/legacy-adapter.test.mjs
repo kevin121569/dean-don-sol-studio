@@ -56,7 +56,12 @@ test("Level 2 adapter preserves the approved game and adds only its bridge", () 
   });
   const bridgeAt = html.indexOf('<script id="harness-campaign-bridge">');
   assert.ok(bridgeAt > 0);
-  assert.equal(html.slice(0, bridgeAt), level2.slice(0, level2.lastIndexOf("</body>")));
+  const layerAt = html.indexOf('<style id="harness-mobile-usability">');
+  assert.ok(layerAt > 0 && layerAt < bridgeAt);
+  assert.equal(html.slice(0, layerAt), level2.slice(0, level2.lastIndexOf("</body>")));
+  assert.match(html, /Four clues checked—look deeper/);
+  assert.match(html, /harness-fifth-pulse/);
+  assert.match(html, /Scroll for more/);
   assert.match(html, /"caseId":"episode-002"/);
 });
 
@@ -98,4 +103,15 @@ test("all five approved cases have launch routes and preserve their runtime type
       ["episode-005", true, "shared-case-renderer"]
     ]
   );
+});
+
+
+test("additive usability injects once and preserves approved case source hashes", () => {
+  const adapted = prepareLegacyHtml(level2, {
+    caseId: "episode-002", episodeId: "episode-002", inspector: "HarnessV34", transforms: []
+  });
+  assert.equal((adapted.match(/id="harness-mobile-usability-script"/g) ?? []).length, 1);
+  assert.match(adapted, /prefers-reduced-motion:reduce/);
+  assert.match(adapted, /safe-area-inset-bottom/);
+  assert.equal(hash(level2), runtime("episode-002").sourceHash);
 });

@@ -1,3 +1,5 @@
+import {legacyUsabilityScript} from "./legacy-usability.mjs";
+
 const CHANNEL = "harness-campaign/v2";
 const STATE_MESSAGE = "case-state";
 export const LEGACY_OBSERVER_SCRIPT_ID = "campaign-progress-script";
@@ -119,7 +121,7 @@ export function prepareLegacyHtml(source, config) {
 
   const close = html.lastIndexOf("</body>");
   if (close < 0) throw new Error("Legacy HTML has no closing body tag.");
-  return html.slice(0, close) + bridgeScript(config) + "\n" + html.slice(close);
+  return html.slice(0, close) + legacyUsabilityScript(config) + bridgeScript(config) + "\n" + html.slice(close);
 }
 
 export function normalizeLegacyMessage(value, expectedCaseId, expectedEpisodeId = expectedCaseId) {
