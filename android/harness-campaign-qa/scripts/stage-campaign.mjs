@@ -3,7 +3,7 @@ import {cp, mkdir, readFile, readdir, rm, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 
-const BUILD_ID = "FULL5-20261027-E";
+const BUILD_ID = "FULL5-20261028-F";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const wrapperRoot = path.resolve(here, "..");
 const repoRoot = path.resolve(wrapperRoot, "../..");
@@ -50,7 +50,7 @@ if (!case2?.runtime) throw new Error("Campaign manifest is missing Case 2.");
 case2.runtime.source = "build/level-2.html";
 stagedManifest.qa = {
   buildId: BUILD_ID,
-  appId: "com.theidealabstudio.harness.campaign.fullqa.e",
+  appId: "com.theidealabstudio.harness.campaign.fullqa.f",
   scope: "five-case-campaign",
   productionRelease: false
 };
