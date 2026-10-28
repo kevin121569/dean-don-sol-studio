@@ -1,7 +1,7 @@
 {
   "name": "harness-campaign-five-case-qa",
   "private": true,
-  "version": "0.5.0-qa.20261027",
+  "version": "0.5.1-qa.20261028",
   "description": "Isolated Android QA wrapper for the complete HARNESS five-case campaign",
   "scripts": {
     "prepare:campaign": "node ../../games/harness-who-do-you-trust/campaign-v2/scripts/prepare-runtime.mjs",
