@@ -87,3 +87,14 @@ a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
   .save-status { display: none; }
   .back { min-height: 44px; }
 }
+
+
+/* Kate usability QA: dynamic title height and true Android-safe frame sizing. */
+html,body{max-width:100%;min-width:0}
+body{min-height:100dvh;height:100dvh;display:flex;flex-direction:column}
+.runner-header{flex:0 0 auto;min-width:0;align-items:center}
+.runner-title strong{overflow:visible;text-overflow:clip;white-space:normal;overflow-wrap:anywhere;line-height:1.35}
+.runner{height:auto;flex:1 1 auto;min-height:0;min-width:0}
+#caseFrame{display:block;min-height:0}
+#caseFrame[hidden]{display:none}
+@media(max-width:520px){.runner-header{gap:8px;padding-inline:8px}.runner-title{min-width:0}}
