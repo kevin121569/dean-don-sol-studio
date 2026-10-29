@@ -62,6 +62,10 @@ test("Level 2 adapter preserves the approved game and adds only its bridge", () 
   assert.match(html, /Four clues checked—look deeper/);
   assert.match(html, /harness-fifth-pulse/);
   assert.match(html, /Scroll for more/);
+  assert.match(html, /id="harness-build-g-polish"/);
+  assert.match(html, /Something new to search for/);
+  assert.match(html, /Clue opened ✓/);
+  assert.equal((html.match(/id="harness-build-g-polish-script"/g) ?? []).length, 1);
   assert.match(html, /"caseId":"episode-002"/);
 });
 
