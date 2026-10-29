@@ -45,7 +45,7 @@ try {
   assert.equal(await storeAction("status","episode-002"),"locked");
 
   await goto("/campaign/app/case.html?case=episode-001");
-  await page.waitForFunction(() => Boolean(document.querySelector("#caseFrame")?.contentWindow?.HarnessV34), {timeout:45000});
+  await page.waitForFunction(() => Boolean(document.querySelector("#caseFrame")?.contentWindow?.HarnessV34), null, {timeout:45000});
   assert.equal(await page.locator("#caseFrame").isVisible(),true);
 
   assert.equal(await storeAction("complete","episode-001","d_hybrid"),true);
@@ -83,10 +83,10 @@ try {
     }
     assert.equal(inspected.size,doc.evidence.length,id+" hidden evidence should be reachable through adviser chain");
     assert.equal(await page.locator(".evidence-grid img").count()>=4,true);
+    await page.waitForFunction(() => [...document.querySelectorAll(".evidence-grid img")].every(img => img.complete && img.naturalWidth > 0), null, {timeout:15000});
     const imageState = await page.locator(".evidence-grid img").evaluateAll(images => images.map(img => ({
       complete:img.complete,width:img.naturalWidth
     })));
-    await page.waitForTimeout(500);
     assert.equal(imageState.every(x=>x.complete&&x.width>0),true,id+" evidence images load");
 
     await page.locator('button[data-action="begin-trust"]').click();
