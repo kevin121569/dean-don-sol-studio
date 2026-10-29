@@ -34,6 +34,8 @@ const campaignIndex = await readFile(path.join(dist, "campaign/app/index.html"),
 const campaignScript = await readFile(path.join(dist, "campaign/app/campaign.mjs"), "utf8");
 const level1Html = await readFile(path.join(dist, "campaign/build/level-1.html"), "utf8");
 const playHtml = await readFile(path.join(dist, "campaign/app/play.html"), "utf8");
+const sharedRenderer = await readFile(path.join(dist, "campaign/app/play.mjs"), "utf8");
+const navigation = await readFile(path.join(dist, "campaign/app/mobile-navigation.mjs"), "utf8");
 const sharedUsability = await readFile(path.join(dist, "campaign/app/shared-usability.mjs"), "utf8");
 const playCss = await readFile(path.join(dist, "campaign/app/play.css"), "utf8");
 const legacyPolish = await readFile(path.join(dist, "campaign/runtime/legacy-polish.mjs"), "utf8");
@@ -45,6 +47,9 @@ ok(config.appName === "HARNESS QA H · 5 CASES", "QA launcher name changed");
 ok(config.webDir === "dist", "QA webDir must remain dist");
 ok(rootHtml.includes(`BUILD ${BUILD_ID}`), "root QA build stamp missing");
 ok(playHtml.includes(`HARNESS QA · FIVE CASES · ${BUILD_ID}`), "in-game QA build banner missing");
+ok(!sharedRenderer.includes('addListener("backButton", handleBack)') && !sharedRenderer.includes('window.addEventListener("popstate", handleBack)'), "shared renderer must not compete with central Back handling");
+ok(navigation.includes('history.pushState({harnessCaseBackGuard: true}') && navigation.includes('addListener?.("backButton", toCaseMenu)'), "central Back handler must handle both WebView history and native Android");
+
 ok(playHtml.includes('calc(32px + env(safe-area-inset-top))'), "QA status bar safe-area padding missing");
 ok(playHtml.includes('flex-shrink:0'), "QA banner must not collapse inside runner");
 ok(sharedUsability.includes('Something new to search for') && playCss.includes('.harness-new-lead'), "shared hidden-clue neutral label missing");
