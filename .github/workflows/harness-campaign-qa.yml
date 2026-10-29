@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - fix/harness-five-case-kate-usability-20261028
+      - fix/harness-five-case-build-g-20261029
     paths:
       - "android/harness-campaign-qa/**"
       - "games/harness-who-do-you-trust/campaign-v2/**"
@@ -68,21 +68,21 @@ jobs:
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           test -f "$APK"
           unzip -l "$APK" | grep "assets/public/qa-manifest.json"
-          unzip -p "$APK" assets/public/qa-manifest.json | grep '"buildId": "FULL5-20261028-F"'
+          unzip -p "$APK" assets/public/qa-manifest.json | grep '"buildId": "FULL5-20261029-G"'
           "$ANDROID_HOME/build-tools/36.0.0/aapt2" dump badging "$APK" > apk-badging.txt
-          grep -F "package: name='com.theidealabstudio.harness.campaign.fullqa.f'" apk-badging.txt
-          grep -F "application-label:'HARNESS QA F · 5 CASES'" apk-badging.txt
+          grep -F "package: name='com.theidealabstudio.harness.campaign.fullqa.g'" apk-badging.txt
+          grep -F "application-label:'HARNESS QA G · 5 CASES'" apk-badging.txt
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify "$APK"
-          cp "$APK" HARNESS-QA-FIVE-CASES-FULL5-20261028-F.apk
-          sha256sum HARNESS-QA-FIVE-CASES-FULL5-20261028-F.apk > HARNESS-QA-FIVE-CASES-FULL5-20261028-F.apk.sha256
+          cp "$APK" HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk
+          sha256sum HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk > HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk.sha256
 
       - name: Upload phone-test APK
         uses: actions/upload-artifact@v4
         with:
-          name: HARNESS-QA-FIVE-CASES-FULL5-20261028-F
+          name: HARNESS-QA-FIVE-CASES-FULL5-20261029-G
           path: |
-            android/harness-campaign-qa/HARNESS-QA-FIVE-CASES-FULL5-20261028-F.apk
-            android/harness-campaign-qa/HARNESS-QA-FIVE-CASES-FULL5-20261028-F.apk.sha256
+            android/harness-campaign-qa/HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk
+            android/harness-campaign-qa/HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk.sha256
           if-no-files-found: error
           retention-days: 14
 

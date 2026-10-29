@@ -3,7 +3,7 @@ import {cp, mkdir, readFile, readdir, rm, writeFile} from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 
-const BUILD_ID = "FULL5-20261028-F";
+const BUILD_ID = "FULL5-20261029-G";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const wrapperRoot = path.resolve(here, "..");
 const repoRoot = path.resolve(wrapperRoot, "../..");
@@ -50,13 +50,13 @@ if (!case2?.runtime) throw new Error("Campaign manifest is missing Case 2.");
 case2.runtime.source = "build/level-2.html";
 stagedManifest.qa = {
   buildId: BUILD_ID,
-  appId: "com.theidealabstudio.harness.campaign.fullqa.f",
+  appId: "com.theidealabstudio.harness.campaign.fullqa.g",
   scope: "five-case-campaign",
   productionRelease: false
 };
 await writeFile(path.join(stagedCampaign, "campaign.json"), `${JSON.stringify(stagedManifest, null, 2)}\n`);
 
-const qaBanner = `<div id="qaBuildBanner" style="position:relative;z-index:1000;padding:8px 12px;background:#ffd166;color:#07151f;font:950 14px/1.3 system-ui;text-align:center;letter-spacing:.06em">HARNESS QA · FIVE CASES · ${BUILD_ID} · NOT FOR PLAY STORE</div>`;
+const qaBanner = `<div id="qaBuildBanner" style="position:relative;z-index:1000;flex-shrink:0;min-width:0;padding:calc(32px + env(safe-area-inset-top)) 12px 8px;background:#ffd166;color:#07151f;font:950 14px/1.3 system-ui;text-align:center;letter-spacing:.06em">HARNESS QA · FIVE CASES · ${BUILD_ID} · NOT FOR PLAY STORE</div>`;
 for (const filename of ["index.html", "case.html", "play.html"]) {
   const target = path.join(stagedCampaign, "app", filename);
   const html = await readFile(target, "utf8");
