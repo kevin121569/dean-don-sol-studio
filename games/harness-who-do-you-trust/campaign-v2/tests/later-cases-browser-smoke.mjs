@@ -6,6 +6,18 @@ import {chromium} from "playwright";
 const origin = process.env.HARNESS_QA_URL ?? "http://127.0.0.1:4173";
 const browser = await chromium.launch({headless:true});
 const context = await browser.newContext({viewport:{width:390,height:844},reducedMotion:"reduce"});
+await context.addInitScript(() => {
+  const registered = [];
+  window.__harnessBackCallbacks = registered;
+  window.Capacitor = {
+    Plugins: {App: {
+      addListener(type, callback) {
+        if (type === "backButton") registered.push(callback);
+        return Promise.resolve({remove() {}});
+      }
+    }}
+  };
+});
 const page = await context.newPage();
 const errors = [];
 page.on("pageerror", e => errors.push(e.message));
@@ -62,6 +74,23 @@ try {
     await page.locator("button[data-action=start]").click();
     await page.locator(".evidence-grid .evidence-card").first().waitFor({state:"visible"});
     assert.equal(await page.locator(".evidence-grid .evidence-card").count(),4);
+    // Each case must register only the campaign-level Back handler.
+    await page.waitForFunction(() => window.__harnessBackCallbacks?.length === 1, null, {timeout:5000});
+    assert.equal(await page.evaluate(() => window.__harnessBackCallbacks.length),1,id+" should have one Android Back listener");
+    if (num === 3) {
+      // One recorded clue must survive an Android Back to the case selector.
+      const firstClue = page.locator(".evidence-grid .evidence-card").first();
+      await firstClue.click();
+      await page.locator('button[data-action="close-drawer"]').click();
+      assert.equal(await storeAction("status",id),"in_progress");
+      await page.evaluate(() => window.__harnessBackCallbacks[0]());
+      await page.locator("#caseList .case-card").first().waitFor({state:"visible"});
+      assert.equal(await storeAction("status",id),"in_progress","Back must not erase case progress");
+      await goto("/campaign/app/play.html?case="+id);
+      await page.locator(".evidence-card.inspected").first().waitFor({state:"visible"});
+      assert.equal(await page.locator(".evidence-card.inspected").count(),1);
+      await page.waitForFunction(() => window.__harnessBackCallbacks?.length === 1, null, {timeout:5000});
+    }
 
     const doc = await (await page.request.get(origin+"/campaign/data/"+id+".json")).json();
     const inspected = new Set();
