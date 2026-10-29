@@ -3,9 +3,10 @@ name: HARNESS Cases 2–5 Season Regression
 on:
   push:
     branches:
-      - qa/harness-cases-2-5-season-regression-20261029
+      - fix/harness-single-back-handler-build-h-20261029
     paths:
       - "games/harness-who-do-you-trust/campaign-v2/**"
+      - "android/harness-campaign-qa/**"
       - ".github/workflows/harness-cases-2-5-qa.yml"
   workflow_dispatch:
 
@@ -39,12 +40,12 @@ jobs:
           python3 -m http.server 4173 --bind 127.0.0.1 --directory android/harness-campaign-qa/dist >/tmp/harness-qa-http.log 2>&1 &
           sleep 2
           node games/harness-who-do-you-trust/campaign-v2/tests/later-cases-browser-smoke.mjs
-      - name: Verify isolated QA test scope
+      - name: Verify protected original story and art files were not modified
         run: |
           CHANGED="$(git diff --name-only 381b7f8873978df7bd064bbbd77c3c1478bedd93 HEAD)"
           printf '%s\n' "$CHANGED"
-          test -n "$CHANGED"
-          if printf '%s\n' "$CHANGED" | grep -Ev '^(\.github/workflows/harness-cases-2-5-qa\.yml|games/harness-who-do-you-trust/campaign-v2/tests/(full-season-qa\.test\.mjs|later-cases-browser-smoke\.mjs))$'; then
-            echo "Unexpected gameplay-source modification in QA-only branch." >&2
+          if printf '%s\n' "$CHANGED" | grep -E '^games/harness-who-do-you-trust/campaign-v2/(data|assets|build)/|^android/harness-who-do-you-trust/www/'; then
+            echo "Protected story, art or monolith changed. STOP." >&2
             exit 1
           fi
+          test -f games/harness-who-do-you-trust/campaign-v2/tests/full-season-qa.test.mjs

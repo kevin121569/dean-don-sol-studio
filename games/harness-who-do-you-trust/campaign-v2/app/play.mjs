@@ -421,28 +421,10 @@ async function boot() {
     if (!preview && store.caseStatus(caseData.id) === "locked") return lockedScreen();
     const saved = preview ? null : store.loadCase(caseData.id);
     state = saved ? normalizeCaseSession(caseData, saved.session) : createCaseSession(caseData);
-    const capacitorApp = globalThis.Capacitor?.Plugins?.App;
-    if (capacitorApp?.addListener) capacitorApp.addListener("backButton", handleBack);
     render();
   } catch (error) {
     errorScreen(error instanceof Error ? error : new Error("Unknown case-loading error."));
   }
 }
-
-function handleBack() {
-  if (!state) return;
-  if (ui.drawerOpen) {
-    ui.drawerOpen = false;
-    render();
-    return;
-  }
-  if (state.sceneId !== "briefing") {
-    setState(previousScene(caseData, state));
-    return;
-  }
-  location.assign("./index.html");
-}
-
-window.addEventListener("popstate", handleBack);
 
 boot();
