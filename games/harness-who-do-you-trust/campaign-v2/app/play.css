@@ -586,3 +586,12 @@ html, body { max-width: 100%; overflow-x: hidden; }
   .drawer-panel { max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 8px); overflow-y: auto; }
 }
 @media(prefers-reduced-motion:reduce) { .harness-scroll-cue .arrow,.harness-fifth-pulse { animation:none !important; } }
+
+
+/* Build G: neutral fifth-lead label and accessible clue/sound confirmation. */
+.harness-new-lead { display:block;max-width:100%;margin:7px 8px 9px;padding:5px 7px;border:1px solid #83d5c5a8;border-radius:8px;background:#103a3b;color:#d9fff1;font:700 11px/1.4 system-ui,sans-serif;text-align:center;white-space:normal;overflow-wrap:anywhere; }
+.harness-tap-feedback { position:fixed;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:120;padding:7px 11px;border:1px solid #69cfa5;border-radius:999px;background:#0b342ded;color:#dfffee;font:800 12px/1.4 system-ui,sans-serif;pointer-events:none;box-shadow:0 5px 15px #0008; }
+.harness-tap-feedback[hidden] { display:none; }
+.harness-sound-toggle { display:inline-flex;align-items:center;min-height:42px;margin:4px 0 10px;padding:7px 12px;border:1px solid var(--line);border-radius:10px;background:#0b2c3a;color:var(--ink);font:800 12px/1.4 system-ui,sans-serif;cursor:pointer; }
+.harness-sound-toggle:focus-visible { outline:3px solid var(--amber);outline-offset:2px; }
+@media(prefers-reduced-motion:reduce) { .harness-new-lead,.harness-tap-feedback { animation:none!important; } }
