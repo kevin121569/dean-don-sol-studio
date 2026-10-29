@@ -6,6 +6,7 @@ on:
       - fix/harness-single-back-handler-build-h-20261029
     paths:
       - "games/harness-who-do-you-trust/campaign-v2/**"
+      - "android/harness-campaign-qa/**"
       - ".github/workflows/harness-cases-2-5-qa.yml"
   workflow_dispatch:
 
