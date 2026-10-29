@@ -26,6 +26,19 @@ jobs:
       - name: Validate five-case runtime hashes and all original regression tests
         working-directory: games/harness-who-do-you-trust/campaign-v2
         run: npm test && npm run validate
+      - name: Install browser-test runner
+        working-directory: games/harness-who-do-you-trust/campaign-v2
+        run: |
+          npm install --no-save --ignore-scripts --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Stage complete five-case QA browser payload
+        working-directory: android/harness-campaign-qa
+        run: npm run build:web
+      - name: Mobile browser smoke for Cases 2–5
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory android/harness-campaign-qa/dist >/tmp/harness-qa-http.log 2>&1 &
+          sleep 2
+          node games/harness-who-do-you-trust/campaign-v2/tests/later-cases-browser-smoke.mjs
       - name: Verify isolated QA test scope
         run: |
           git diff --name-only fix/harness-five-case-build-g-20261029 HEAD || true
