@@ -1,0 +1,32 @@
+name: HARNESS Cases 2–5 Season Regression
+
+on:
+  push:
+    branches:
+      - qa/harness-cases-2-5-season-regression-20261029
+    paths:
+      - "games/harness-who-do-you-trust/campaign-v2/**"
+      - ".github/workflows/harness-cases-2-5-qa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  full-season-logic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate five-case runtime hashes and all original regression tests
+        working-directory: games/harness-who-do-you-trust/campaign-v2
+        run: npm test && npm run validate
+      - name: Verify isolated QA test scope
+        run: |
+          git diff --name-only fix/harness-five-case-build-g-20261029 HEAD || true
+          test -f games/harness-who-do-you-trust/campaign-v2/tests/full-season-qa.test.mjs
