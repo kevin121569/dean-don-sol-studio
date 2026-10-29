@@ -16,8 +16,13 @@ jobs:
         working-directory: games/harness-who-do-you-trust
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Run Episode 1, creative, and mission-report regression suite
         run: node --test tests/*.test.js
+      - name: Run five-case campaign and decision-path regression suite
+        working-directory: games/harness-who-do-you-trust/campaign-v2
+        run: npm test
