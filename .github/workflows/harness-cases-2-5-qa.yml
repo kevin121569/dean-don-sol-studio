@@ -41,5 +41,10 @@ jobs:
           node games/harness-who-do-you-trust/campaign-v2/tests/later-cases-browser-smoke.mjs
       - name: Verify isolated QA test scope
         run: |
-          git diff --name-only fix/harness-five-case-build-g-20261029 HEAD || true
-          test -f games/harness-who-do-you-trust/campaign-v2/tests/full-season-qa.test.mjs
+          CHANGED="$(git diff --name-only 381b7f8873978df7bd064bbbd77c3c1478bedd93 HEAD)"
+          printf '%s\n' "$CHANGED"
+          test -n "$CHANGED"
+          if printf '%s\n' "$CHANGED" | grep -Ev '^(\.github/workflows/harness-cases-2-5-qa\.yml|games/harness-who-do-you-trust/campaign-v2/tests/(full-season-qa\.test\.mjs|later-cases-browser-smoke\.mjs)); then
+            echo "Unexpected gameplay-source modification in QA-only branch." >&2
+            exit 1
+          fi
