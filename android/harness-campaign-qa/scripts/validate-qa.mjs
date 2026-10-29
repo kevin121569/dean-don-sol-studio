@@ -34,6 +34,9 @@ const campaignIndex = await readFile(path.join(dist, "campaign/app/index.html"),
 const campaignScript = await readFile(path.join(dist, "campaign/app/campaign.mjs"), "utf8");
 const level1Html = await readFile(path.join(dist, "campaign/build/level-1.html"), "utf8");
 const playHtml = await readFile(path.join(dist, "campaign/app/play.html"), "utf8");
+const sharedUsability = await readFile(path.join(dist, "campaign/app/shared-usability.mjs"), "utf8");
+const playCss = await readFile(path.join(dist, "campaign/app/play.css"), "utf8");
+const legacyPolish = await readFile(path.join(dist, "campaign/runtime/legacy-polish.mjs"), "utf8");
 const {createCampaignStore} = await import(pathToFileURL(path.join(dist, "campaign/runtime/campaign-store.mjs")));
 const {prepareLegacyHtml} = await import(pathToFileURL(path.join(dist, "campaign/runtime/legacy-adapter.mjs")));
 
@@ -42,6 +45,11 @@ ok(config.appName === "HARNESS QA G · 5 CASES", "QA launcher name changed");
 ok(config.webDir === "dist", "QA webDir must remain dist");
 ok(rootHtml.includes(`BUILD ${BUILD_ID}`), "root QA build stamp missing");
 ok(playHtml.includes(`HARNESS QA · FIVE CASES · ${BUILD_ID}`), "in-game QA build banner missing");
+ok(playHtml.includes('calc(32px + env(safe-area-inset-top))'), "QA status bar safe-area padding missing");
+ok(playHtml.includes('flex-shrink:0'), "QA banner must not collapse inside runner");
+ok(sharedUsability.includes('Something new to search for') && playCss.includes('.harness-new-lead'), "shared hidden-clue neutral label missing");
+ok(sharedUsability.includes('soundWanted = false') && sharedUsability.includes('harnessSharedSound'), "shared sound must default OFF with explicit switch");
+ok(sharedUsability.includes('Clue opened ✓') && legacyPolish.includes('Clue opened ✓'), "tap feedback must be present in both renderer families");
 ok(campaignIndex.includes('id="caseMapList"') && campaignIndex.includes("5 / 5 CASES SHOWN"), "selector must visibly prove all five cases are present");
 ok(campaignScript.includes('mapButton.innerHTML = `<span>${item.completed ? "✓" : item.level}</span><small>CASE ${item.level}</small>`'), "selector must render five numbered case-map buttons from the manifest");
 const case1Entry = manifest.cases.find((item) => item.id === "episode-001");
