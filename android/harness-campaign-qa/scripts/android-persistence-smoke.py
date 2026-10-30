@@ -63,6 +63,16 @@ def wait_for(needle, label, seconds=40):
     iteration = 0
     while time.monotonic() < deadline:
         root = capture(label if iteration == 0 else label + "-probe")
+        # Android emulator sometimes displays a Pixel Launcher ANR over the running game.
+        # Dismiss only this known OS-level dialog, without changing game state.
+        if find(root, "Pixel Launcher isn't responding"):
+            close = find(root, "Close app")
+            if close:
+                adb("shell", "input", "tap", str(close[0]), str(close[1]))
+                REPORT["stages"].append({"stage": "dismissed-emulator-launcher-anr"})
+                time.sleep(3)
+                iteration += 1
+                continue
         matched = find(root, needle)
         if matched:
             REPORT["stages"].append({"stage": label, "found": needle, "detail": matched[2][:140]})
@@ -130,7 +140,7 @@ try:
         # Closing the record modal exposes the mission-status rail on some WebViews.
         # UI hierarchy may contain offscreen text even when it is not tappable.
         try:
-            tap(root, "Back", scrolls=3)
+            tap(root, "Close", scrolls=3)
             root = capture("after-close-record")
             observed = clue_count(root)
         except AssertionError:
