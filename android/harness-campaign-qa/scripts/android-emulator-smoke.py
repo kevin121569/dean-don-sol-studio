@@ -106,18 +106,18 @@ try:
     adb("install", "-r", str(apk), timeout=150)
     launch = adb("shell", "monkey", "-p", PACKAGE, "-c", "android.intent.category.LAUNCHER", "1")
     REPORT["stages"].append({"stage": "launch", "message": launch.stdout[-300:]})
-    wait_for("START / RESUME FIVE-CASE CAMPAIGN", "launch")
+    wait_for("HARNESS QA", "launch")
     assert_running()
 
     root = capture("qa-splash")
-    tap(root, "START / RESUME FIVE-CASE CAMPAIGN")
-    root = wait_for("Choose an investigation", "selector")
+    tap(root, "START / RESUME FIVE-CASE CAMPAIGN", scrolls=6)
+    root = wait_for("ALL FIVE CASES", "selector")
     tap(root, "BEGIN CASE", scrolls=5)
     wait_for("CASE 1 OF 5", "case-1")
     assert_running()
 
     adb("shell", "input", "keyevent", "KEYCODE_BACK")
-    root = wait_for("Choose an investigation", "after-android-back")
+    root = wait_for("ALL FIVE CASES", "after-android-back")
     assert_running()
     tap(root, "BEGIN CASE", scrolls=5)
     wait_for("CASE 1 OF 5", "case-1-reopened")
@@ -127,7 +127,7 @@ try:
     # It does not establish deep game progress restoration.
     adb("shell", "am", "force-stop", PACKAGE)
     adb("shell", "monkey", "-p", PACKAGE, "-c", "android.intent.category.LAUNCHER", "1")
-    wait_for("START / RESUME FIVE-CASE CAMPAIGN", "after-process-relaunch")
+    wait_for("HARNESS QA", "after-process-relaunch")
     assert_running()
     REPORT["result"] = "pass"
 except Exception as error:
