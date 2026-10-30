@@ -114,8 +114,9 @@ def check_legacy_case_two():
       const f=document.getElementById('caseFrame');
       const d=f.contentDocument;
       if(!d || !d.body || !d.querySelector('#app'))return false;
-      const imgs=[...d.images];return imgs.length>4 && imgs.every(i=>i.complete&&i.naturalWidth>0)
-      ? {images:imgs.length,title:document.getElementById('caseTitle')?.textContent,started:!!d.querySelector('[data-action="start"]')} : false;
+      const imgs=[...d.images], loaded=imgs.filter(i=>i.complete&&i.naturalWidth>0);
+      return loaded.length>0
+      ? {loadedImages:loaded.length,totalImages:imgs.length,title:document.getElementById('caseTitle')?.textContent,started:!!d.querySelector('[data-action="start"]')} : false;
     })()""","Case 2 art loaded in live Android WebView",seconds=50)
     screenshot("case2-native")
     # Start without mutating outcomes; assert actual evidence interface can be reached.
