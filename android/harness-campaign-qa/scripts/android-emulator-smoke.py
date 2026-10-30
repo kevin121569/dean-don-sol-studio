@@ -119,7 +119,9 @@ try:
     adb("shell", "input", "keyevent", "KEYCODE_BACK")
     root = wait_for("ALL FIVE CASES", "after-android-back")
     assert_running()
-    tap(root, "BEGIN CASE", scrolls=5)
+    # Returning from a live case changes BEGIN CASE to RESUME CASE, proving a saved in-progress state.
+    tap(root, "RESUME CASE", scrolls=5)
+    REPORT["stages"].append({"stage": "in-progress-state", "detail": "RESUME CASE displayed after Android Back"})
     wait_for("CASE 1 OF 5", "case-1-reopened")
     assert_running()
 
