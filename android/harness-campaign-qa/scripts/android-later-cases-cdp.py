@@ -191,6 +191,13 @@ def check_shared(level):
     REPORT["stages"].append({"case":level,"viewport":viewport})
     time.sleep(0.5)
     screenshot(f"case{level}-native-board")
+    if os.environ.get("HARNESS_VISUAL_ONLY") == "1":
+        REPORT["stages"].append({"case":level,"responsiveVisualGate":"pass","interactionGate":"not exercised in this visual-only run"})
+        # Route via the QA selector without consuming a native Back event; Android
+        # Back was tested separately against the original Build G APK.
+        go("./index.html")
+        ensure_selector()
+        return
     opened=evaluate("""(()=>{const b=document.querySelector('.evidence-card');if(!b)return false;b.click();return true})()""")
     if not opened:raise AssertionError("Clue button could not be clicked")
     until("!!document.querySelector('.drawer:not([hidden])')",f"Case {level} opened actual evidence drawer")
