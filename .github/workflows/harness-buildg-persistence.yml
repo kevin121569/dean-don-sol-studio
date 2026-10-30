@@ -41,32 +41,16 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Confirm persistence test is selected
+      - name: Verify selected native persistence script
         run: |
           test -f android/harness-campaign-qa/scripts/android-persistence-smoke.py
-          grep -F 'clue-persisted-across-process-restart' android/harness-campaign-qa/scripts/android-persistence-smoke.py
-          test "$(grep -Ec '^          script: python3 android/harness-campaign-qa/scripts/android-persistence-smoke[.]py
-
-      - name: Inspect clue, Back, restart and verify persistence on Android
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 35
-          target: google_apis
-          arch: x86_64
-          profile: pixel_6
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          disable-animations: true
-          script: python3 android/harness-campaign-qa/scripts/android-persistence-smoke.py
-
-      - name: Upload UI evidence even on test failure
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: HARNESS-Build-G-native-persistence-evidence
-          path: harness-android-persistence-artifacts/
-          if-no-files-found: warn
-          retention-days: 14
- .github/workflows/harness-buildg-persistence.yml)" -eq 1
+          python3 - <<'PY'
+          from pathlib import Path
+          workflow = Path(".github/workflows/harness-buildg-persistence.yml").read_text()
+          expected = "script: python3 android/harness-campaign-qa/scripts/android-persistence-smoke.py"
+          assert sum(line.strip() == expected for line in workflow.splitlines()) == 1
+          assert "clue-persisted-across-process-restart" in Path("android/harness-campaign-qa/scripts/android-persistence-smoke.py").read_text()
+          PY
 
       - name: Inspect clue, Back, restart and verify persistence on Android
         uses: reactivecircus/android-emulator-runner@v2
