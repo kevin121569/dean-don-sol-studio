@@ -134,7 +134,8 @@ def check_shared(level):
     ensure_selector()
     seeded_unlock_through(level-1)
     go(f"./play.html?case=episode-00{level}")
-    until(f"document.querySelector('.case-head h1')?.textContent === {json.dumps(['','','','The Cold Mirror',\"The Ledger's Weight\",'The Open Record'][level])}","Case "+str(level)+" header from real APK",seconds=55)
+    title = {3: "The Cold Mirror", 4: "The Ledger's Weight", 5: "The Open Record"}[level]
+    until(f"document.querySelector('.case-head h1')?.textContent === {json.dumps(title)}", "Case "+str(level)+" header from real APK", seconds=55)
     # Click genuine stage control through CDP while observing Android WebView DOM.
     start=evaluate("""(()=>{let b=document.querySelector('[data-action="start"]');if(!b)return false;b.click();return true})()""")
     if not start:raise AssertionError(f"Case {level} has no enabled evidence-board start")
