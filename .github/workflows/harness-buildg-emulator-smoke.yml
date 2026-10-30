@@ -1,0 +1,62 @@
+name: HARNESS Build G Android Emulator Smoke
+
+on:
+  push:
+    branches:
+      - test/harness-buildg-android-emulator-smoke-20261030
+    paths:
+      - "android/harness-campaign-qa/scripts/android-emulator-smoke.py"
+      - ".github/workflows/harness-buildg-emulator-smoke.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build-g-native-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out isolated test branch
+        uses: actions/checkout@v4
+
+      - name: Download exact already-validated Build G APK
+        uses: actions/download-artifact@v4
+        with:
+          name: HARNESS-QA-FIVE-CASES-FULL5-20261029-G
+          repository: ${{ github.repository }}
+          run-id: 40886104535
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: qa-apk
+
+      - name: Verify Build G APK file exists
+        run: |
+          test -s qa-apk/HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk
+          (cd qa-apk && sha256sum -c HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk.sha256)
+
+      - name: Enable KVM for Android emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Install, navigate, Back and reopen on real Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          script: python3 android/harness-campaign-qa/scripts/android-emulator-smoke.py
+
+      - name: Upload UI evidence even on test failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HARNESS-Build-G-Android-emulator-smoke-evidence
+          path: harness-android-smoke-artifacts/
+          if-no-files-found: warn
+          retention-days: 14
