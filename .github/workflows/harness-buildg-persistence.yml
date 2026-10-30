@@ -41,6 +41,12 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Confirm persistence test is selected
+        run: |
+          test -f android/harness-campaign-qa/scripts/android-persistence-smoke.py
+          grep -F 'clue-persisted-across-process-restart' android/harness-campaign-qa/scripts/android-persistence-smoke.py
+          ! grep -F 'script: python3 android/harness-campaign-qa/scripts/android-emulator-smoke.py' .github/workflows/harness-buildg-persistence.yml
+
       - name: Inspect clue, Back, restart and verify persistence on Android
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -50,7 +56,7 @@ jobs:
           profile: pixel_6
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
-          script: python3 android/harness-campaign-qa/scripts/android-emulator-smoke.py
+          script: python3 android/harness-campaign-qa/scripts/android-persistence-smoke.py
 
       - name: Upload UI evidence even on test failure
         if: always()
