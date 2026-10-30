@@ -47,7 +47,7 @@ jobs:
           profile: pixel_6
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
-          script: python3 android/harness-campaign-qa/scripts/android-later-cases-cdp.py
+          script: HARNESS_VISUAL_ONLY=1 python3 android/harness-campaign-qa/scripts/android-later-cases-cdp.py
       - name: Save native screenshots and detailed report
         if: always()
         uses: actions/upload-artifact@v4
