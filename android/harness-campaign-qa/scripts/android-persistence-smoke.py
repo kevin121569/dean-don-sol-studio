@@ -169,8 +169,9 @@ try:
     root = wait_for("HARNESS QA", "after-process-relaunch")
     assert_running()
     if not find(root, "CASE 1 OF 5"):
-        if find(root, "START / RESUME FIVE-CASE CAMPAIGN"):
-            tap(root, "START / RESUME FIVE-CASE CAMPAIGN", scrolls=8)
+        # The QA splash CTA may be below the fold with [0,0] accessibility bounds.
+        # Scroll to it before navigating; do not predicate this on initial visibility.
+        tap(root, "START / RESUME FIVE-CASE CAMPAIGN", scrolls=8)
         root = wait_for("ALL FIVE CASES", "selector-after-restart")
         tap(root, "RESUME CASE", scrolls=8)
         root = wait_for("CASE 1 OF 5", "case-reopened-after-restart")
