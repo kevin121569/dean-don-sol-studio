@@ -146,6 +146,22 @@ def check_shared(level):
       return imgs.length===4 && imgs.every(i=>i.complete&&i.naturalWidth>0)
       ? {cards:cards.length,images:imgs.length,soundButton:document.querySelector('#harnessSharedSound')?.textContent} : false;
     })()""",f"Case {level} four illustrated clue cards on Android",seconds=65)
+    viewport=evaluate("""(()=>{
+      const w=window.innerWidth;
+      const selectors=['.app-shell','.case-head','.alert-gauge','#qaBuildBanner'];
+      const elements=selectors.map(selector=>{
+        const el=document.querySelector(selector),r=el?.getBoundingClientRect();
+        return {selector,present:!!el,left:r?.left,right:r?.right};
+      });
+      return {width:w,documentWidth:document.documentElement.scrollWidth,elements};
+    })()""")
+    if viewport["width"] < 360 or viewport["width"] > 440:
+        raise AssertionError(f"Unexpected CSS viewport {viewport['width']}px; Android density invalid")
+    for item in viewport["elements"]:
+        if item["present"] and (item["left"] < -1 or item["right"] > viewport["width"] + 1):
+            raise AssertionError(f"Case {level} {item['selector']} clips at CSS viewport {viewport['width']}: {item}")
+    REPORT["stages"].append({"case":level,"viewport":viewport})
+    time.sleep(0.5)
     screenshot(f"case{level}-native-board")
     opened=evaluate("""(()=>{const b=document.querySelector('.evidence-card');if(!b)return false;b.click();return true})()""")
     if not opened:raise AssertionError("Clue button could not be clicked")
@@ -168,7 +184,7 @@ def check_shared(level):
 try:
     assert adb("shell","getprop","sys.boot_completed").stdout.strip()=="1","Android emulator not booted"
     adb("shell","wm","size","390x844")
-    adb("shell","wm","density","240")
+    adb("shell","wm","density","160")  # 390 physical px = 390 CSS px for the responsive QA gate
     apk=Path("qa-apk/HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk")
     assert apk.exists() and apk.stat().st_size>7_000_000,"missing verified Build G APK"
     adb("install","-r",str(apk),timeout=180)
