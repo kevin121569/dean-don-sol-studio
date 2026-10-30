@@ -13,6 +13,7 @@ from pathlib import Path
 import re
 import subprocess
 import time
+import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 import websocket
 
@@ -64,10 +65,35 @@ def evaluate(expression, timeout=15):
     finally:
         ws.close()
 
+def dismiss_emulator_launcher_anr():
+    """Dismiss only a recognized Pixel Launcher OS dialog, never a HARNESS dialog."""
+    adb("shell", "uiautomator", "dump", "/sdcard/harness-qa-anr.xml", timeout=35, check=False)
+    raw=adb("shell", "cat", "/sdcard/harness-qa-anr.xml", timeout=15, check=False).stdout
+    if "Pixel Launcher isn't responding" not in raw and "Pixel Launcher isn" not in raw:
+        return False
+    try:
+        root=ET.fromstring(raw)
+        for element in root.iter():
+            if "Close app" in ((element.get("text") or "")+" "+(element.get("content-desc") or "")):
+                coords=list(map(int,re.findall(r"\d+",element.get("bounds",""))))
+                if len(coords)==4:
+                    x=(coords[0]+coords[2])//2
+                    y=(coords[1]+coords[3])//2
+                    adb("shell","input","tap",str(x),str(y))
+                    time.sleep(2)
+                    REPORT["stages"].append({"system":"dismissed Pixel Launcher ANR via Close app"})
+                    return True
+    except Exception as exc:
+        REPORT["stages"].append({"system":"ANR detected but could not dismiss","reason":str(exc)[:160]})
+    return False
+
 def until(expression, description, seconds=55):
     end=time.monotonic()+seconds
     error=None
+    iteration=0
     while time.monotonic()<end:
+        if iteration%3==0: dismiss_emulator_launcher_anr()
+        iteration+=1
         try:
             value=evaluate(expression,timeout=10)
             if value:
@@ -117,6 +143,7 @@ def check_legacy_case_two():
       frameReady:!document.getElementById('caseFrame')?.hidden,
       frameContentChars:document.getElementById('caseFrame')?.contentDocument?.body?.innerText?.length??null}))()""")
     REPORT["stages"].append({"case":2,"nativeScreenshot":"case2-native.png","details":v})
+    dismiss_emulator_launcher_anr()
     screenshot("case2-native")
     # Start without mutating outcomes; assert actual evidence interface can be reached.
     start=evaluate("""(()=>{
@@ -126,6 +153,7 @@ def check_legacy_case_two():
     })()""")
     REPORT["stages"].append({"case":2,"start":start,"visual":v})
     screenshot("case2-after-start")
+    dismiss_emulator_launcher_anr()
     adb("shell","input","keyevent","KEYCODE_BACK")
     until("location.pathname.endsWith('/campaign/app/index.html')","Case 2 native Back to menu")
     screenshot("case2-after-back")
