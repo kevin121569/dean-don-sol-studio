@@ -33,7 +33,7 @@ jobs:
       - name: Verify Build G APK file exists
         run: |
           test -s qa-apk/HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk
-          sha256sum -c qa-apk/HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk.sha256
+          (cd qa-apk && sha256sum -c HARNESS-QA-FIVE-CASES-FULL5-20261029-G.apk.sha256)
 
       - name: Enable KVM for Android emulator
         run: |
