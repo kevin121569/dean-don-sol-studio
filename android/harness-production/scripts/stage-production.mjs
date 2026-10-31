@@ -7,6 +7,7 @@ const wrapperRoot = path.resolve(here, "..");
 const repoRoot = path.resolve(wrapperRoot, "../..");
 const campaignRoot = path.join(repoRoot, "games/harness-who-do-you-trust/campaign-v2");
 const approvedLevel2 = path.join(repoRoot, "android/harness-who-do-you-trust/www/index.html");
+const privacySource = path.join(wrapperRoot, "privacy-policy.html");
 const distRoot = path.join(wrapperRoot, "dist");
 const stagedCampaign = path.join(distRoot, "campaign");
 
@@ -19,6 +20,19 @@ for (const directory of ["app", "runtime", "data", "assets"]) {
 
 await cp(path.join(campaignRoot, "build/level-1.html"), path.join(stagedCampaign, "build/level-1.html"));
 await cp(approvedLevel2, path.join(stagedCampaign, "build/level-2.html"));
+await cp(privacySource, path.join(stagedCampaign, "app/privacy.html"));
+
+const selectorPath = path.join(stagedCampaign, "app/index.html");
+let selectorHtml = await readFile(selectorPath, "utf8");
+const footer = `
+  <footer style="padding:0 20px 28px;text-align:center;color:#8fb2c3">
+    <a href="./privacy.html" style="color:#79def3">Privacy Policy</a>
+  </footer>
+`;
+const mainCloseCount = selectorHtml.split("</main>").length - 1;
+if (mainCloseCount !== 1) throw new Error(`Expected one </main> in selector; found ${mainCloseCount}.`);
+selectorHtml = selectorHtml.replace("</main>", `</main>\n${footer}`);
+await writeFile(selectorPath, selectorHtml);
 
 const sourceManifest = JSON.parse(await readFile(path.join(campaignRoot, "campaign.json"), "utf8"));
 const stagedManifest = structuredClone(sourceManifest);
@@ -53,4 +67,4 @@ const rootHtml = `<!doctype html>
 
 await writeFile(path.join(distRoot, "index.html"), rootHtml);
 
-console.log("HARNESS production web stage ready; five-case H3 campaign staged without QA identity.");
+console.log("HARNESS production web stage ready; five-case H3 campaign staged without QA identity and with local privacy access.");
