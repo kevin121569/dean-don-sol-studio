@@ -8,6 +8,13 @@ on:
       - "android/harness-production/**"
       - "games/harness-who-do-you-trust/campaign-v2/**"
       - ".github/workflows/harness-production-preflight.yml"
+  pull_request:
+    branches:
+      - fix/harness-back-and-replay-build-h3-20261030
+    paths:
+      - "android/harness-production/**"
+      - "games/harness-who-do-you-trust/campaign-v2/**"
+      - ".github/workflows/harness-production-preflight.yml"
   workflow_dispatch:
 
 permissions:
