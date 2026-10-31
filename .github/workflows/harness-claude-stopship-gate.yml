@@ -1,0 +1,24 @@
+name: HARNESS Claude Stopship Regression Gate
+on:
+  push:
+    branches:
+      - fix/harness-claude-stopship-build-h2-20261030
+    paths:
+      - "games/harness-who-do-you-trust/campaign-v2/**"
+      - ".github/workflows/harness-claude-stopship-gate.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  campaign-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Five-case source and regression gate
+        working-directory: games/harness-who-do-you-trust/campaign-v2
+        run: npm test && npm run validate

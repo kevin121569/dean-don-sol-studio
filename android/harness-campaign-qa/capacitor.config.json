@@ -1,6 +1,6 @@
 {
-  "appId": "com.theidealabstudio.harness.campaign.fullqa.h",
-  "appName": "HARNESS QA H · 5 CASES",
+  "appId": "com.theidealabstudio.harness.campaign.fullqa.h2",
+  "appName": "HARNESS QA H2 · 5 CASES",
   "webDir": "dist",
   "server": {
     "androidScheme": "https"

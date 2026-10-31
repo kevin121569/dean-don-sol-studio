@@ -21,7 +21,7 @@ import {
 const app = document.querySelector("#app");
 const params = new URLSearchParams(location.search);
 const requestedCaseId = params.get("case") ?? "episode-003";
-const preview = params.get("preview") === "1";
+
 const stageOrder = ["investigate", "trust", "decide", "outcome", "review"];
 const ui = {advice: null, reveal: [], drawerOpen: false, saveOkay: true, weightMessage: null};
 let manifest;
@@ -79,7 +79,6 @@ async function loadJsonText(url) {
 }
 
 function persist() {
-  if (preview) return true;
   ui.saveOkay = store.saveCase(caseData.id, state, {bestReached: isBestOutcome(caseData, state)});
   return ui.saveOkay;
 }
@@ -109,7 +108,7 @@ function shell(screen) {
   app.innerHTML = `<header>
     <div class="topbar">
       <a class="text-link" href="./index.html" aria-label="Return to case list">← Cases</a>
-      <span class="save-state">${preview ? "Development preview" : ui.saveOkay ? "Case saved" : "Play continues offline"}</span>
+      <span class="save-state">${ui.saveOkay ? "Case saved" : "Play continues offline"}</span>
     </div>
     <div class="case-head">
       <div>
@@ -123,7 +122,7 @@ function shell(screen) {
   </header>
   <main class="screen" id="case-screen">${screen}</main>
   ${drawerMarkup()}
-  ${preview ? '<p class="dev-flag">Internal renderer preview. Not part of a release build.</p>' : ""}`;
+  `;
 }
 
 function briefingScreen() {
@@ -418,8 +417,8 @@ async function boot() {
     caseData = JSON.parse(caseText);
     artUrls = await verifyArtAssets(campaignEntry);
     store = createCampaignStore(manifest);
-    if (!preview && store.caseStatus(caseData.id) === "locked") return lockedScreen();
-    const saved = preview ? null : store.loadCase(caseData.id);
+    if (store.caseStatus(caseData.id) === "locked") return lockedScreen();
+    const saved = store.loadCase(caseData.id);
     state = saved ? normalizeCaseSession(caseData, saved.session) : createCaseSession(caseData);
     render();
   } catch (error) {

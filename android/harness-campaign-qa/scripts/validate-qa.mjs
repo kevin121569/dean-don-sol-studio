@@ -3,7 +3,7 @@ import {readFile, readdir} from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath, pathToFileURL} from "node:url";
 
-const BUILD_ID = "FULL5-20261029-H";
+const BUILD_ID = "FULL5-20261030-H2";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
 const dist = path.join(root, "dist");
@@ -42,8 +42,8 @@ const legacyPolish = await readFile(path.join(dist, "campaign/runtime/legacy-pol
 const {createCampaignStore} = await import(pathToFileURL(path.join(dist, "campaign/runtime/campaign-store.mjs")));
 const {prepareLegacyHtml} = await import(pathToFileURL(path.join(dist, "campaign/runtime/legacy-adapter.mjs")));
 
-ok(config.appId === "com.theidealabstudio.harness.campaign.fullqa.h", "QA package ID changed");
-ok(config.appName === "HARNESS QA H · 5 CASES", "QA launcher name changed");
+ok(config.appId === "com.theidealabstudio.harness.campaign.fullqa.h2", "QA package ID changed");
+ok(config.appName === "HARNESS QA H2 · 5 CASES", "QA launcher name changed");
 ok(config.webDir === "dist", "QA webDir must remain dist");
 ok(rootHtml.includes(`BUILD ${BUILD_ID}`), "root QA build stamp missing");
 ok(playHtml.includes(`HARNESS QA · FIVE CASES · ${BUILD_ID}`), "in-game QA build banner missing");

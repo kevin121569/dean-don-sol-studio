@@ -1,4 +1,5 @@
 import {createCampaignStore} from "../runtime/campaign-store.mjs";
+import {restartCompletedCase} from "../runtime/campaign-replay.mjs";
 
 const statusCopy = {
   locked: "LOCKED",
@@ -62,7 +63,16 @@ function render(store) {
     button.textContent = item.unlocked && !item.launch ? "PLAYABLE PORT PENDING" : actionCopy[item.status];
     button.disabled = !item.unlocked || !item.launch;
     button.setAttribute("aria-label", `${button.textContent}: ${item.title}`);
-    button.addEventListener("click", () => routeToCase(item));
+    button.addEventListener("click", () => {
+      if (item.completed) {
+        // Play Again must start a fresh mystery, while keeping all unlocks intact.
+        if (!restartCompletedCase(store, item.id, globalThis.localStorage)) {
+          showMessage("Unable to reset this case. Your saved progress was left protected.");
+          return;
+        }
+      }
+      routeToCase(item);
+    });
     list.append(node);
 
     const mapItem = document.createElement("li");
