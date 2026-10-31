@@ -1,0 +1,47 @@
+name: HARNESS Production Prep Preflight
+
+on:
+  push:
+    branches:
+      - prep/harness-production-android-20261031
+    paths:
+      - "android/harness-production/**"
+      - "games/harness-who-do-you-trust/campaign-v2/**"
+      - ".github/workflows/harness-production-preflight.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  production-web-preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out exact production-prep branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install pinned Capacitor dependencies
+        working-directory: android/harness-production
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Run H3 campaign regression gate
+        working-directory: games/harness-who-do-you-trust/campaign-v2
+        run: npm test && npm run validate
+
+      - name: Stage and validate production web payload
+        working-directory: android/harness-production
+        run: npm run build:web
+
+      - name: Guard against committed signing secrets or release bundles
+        run: |
+          test ! -e android/harness-production/keystore.properties
+          test -z "$(find android/harness-production -type f \( -name '*.jks' -o -name '*.keystore' -o -name '*.aab' -o -name '*.apk' \) -print -quit)"
+          echo "No signing secret or release bundle committed."
