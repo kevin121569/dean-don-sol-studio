@@ -63,9 +63,13 @@ jobs:
           test -f "$AAB"
           cp "$AAB" HARNESS-production-unsigned.aab
           sha256sum HARNESS-production-unsigned.aab > HARNESS-production-unsigned.aab.sha256
-          jarsigner -verify HARNESS-production-unsigned.aab >/tmp/jarsigner.txt 2>&1 && {
-            echo "Bundle unexpectedly appears signed"; cat /tmp/jarsigner.txt; exit 1;
-          } || true
+          jarsigner -verify HARNESS-production-unsigned.aab >/tmp/jarsigner.txt 2>&1 || true
+          cat /tmp/jarsigner.txt
+          grep -F "jar is unsigned" /tmp/jarsigner.txt
+          if grep -Fq "jar verified" /tmp/jarsigner.txt; then
+            echo "Bundle unexpectedly appears signed"
+            exit 1
+          fi
           ls -lh HARNESS-production-unsigned.aab
 
       - name: Upload unsigned production bundle
