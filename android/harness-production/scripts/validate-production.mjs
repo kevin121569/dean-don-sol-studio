@@ -28,6 +28,10 @@ async function recursiveFiles(directory, base = directory) {
 const config = await json("capacitor.config.json");
 const manifest = await json("dist/campaign/campaign.json");
 const rootHtml = await readFile(path.join(dist, "index.html"), "utf8");
+const selectorHtml = await readFile(path.join(dist, "campaign/app/index.html"), "utf8");
+const stagedPrivacy = await readFile(path.join(dist, "campaign/app/privacy.html"), "utf8");
+const privacySource = await readFile(path.join(root, "privacy-policy.html"), "utf8");
+const publicPrivacy = await readFile(path.resolve(root, "../../harness-privacy/index.html"), "utf8");
 const level1 = await readFile(path.join(dist, "campaign/build/level-1.html"));
 const level2 = await readFile(path.join(dist, "campaign/build/level-2.html"));
 const {createCampaignStore} = await import(pathToFileURL(path.join(dist, "campaign/runtime/campaign-store.mjs")));
@@ -36,6 +40,11 @@ ok(config.appId === "com.theidealabstudio.harness", "Permanent production applic
 ok(config.appName === "HARNESS: Who Do You Trust?", "Production launcher name changed.");
 ok(config.webDir === "dist", "Production webDir must remain dist.");
 ok(rootHtml.includes('location.replace("./campaign/app/index.html")'), "Production root must replace-navigation into the selector.");
+ok(selectorHtml.includes('href="./privacy.html"'), "Production selector must expose local Privacy Policy access.");
+ok(sha256(stagedPrivacy) === sha256(privacySource), "Staged in-app privacy policy differs from approved production source.");
+ok(stagedPrivacy.includes("donsol@theidealabstudio.com"), "In-app privacy policy is missing the public support contact.");
+ok(publicPrivacy.includes('https://theidealabstudio.com/harness-privacy/'), "Public privacy draft is missing the approved candidate URL.");
+ok(publicPrivacy.includes("donsol@theidealabstudio.com"), "Public privacy draft is missing the support contact.");
 ok(!("qa" in manifest), "Production campaign manifest must not contain QA metadata.");
 ok(Array.isArray(manifest.cases) && manifest.cases.length === 5, "Production campaign must contain exactly five cases.");
 ok(manifest.cases.find((item) => item.id === "episode-002")?.runtime?.source === "build/level-2.html", "Packaged Case 2 must use the approved local source.");
@@ -99,4 +108,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log("HARNESS production web validation passed: permanent ID, five cases, frozen source hashes, art hashes, fresh unlock state, no QA markers, no external web destinations.");
+console.log("HARNESS production web validation passed: permanent ID, five cases, frozen source hashes, art hashes, fresh unlock state, local privacy access, public privacy draft, no QA markers, no external web destinations.");
