@@ -43,3 +43,8 @@ Do not create or upload a signed Play bundle until all of these are explicitly c
 - [ ] Final production release authorization
 
 No signing secrets belong in this repository.
+
+
+## Automated preflight
+
+The branch workflow `.github/workflows/harness-production-preflight.yml` runs the full H3 campaign regression gate plus the production staging validator. It does not generate signing keys, sign a bundle, or interact with Google Play.
