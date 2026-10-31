@@ -1,0 +1,23 @@
+{
+  "name": "harness-production-android",
+  "private": true,
+  "version": "1.0.0-prep.20261031",
+  "description": "Production-prep Android wrapper for HARNESS: Who Do You Trust?",
+  "scripts": {
+    "prepare:campaign": "node ../../games/harness-who-do-you-trust/campaign-v2/scripts/prepare-runtime.mjs",
+    "stage:web": "node scripts/stage-production.mjs",
+    "validate:web": "node scripts/validate-production.mjs",
+    "build:web": "npm run prepare:campaign && npm run stage:web && npm run validate:web",
+    "cap:add:android": "npm run build:web && cap add android",
+    "cap:sync": "npm run build:web && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.3",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/preferences": "8.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3"
+  }
+}
