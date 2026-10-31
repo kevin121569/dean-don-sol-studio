@@ -80,5 +80,8 @@ test("Frozen Case 2 uses a distinct v12 save key", () => {
 test("Campaign Play Again button calls the deliberate replay action", () => {
   const campaign=read("../app/campaign.mjs");
   assert.match(campaign,/restartCompletedCase\(store, item\.id, globalThis\.localStorage\)/);
-  assert.match(campaign,/if \(item\.completed\)/);
+  assert.match(campaign,/if \(item\.completed && !hasUnfinishedReplay\)/);
+  assert.match(campaign,/RESUME REPLAY/);
+  assert.match(campaign,/globalThis\.confirm\?/);
+  assert.match(campaign,/location\.replace\(item\.launch\)/);
 });
