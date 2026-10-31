@@ -35,9 +35,9 @@ Do not create or upload a signed Play bundle until all of these are explicitly c
 
 - [x] Permanent app ID approved: `com.theidealabstudio.harness`
 - [ ] Backup/data-extraction policy approved and applied to generated Android manifest
-- [ ] Public HTTPS privacy-policy URL approved and included in app + Play Console
+- [x] Privacy-policy content/URL approved; in-app link staged; public source published at `https://theidealabstudio.com/harness-privacy/` (browser-visible reachability still to confirm before Play Console entry)
 - [ ] Final native/SDK/permission/network audit on generated release candidate
-- [ ] Release-signing / Play App Signing procedure approved
+- [x] Signing strategy approved: Google Play-managed app-signing key + separate developer-held upload key
 - [ ] Store assets, price/countries and Play declarations completed
 - [ ] Closed-testing gate satisfied
 - [ ] Final production release authorization
@@ -48,3 +48,8 @@ No signing secrets belong in this repository.
 ## Automated preflight
 
 The branch workflow `.github/workflows/harness-production-preflight.yml` runs the full H3 campaign regression gate plus the production staging validator. It does not generate signing keys, sign a bundle, or interact with Google Play.
+
+
+## Signing boundary
+
+The upload keystore and its passwords must never be committed to this repository or stored in GitHub Actions source files. Production AAB generation in CI remains unsigned; upload signing happens outside the repository with the developer-held upload key.
