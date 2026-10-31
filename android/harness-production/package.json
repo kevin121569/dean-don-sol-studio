@@ -8,8 +8,9 @@
     "stage:web": "node scripts/stage-production.mjs",
     "validate:web": "node scripts/validate-production.mjs",
     "build:web": "npm run prepare:campaign && npm run stage:web && npm run validate:web",
-    "cap:add:android": "npm run build:web && cap add android",
-    "cap:sync": "npm run build:web && cap sync android"
+    "native:configure": "node scripts/configure-native.mjs",
+    "cap:add:android": "npm run build:web && cap add android && npm run native:configure",
+    "cap:sync": "npm run build:web && cap sync android && npm run native:configure"
   },
   "dependencies": {
     "@capacitor/android": "8.5.3",
