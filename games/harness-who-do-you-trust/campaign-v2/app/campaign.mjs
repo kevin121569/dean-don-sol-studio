@@ -34,7 +34,8 @@ function routeToCase(item) {
     showMessage(`${item.title} is not connected to the new renderer yet. This integration shell will not substitute an older game or package an incomplete APK.`);
     return;
   }
-  location.assign(item.launch);
+  // Replace the selector in history; Back from the selector must not resurrect a case.
+  location.replace(item.launch);
 }
 
 function render(store) {
@@ -60,17 +61,27 @@ function render(store) {
     node.querySelector(".case-tagline").textContent = item.tagline;
 
     const button = node.querySelector(".case-action");
-    button.textContent = item.unlocked && !item.launch ? "PLAYABLE PORT PENDING" : actionCopy[item.status];
+    // Completion unlocks remain permanent, but an unfinished replay is resumable.
+    const hasUnfinishedReplay = item.completed && store.loadCase(item.id)?.session.completed === false;
+    button.textContent = item.unlocked && !item.launch
+      ? "PLAYABLE PORT PENDING"
+      : hasUnfinishedReplay ? "RESUME REPLAY" : actionCopy[item.status];
     button.disabled = !item.unlocked || !item.launch;
     button.setAttribute("aria-label", `${button.textContent}: ${item.title}`);
     button.addEventListener("click", () => {
-      if (item.completed) {
-        // Play Again must start a fresh mystery, while keeping all unlocks intact.
+      if (item.completed && !hasUnfinishedReplay) {
+        // A new replay is destructive only to this case's saved session.
+        // Never discard a result or a prior replay without explicit consent.
+        const approved = globalThis.confirm?.(
+          `Replay ${item.title} from the beginning? This resets only this case's current save. Your completed cases and unlocked investigations stay available.`
+        );
+        if (!approved) return;
         if (!restartCompletedCase(store, item.id, globalThis.localStorage)) {
-          showMessage("Unable to reset this case. Your saved progress was left protected.");
+          showMessage("Unable to restart this case. Your saved progress was left protected.");
           return;
         }
       }
+      // When a completed case has an unfinished replay, resume it without reset.
       routeToCase(item);
     });
     list.append(node);
