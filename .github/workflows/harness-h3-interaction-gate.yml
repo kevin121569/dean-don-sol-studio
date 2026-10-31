@@ -1,0 +1,47 @@
+name: HARNESS H3 Browser Back and Replay Gate
+
+on:
+  push:
+    branches:
+      - fix/harness-back-and-replay-build-h3-20261030
+    paths:
+      - "games/harness-who-do-you-trust/campaign-v2/**"
+      - ".github/workflows/harness-h3-interaction-gate.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser-interactions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out approved frozen source and history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Full source tests and fingerprint validator
+        working-directory: games/harness-who-do-you-trust/campaign-v2
+        run: npm test && npm run validate
+      - name: Install browser harness without updating app dependencies
+        working-directory: games/harness-who-do-you-trust/campaign-v2
+        run: |
+          npm install --no-save --no-package-lock puppeteer-core@24.28.0
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium)"
+          test -n "$CHROME"
+          echo "HARNESS_CHROME=$CHROME" >> "$GITHUB_ENV"
+      - name: Test real browser UI and simulated Capacitor Back events
+        working-directory: games/harness-who-do-you-trust/campaign-v2
+        run: node tests/h3-browser.e2e.mjs
+      - name: Upload H3 browser interaction screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: HARNESS-H3-Back-Replay-Browser-Evidence
+          path: games/harness-who-do-you-trust/campaign-v2/h3-browser-evidence/
+          if-no-files-found: warn
+          retention-days: 14
