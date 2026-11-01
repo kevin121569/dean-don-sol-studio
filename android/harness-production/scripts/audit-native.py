@@ -2,7 +2,7 @@ from pathlib import Path
 import sys
 import xml.etree.ElementTree as ET
 
-APP_ID = "com.theidealabstudio.harness"
+APP_ID = "com.theidealabstudio.harness.whodoyoutrust"
 ANDROID_NS = "{http://schemas.android.com/apk/res/android}"
 root = Path(__file__).resolve().parents[1]
 android_root = root / "android"
