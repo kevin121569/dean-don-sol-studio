@@ -2,9 +2,9 @@
 
 This wrapper is the isolated production-preparation path for **HARNESS: Who Do You Trust?**.
 
-## Approved permanent identity
+## Google Play production identity
 
-- Android application ID: `com.theidealabstudio.harness`
+- Android application ID: `com.theidealabstudio.harness.whodoyoutrust`
 - App name: **HARNESS: Who Do You Trust?**
 - Source baseline: H3, PR #84
 - H3 independent Claude review: PASS
@@ -33,10 +33,10 @@ This branch is **production preparation, not production authorization**.
 
 Do not create or upload a signed Play bundle until all of these are explicitly cleared:
 
-- [x] Permanent app ID approved: `com.theidealabstudio.harness`
-- [ ] Backup/data-extraction policy approved and applied to generated Android manifest
-- [x] Privacy-policy content/URL approved; in-app link staged; public source published at `https://theidealabstudio.com/harness-privacy/` (browser-visible reachability still to confirm before Play Console entry)
-- [ ] Final native/SDK/permission/network audit on generated release candidate
+- [x] Permanent app ID approved: `com.theidealabstudio.harness.whodoyoutrust`
+- [x] Backup/data-extraction policy approved and applied to generated Android manifest
+- [x] Privacy-policy content/URL approved; in-app link staged; public source published at `https://theidealabstudio.com/harness-privacy/` (live HTTPS reachability confirmed and URL saved in Play Console)
+- [x] Final native/SDK/permission/network audit passed on generated release candidate
 - [x] Signing strategy approved: Google Play-managed app-signing key + separate developer-held upload key
 - [ ] Store assets, price/countries and Play declarations completed
 - [ ] Closed-testing gate satisfied
