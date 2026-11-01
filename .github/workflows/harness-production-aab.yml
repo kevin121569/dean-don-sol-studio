@@ -1,0 +1,83 @@
+name: HARNESS Production Unsigned AAB
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - fix/harness-back-and-replay-build-h3-20261030
+    paths:
+      - "android/harness-production/**"
+      - ".github/workflows/harness-production-aab.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-unsigned-aab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Check out exact production-prep branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Install Android SDK 36
+        run: |
+          SDKMANAGER_PATH="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | sort -V | tail -1)"
+          test -x "$SDKMANAGER_PATH"
+          yes | "$SDKMANAGER_PATH" --licenses >/dev/null
+          "$SDKMANAGER_PATH" --install "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Install pinned dependencies
+        working-directory: android/harness-production
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Generate production Android project
+        working-directory: android/harness-production
+        run: npm run cap:add:android
+
+      - name: Build unsigned release AAB
+        working-directory: android/harness-production/android
+        run: ./gradlew bundleRelease --no-daemon
+
+      - name: Audit generated release manifest
+        working-directory: android/harness-production
+        run: python3 scripts/audit-native.py
+
+      - name: Verify unsigned bundle identity
+        working-directory: android/harness-production
+        run: |
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          test -f "$AAB"
+          cp "$AAB" HARNESS-production-unsigned.aab
+          sha256sum HARNESS-production-unsigned.aab > HARNESS-production-unsigned.aab.sha256
+          jarsigner -verify HARNESS-production-unsigned.aab >/tmp/jarsigner.txt 2>&1 || true
+          cat /tmp/jarsigner.txt
+          grep -F "jar is unsigned" /tmp/jarsigner.txt
+          if grep -Fq "jar verified" /tmp/jarsigner.txt; then
+            echo "Bundle unexpectedly appears signed"
+            exit 1
+          fi
+          ls -lh HARNESS-production-unsigned.aab
+
+      - name: Upload unsigned production bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: HARNESS-production-unsigned-AAB
+          path: |
+            android/harness-production/HARNESS-production-unsigned.aab
+            android/harness-production/HARNESS-production-unsigned.aab.sha256
+          if-no-files-found: error
+          retention-days: 7
