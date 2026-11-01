@@ -36,7 +36,7 @@ const level1 = await readFile(path.join(dist, "campaign/build/level-1.html"));
 const level2 = await readFile(path.join(dist, "campaign/build/level-2.html"));
 const {createCampaignStore} = await import(pathToFileURL(path.join(dist, "campaign/runtime/campaign-store.mjs")));
 
-ok(config.appId === "com.theidealabstudio.harness", "Permanent production application ID changed.");
+ok(config.appId === "com.theidealabstudio.harness.whodoyoutrust", "Production application ID no longer matches existing Google Play app.");
 ok(config.appName === "HARNESS: Who Do You Trust?", "Production launcher name changed.");
 ok(config.webDir === "dist", "Production webDir must remain dist.");
 ok(rootHtml.includes('location.replace("./campaign/app/index.html")'), "Production root must replace-navigation into the selector.");
@@ -78,7 +78,7 @@ const bannedMarkers = [
   "HARNESS QA",
   "NOT FOR PLAY STORE",
   "FULL5-20261030-H3",
-  "com.theidealabstudio.harness.campaign.fullqa.h3",
+  "com.theidealabstudio.harness.whodoyoutrust.campaign.fullqa.h3",
   "qaBuildBanner",
   '"productionRelease": false'
 ];
