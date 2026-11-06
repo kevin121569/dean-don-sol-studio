@@ -1,0 +1,22 @@
+name = "ask-don-sol"
+main = "worker.mjs"
+compatibility_date = "2026-01-01"
+
+[vars]
+ENABLED = "false"                 # stays false until Kevin approves activation
+SPEND_LIMIT_CONFIRMED = "false"   # set "true" ONLY after a provider-side spending limit is set (see README)
+MODEL = ""                        # approved model id, chosen at activation
+DAILY_CAP = "200"                 # request-count cap, NOT a spending limit
+HOURLY_PER_IP = "20"
+MAX_INFLIGHT = "4"
+CORS_EXTRA_ORIGINS = ""          # staging only, comma-separated (e.g. http://localhost:8080); CORS headers only
+
+[[durable_objects.bindings]]
+name = "RATE_DO"
+class_name = "RateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]
+
+# Secrets (never committed): wrangler secret put ANTHROPIC_API_KEY ; wrangler secret put TURNSTILE_SECRET

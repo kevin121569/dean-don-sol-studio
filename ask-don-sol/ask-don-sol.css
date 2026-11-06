@@ -1,0 +1,22 @@
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ads-main{max-width:760px;margin:0 auto;padding:32px 16px 56px}
+.ads-intro h1{font-size:clamp(2.4rem,9vw,4rem);margin:.2em 0}
+.ads-chat{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.ads-status{min-height:1.4em;font-size:14px;color:var(--muted)}
+.ads-status.err{color:#ffb4a8}
+.ads-log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;max-height:min(55vh,520px);overflow-y:auto}
+.ads-log li{max-width:88%;padding:10px 14px;border-radius:14px;line-height:1.5;overflow-wrap:anywhere;white-space:pre-wrap;border:1px solid rgba(255,255,255,.14)}
+.ads-log li.you{align-self:flex-end;background:rgba(255,255,255,.08)}
+.ads-log li.don{align-self:flex-start;background:rgba(255,196,80,.1)}
+.ads-log li.don.pending{opacity:.7;font-style:italic}
+.ads-log li.sys{align-self:center;font-size:14px;color:var(--muted);max-width:100%}
+.ads-starters{display:flex;flex-wrap:wrap;gap:8px}
+.ads-starters button{font:inherit;font-size:14px;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:transparent;color:inherit;cursor:pointer;min-height:44px}
+.ads-form{display:flex;gap:10px;align-items:flex-end}
+.ads-form textarea{flex:1;font:inherit;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.05);color:inherit;resize:vertical;min-height:48px}
+.ads-form button{min-height:48px}
+.ads-note{font-size:13px;color:var(--muted)}
+.ads-form textarea:focus-visible,.ads-starters button:focus-visible{outline:2px solid var(--mint,#7fe3c1);outline-offset:2px}
+@media(max-width:480px){.ads-form{flex-direction:column;align-items:stretch}.ads-log li{max-width:96%}}
+.ads-preview{margin:16px 0 0;padding:10px 14px;border:1px dashed var(--sun,#ffb53d);border-radius:12px;font-size:14px}
+.ads-starters button:disabled,.ads-form button:disabled,.ads-form textarea:disabled{opacity:.5;cursor:not-allowed}
