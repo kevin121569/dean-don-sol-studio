@@ -8,7 +8,7 @@ const {chromium}=require('playwright');let fails=0;const ok=(c,m)=>{console.log(
  const raw=(body,h={})=>fetch(E,{method:'POST',headers:{'Content-Type':'application/json',Origin:O,...h},body:typeof body==='string'?body:JSON.stringify(body)});
  ok((await raw({messages:[{role:'user',content:'hi'}]})).status===403,'no Turnstile token -> 403 (no provider call)');
  ok((await raw({messages:[{role:'user',content:'hi'}],turnstileToken:'forged'},{Origin:'https://theidealabstudio.com'})).status===403,'forged Origin + bad token -> 403');
- ok((await raw('{bad')).status===400||true,'malformed JSON handled (any 4xx)');
+ ok((await raw('{bad')).status===400,'malformed JSON rejected with HTTP 400');
  const br=await chromium.launch();const pg=await (await br.newContext({viewport:{width:390,height:844},isMobile:true})).newPage();
  await pg.addInitScript(([e,k])=>{window.ASK_DON_SOL_ENDPOINT=e;window.ASK_DON_SOL_TURNSTILE_SITEKEY=k},[E,K]);
  await pg.goto(O+'/ask-don-sol/');
