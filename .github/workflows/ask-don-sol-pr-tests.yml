@@ -1,0 +1,47 @@
+name: Ask Don Sol — independent PR tests
+
+on:
+  pull_request:
+    paths:
+      - 'ask-don-sol/**'
+      - 'workers/ask-don-sol/**'
+      - 'tests/ask-don-sol.cjs'
+      - 'tests/staging-smoke.cjs'
+      - 'base.css'
+      - 'index.html'
+      - 'library/**'
+      - 'games/**'
+      - 'film/**'
+      - 'animation/**'
+      - '.github/workflows/ask-don-sol-pr-tests.yml'
+  push:
+    branches:
+      - feature/ask-don-sol-review3
+
+permissions:
+  contents: read
+
+jobs:
+  browser-and-worker-regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout review branch
+        uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright (CI only)
+        run: npm install --no-save --no-audit --no-fund playwright@1.56.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run offline browser and Worker tests
+        run: node tests/ask-don-sol.cjs
+      - name: Assert staging smoke refuses without explicit configuration
+        run: |
+          set +e
+          node tests/staging-smoke.cjs > /tmp/staging-refusal.log 2>&1
+          result=$?
+          cat /tmp/staging-refusal.log
+          test "$result" -eq 2

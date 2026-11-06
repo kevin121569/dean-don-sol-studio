@@ -34,3 +34,7 @@
 /* Website working-copy control collision repair. */
 body.concierge-open .fab{visibility:hidden}
 @media(max-width:850px){body.mobile-menu-open .fab{display:none}}
+
+/* v16: nine-item main-site nav wraps instead of overflowing on phones */
+.book-nav{flex-wrap:wrap;justify-content:flex-end;row-gap:6px}
+@media(max-width:620px){.topbar{flex-wrap:wrap}.book-nav{gap:6px 12px;flex:1 1 100%;margin-left:0;justify-content:flex-start}}
